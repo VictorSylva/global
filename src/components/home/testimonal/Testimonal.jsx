@@ -4,6 +4,9 @@ import Heading from "../../common/heading/Heading"
 import "./style.css"
 
 const Testimonal = () => {
+  if (!testimonal || testimonal.length === 0) {
+    return null
+  }
   return (
     <>
       <section className='testimonal padding'>

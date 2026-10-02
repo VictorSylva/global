@@ -959,29 +959,7 @@ export const faq = [
 
 export const blog = []
 
-export const testimonal = [
-  {
-    id: 1,
-    name: "DR. VICTORIA ADEYEMI",
-    post: "PARENT OF SS 2 SCHOLAR",
-    desc: "Brighter Land provides outstanding discipline and academic grounding. The school fees are fair and transparent, and the online portal makes tracking my daughter's attendance and terminal reports seamless.",
-    cover: "./images/testo/t1.webp",
-  },
-  {
-    id: 2,
-    name: "ENGR. CHUKWUMA OKAFOR",
-    post: "PARENT OF JSS 1 & PRIMARY 3 PUPILS",
-    desc: "The prompt notification of fees and the First Bank direct integration gave us complete peace of mind. Both of my children have flourished in reading and quantitative reasoning.",
-    cover: "./images/testo/t2.webp",
-  },
-  {
-    id: 3,
-    name: "MRS. AMINA BELLO",
-    post: "PARENT OF NURSERY 2 SCHOLAR",
-    desc: "The early childhood care in Nursery and Crèche is second to none. The teachers are loving, attentive, and the phonics foundation is phenomenal.",
-    cover: "./images/testo/t3.webp",
-  },
-]
+export const testimonal = []
 
 // Real-Time School Operations & Management Datasets (Clean Initial State - Dynamic Management)
 export const initialStudents = []

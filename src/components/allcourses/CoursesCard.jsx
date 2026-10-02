@@ -54,16 +54,6 @@ const CoursesCard = () => {
                   </ul>
                 </div>
 
-                <div className='stage-leader-box'>
-                  <div className='leader-avatar-icon'>
-                    <i className='fas fa-user-tie'></i>
-                  </div>
-                  <div className='leader-meta'>
-                    <small>Division Leadership</small>
-                    <strong>{val.leader}</strong>
-                  </div>
-                </div>
-
                 <div className='stage-card-footer'>
                   <span className='credential-pill'>
                     <i className='fas fa-award'></i> {val.distinctive}

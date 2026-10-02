@@ -4,7 +4,7 @@ import AboutCard from "../about/AboutCard"
 import ProprietorMessage from "./ProprietorMessage"
 import HAbout from "./HAbout"
 import ProspectusRequest from "./ProspectusRequest"
-import Testimonal from "./testimonal/Testimonal"
+// import Testimonal from "./testimonal/Testimonal"
 import Hblog from "./Hblog"
 
 const Home = () => {
@@ -15,7 +15,7 @@ const Home = () => {
       <ProprietorMessage />
       <HAbout />
       <ProspectusRequest />
-      <Testimonal />
+      {/* <Testimonal /> */}
       <Hblog />
     </>
   )
