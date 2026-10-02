@@ -1,35 +1,351 @@
+/* ================================================================
+   BLIS Hero Section Styling - Shifted Background & Responsive Layout
+   ================================================================ */
+
 .hero {
-  background-image: url("../../../../public/images/bg.webp");
+  position: relative;
+  background-color: #071626;
+  overflow: hidden;
+  width: 100%;
+  margin-top: -55px;
+  padding-top: 85px;
+  padding-bottom: 60px;
+  color: #fff;
+  z-index: 1;
+}
+
+/* Background image layer with image shifted to the right so the face is seen */
+.hero-bg-layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("../../../../public/images/blis1.jpeg");
+  background-repeat: no-repeat;
   background-size: cover;
-  background-attachment: fixed;
+  background-position: 70% 12%;
+  z-index: 1;
+  pointer-events: none;
+  transition: all 0.4s ease;
+}
+
+/* On desktop: shift the background image further to the right */
+@media screen and (min-width: 993px) {
+  .hero-bg-layer {
+    width: 110%;
+    left: auto;
+    right: -6%;
+    transform: translateX(180px);
+    background-position: 82% 10%;
+  }
+}
+
+/* Smooth gradient overlay that protects text contrast on left, illuminates student face on right */
+.hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
-  width: 100%;
-  height: 100vh;
-  padding-top: 20%;
-  padding-right: 50px;
-  color: #fff;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg, 
+    #071626 0%, 
+    rgba(7, 22, 38, 0.96) 36%, 
+    rgba(7, 22, 38, 0.72) 58%, 
+    rgba(7, 22, 38, 0.22) 80%,
+    rgba(7, 22, 38, 0.40) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
 }
-.hero #heading h3 {
-  color: #fff;
+
+.hero .container {
+  position: relative;
+  z-index: 3;
 }
+
+.hero-content {
+  max-width: 760px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.hero-badge span {
+  white-space: normal;
+  line-height: 1.4;
+}
+
 .hero #heading {
   text-align: left;
   margin: 0;
   padding: 0;
 }
-@media screen and (max-width: 768px) {
-  .margin {
-    height: 40vh;
-  }
+
+.hero #heading h3 {
+  color: #34d399;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.hero #heading h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.15;
+  margin: 10px 0 20px 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.hero-desc {
+  font-size: clamp(15px, 1.8vw, 17px);
+  line-height: 1.65;
+  color: #cbd5e1;
+  margin-bottom: 32px;
+  max-width: 700px;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.primary-hero-btn {
+  background: linear-gradient(135deg, #00a884 0%, #059669 100%);
+  color: #ffffff !important;
+  box-shadow: 0 10px 25px rgba(0, 168, 132, 0.35);
+}
+
+.primary-hero-btn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0, 168, 132, 0.45);
+}
+
+.secondary-hero-btn {
+  background: #ffffff;
+  color: #071626 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.secondary-hero-btn:hover {
+  background: #f1f5f9;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+}
+
+.outline-hero-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+}
+
+.outline-hero-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* Hero Feature Cards */
+.hero-features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.hero-feature-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(15, 37, 55, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.hero-feature-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(15, 37, 55, 0.9);
+}
+
+.hf-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.hero-feature-card h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.hero-feature-card small {
+  font-size: 11px;
+  color: #94a3b8;
+  display: block;
+  margin-top: 3px;
+}
+
+/* Because .hero is in standard document flow, hero-spacing is 0 to avoid massive empty space */
+.hero-spacing {
+  display: none;
+  margin-top: 0;
+}
+
+/* ================================================================
+   Hero Section Mobile & Tablet Responsiveness
+   ================================================================ */
+
+@media screen and (max-width: 992px) {
   .hero {
-    background-position: right;
-    padding-top: 50%;
-    height: 80vh;
+    margin-top: -55px;
+    padding-top: 85px;
+    padding-bottom: 60px;
+    min-height: auto;
   }
-  .hero .row {
+  .hero-features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .hero {
+    margin-top: 0;
+    padding-top: 30px;
+    padding-bottom: 50px;
+    min-height: auto;
+  }
+  
+  .hero-bg-layer {
     width: 100%;
+    left: 0;
+    right: 0;
+    transform: translateX(45px); /* nicely shifted so student face is visible on mobile */
+    background-position: 78% 15%;
+    opacity: 0.38;
+  }
+
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(7, 22, 38, 0.70) 0%,
+      rgba(7, 22, 38, 0.90) 35%,
+      #071626 100%
+    );
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+
+  .hero-badge {
+    font-size: 11.5px;
+    padding: 6px 12px;
+    margin-bottom: 16px;
+  }
+
+  .hero #heading h3 {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+  }
+
+  .hero #heading h1 {
+    font-size: 28px;
+    line-height: 1.22;
+    margin: 8px 0 16px 0;
+  }
+
+  .hero-desc {
+    font-size: 14.5px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 36px;
+    width: 100%;
+  }
+
+  .hero-btn {
+    width: 100%;
+    padding: 13px 20px;
+    font-size: 13.5px;
+  }
+
+  .hero-features-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .hero-feature-card {
+    padding: 14px 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .hero #heading h1 {
+    font-size: 25px;
+  }
+  .hero-badge span {
+    font-size: 11px;
   }
 }

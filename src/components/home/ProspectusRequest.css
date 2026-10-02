@@ -1,0 +1,433 @@
+/* Brighter Land International School - Prospectus Request Section */
+
+.prospectus-request-section {
+  background: linear-gradient(135deg, #071626 0%, #0d2847 100%);
+  color: #ffffff;
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.prospectus-request-section::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(0, 168, 132, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.prospectus-request-section::after {
+  content: "";
+  position: absolute;
+  bottom: -60px;
+  left: -60px;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.pr-header {
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.pr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 168, 132, 0.15);
+  border: 1px solid rgba(0, 168, 132, 0.3);
+  color: #34d399;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.pr-header h2 {
+  font-family: "Outfit", sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.pr-header p {
+  color: #cbd5e1;
+  font-size: 16px;
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.pr-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 40px;
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
+
+/* Left: Information & Value Cards */
+.pr-info-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.pr-crest-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 24px;
+}
+
+.pr-crest-img {
+  width: 56px;
+  height: 56px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pr-crest-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pr-crest-title h3 {
+  font-size: 18px;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  font-weight: 700;
+}
+
+.pr-crest-title span {
+  font-size: 12px;
+  color: #34d399;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.pr-benefit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px 0;
+}
+
+.pr-benefit-item {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.pr-benefit-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.pr-benefit-icon.emerald {
+  background: rgba(0, 168, 132, 0.2);
+  color: #34d399;
+}
+
+.pr-benefit-icon.blue {
+  background: rgba(37, 99, 235, 0.2);
+  color: #60a5fa;
+}
+
+.pr-benefit-icon.amber {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.pr-benefit-text h4 {
+  font-size: 15px;
+  color: #f8fafc;
+  margin: 0 0 4px 0;
+}
+
+.pr-benefit-text p {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.pr-account-notice {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px dashed rgba(245, 158, 11, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pr-an-icon {
+  color: #f59e0b;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.pr-an-text {
+  font-size: 12.5px;
+  color: #e2e8f0;
+  line-height: 1.4;
+}
+
+.pr-an-text strong {
+  color: #fbbf24;
+}
+
+/* Right: Form Card */
+.pr-form-card {
+  background: #ffffff;
+  color: #071626;
+  border-radius: 16px;
+  padding: 36px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+}
+
+.pr-form-title {
+  margin-bottom: 24px;
+}
+
+.pr-form-title h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #071626;
+  margin-bottom: 6px;
+}
+
+.pr-form-title p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.pr-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.pr-form-group {
+  margin-bottom: 16px;
+}
+
+.pr-form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.pr-form-group label .required {
+  color: #ef4444;
+}
+
+.pr-form-group input,
+.pr-form-group select,
+.pr-form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #071626;
+  background: #f8fafc;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.pr-form-group input:focus,
+.pr-form-group select:focus,
+.pr-form-group textarea:focus {
+  border-color: #00a884;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.15);
+}
+
+.pr-submit-btn {
+  width: 100%;
+  padding: 15px;
+  background: #00a884;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.25s ease;
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+}
+
+.pr-submit-btn:hover {
+  background: #008769;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 168, 132, 0.3);
+}
+
+/* Success Confirmation Card */
+.pr-success-box {
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.pr-success-icon {
+  width: 64px;
+  height: 64px;
+  background: #ecfdf5;
+  border: 2px solid #10b981;
+  color: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin: 0 auto 18px auto;
+}
+
+.pr-success-box h3 {
+  font-size: 22px;
+  color: #065f46;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.pr-success-box p {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.pr-success-details {
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: left;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.pr-success-details div {
+  margin-bottom: 6px;
+}
+
+.pr-reset-btn {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pr-reset-btn:hover {
+  background: #e2e8f0;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .pr-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .pr-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .pr-form-card {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .prospectus-request-section {
+    padding: 45px 0;
+  }
+
+  .pr-header h2 {
+    font-size: clamp(23px, 5.5vw, 30px);
+  }
+
+  .pr-header p {
+    font-size: 14px;
+  }
+
+  .pr-info-card {
+    padding: 20px 16px;
+  }
+
+  .pr-crest-header {
+    gap: 12px;
+  }
+
+  .pr-crest-img {
+    width: 44px;
+    height: 44px;
+  }
+
+  .pr-crest-title h3 {
+    font-size: 16px;
+  }
+
+  .pr-form-card {
+    padding: 20px 16px;
+  }
+
+  .pr-form-group input,
+  .pr-form-group select,
+  .pr-form-group textarea {
+    font-size: 16px; /* Prevents iOS auto-zoom on form fields */
+    padding: 11px 12px;
+  }
+
+  .pr-submit-btn {
+    padding: 13px 18px;
+    font-size: 14px;
+  }
+}

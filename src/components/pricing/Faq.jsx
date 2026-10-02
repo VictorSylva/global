@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useState } from "react"
 import { faq } from "../../dummydata"
 import Heading from "../common/heading/Heading"
 
@@ -14,12 +14,12 @@ const Faq = () => {
 
   return (
     <>
-      <Heading subtitle='FAQS' title='Frequesntly Ask Question' />
+      <Heading subtitle='ADMISSIONS & POLICIES' title='Frequently Asked Questions' />
       <section className='faq'>
         <div className='container'>
           {faq.map((val, index) => (
-            <div className='box'>
-              <button className='accordion' onClick={() => toggle(index)} key={index}>
+            <div className='box' key={index}>
+              <button className='accordion' onClick={() => toggle(index)} aria-expanded={click === index}>
                 <h2>{val.title}</h2>
                 <span>{click === index ? <i className='fa fa-chevron-down'></i> : <i className='fa fa-chevron-right'></i>}</span>
               </button>

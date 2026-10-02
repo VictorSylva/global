@@ -1,112 +1,172 @@
 .newletter {
-  background-color: #1eb2a6;
-  padding: 50px 0;
+  background: linear-gradient(135deg, #071626 0%, #0c2438 100%);
+  padding: 45px 0;
   color: #fff;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-.newletter .right,
-.newletter .left {
-  padding-right: 50px;
-}
-.newletter h1 {
+
+.newletter .left h1 {
   color: #fff;
-  font-size: 30px;
-  font-weight: 500;
-  margin-bottom: 15px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
-.newletter .right {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+
+.newletter .left span {
+  color: #94a3b8;
+  font-size: 14px;
 }
+
 .newletter input {
   width: 100%;
-  padding: 20px;
-  border: none;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
   outline: none;
-  height: 30px;
+  border-radius: 6px 0 0 6px;
+  font-size: 14px;
 }
-.newletter i {
-  padding: 12px;
-  color: #1eb2a6;
-  background-color: #fff;
+
+.newletter input::placeholder {
+  color: #94a3b8;
 }
+
+.subscribed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 footer {
-  background-color: #eeeeee;
+  background-color: #061320;
+  color: #e2e8f0;
 }
+
 footer .container {
   display: grid;
-  grid-template-columns: 3fr 2fr 2fr 4fr 3fr;
+  grid-template-columns: 3fr 2fr 2fr 3.5fr 3fr;
   grid-gap: 30px;
 }
-@media screen and (max-width: 768px) {
+
+@media screen and (max-width: 992px) {
   footer .container {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-footer .logo span {
-  color: #1eb2a6;
-  font-size: 14px;
+
+@media screen and (max-width: 768px) {
+  .newletter {
+    padding: 30px 0;
+  }
+  .newletter .left h1 {
+    font-size: 19px;
+  }
+  .newletter .left span {
+    font-size: 13px;
+  }
+  .newletter input {
+    font-size: 16px; /* Prevents iOS auto-zoom */
+    padding: 12px 14px;
+  }
+  footer .container {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  footer h3 {
+    margin-bottom: 16px;
+  }
 }
+
 footer .logo p {
-  color: grey;
-  margin: 30px 0 15px 0;
+  color: #94a3b8;
+  font-size: 13px;
+  line-height: 1.6;
 }
+
 footer .logo .icon {
-  background-color: #1eb2a6;
-  color: white;
-  margin-right: 10px;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
 }
+
 footer h3 {
-  margin-bottom: 40px;
-  font-weight: 500;
+  font-family: 'Outfit', sans-serif;
+  color: #ffffff;
+  margin-bottom: 24px;
+  font-size: 18px;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 8px;
 }
+
+footer h3::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 32px;
+  height: 2px;
+  background: #00a884;
+}
+
+footer ul {
+  padding-left: 0;
+}
+
 footer ul li {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: #94a3b8;
 }
+
+footer ul li a {
+  color: #cbd5e1;
+  transition: all 0.2s;
+}
+
+footer ul li a:hover {
+  color: #10b981;
+  padding-left: 4px;
+}
+
 footer .link li::before {
-  content: "⟶";
-  color: #1eb2a6;
-  margin-right: 5px;
+  content: "→";
+  color: #00a884;
+  margin-right: 8px;
 }
-footer .items {
-  margin-bottom: 30px;
-}
-footer .items img {
-  width: 50px;
-  height: 50px;
-  border-radius: 5px;
-  margin-right: 10px;
-  object-fit: cover;
-}
-footer .items span,
-footer .items i {
-  font-size: 12px;
-  color: #1eb2a6;
-  margin-right: 5px;
-  text-transform: capitalize;
-}
-footer h4 {
-  font-weight: 400;
-  margin-top: 5px;
-}
+
 footer .last ul li {
   display: flex;
-  margin-bottom: 50px;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  line-height: 1.4;
 }
+
 footer .last i {
-  width: 60px;
-  font-size: 20px;
-  color: #1eb2a6;
+  font-size: 16px;
+  margin-top: 3px;
+  flex-shrink: 0;
 }
+
 .legal {
   text-align: center;
-  padding: 50px 0;
-  color: grey;
-  background-color: #e9e9e9;
+  padding: 24px 0;
+  color: #64748b;
+  background-color: #040c14;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
+
 .legal p {
-  font-size: 15px;
-}
-.legal i {
-  color: #1eb2a6;
+  font-size: 13px;
+  margin: 0;
 }

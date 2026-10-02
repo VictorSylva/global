@@ -1,0 +1,326 @@
+/* Brighter Land International School - Proprietor's Message Section */
+
+.proprietor-section {
+  background: #f8fafc;
+  padding: 85px 0;
+  position: relative;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.proprietor-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.3fr;
+  gap: 50px;
+  align-items: center;
+}
+
+/* Left: Portrait Card */
+.proprietor-image-col {
+  position: relative;
+}
+
+.proprietor-frame {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(7, 22, 38, 0.12);
+  background: #ffffff;
+  border: 4px solid #ffffff;
+}
+
+.proprietor-img {
+  width: 100%;
+  height: 460px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.proprietor-frame:hover .proprietor-img {
+  transform: scale(1.02);
+}
+
+.proprietor-floating-badge {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background: rgba(7, 22, 38, 0.92);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pfb-crest {
+  width: 44px;
+  height: 44px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pfb-crest img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pfb-text h4 {
+  font-size: 15px;
+  color: #ffffff;
+  margin: 0;
+  font-weight: 700;
+}
+
+.pfb-text span {
+  font-size: 11.5px;
+  color: #34d399;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  display: block;
+}
+
+/* Right: Content */
+.proprietor-content-col {
+  padding-left: 10px;
+}
+
+.proprietor-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 168, 132, 0.1);
+  color: #00a884;
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.proprietor-content-col h2 {
+  font-family: "Outfit", sans-serif;
+  font-size: 38px;
+  font-weight: 800;
+  color: #071626;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.proprietor-subtitle {
+  font-size: 16px;
+  color: #2563eb;
+  font-weight: 600;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.proprietor-subtitle .dot {
+  color: #94a3b8;
+}
+
+.proprietor-quote {
+  position: relative;
+  background: #ffffff;
+  border-left: 4px solid #00a884;
+  border-radius: 0 12px 12px 0;
+  padding: 20px 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  margin-bottom: 20px;
+}
+
+.proprietor-quote p {
+  font-size: 15.5px;
+  color: #1e293b;
+  line-height: 1.7;
+  margin: 0;
+  font-style: italic;
+}
+
+.proprietor-body {
+  color: #475569;
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.proprietor-highlights-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.ph-item {
+  background: #ffffff;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ph-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.ph-icon.green {
+  background: #ecfdf5;
+  color: #00a884;
+}
+
+.ph-icon.blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.ph-text strong {
+  display: block;
+  font-size: 13.5px;
+  color: #071626;
+}
+
+.ph-text span {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.proprietor-signature-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.psr-left h4 {
+  font-size: 17px;
+  color: #071626;
+  margin: 0 0 2px 0;
+  font-weight: 700;
+}
+
+.psr-left span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.psr-motto-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #071626;
+  color: #34d399;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 900px) {
+  .proprietor-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .proprietor-img {
+    height: 380px;
+  }
+
+  .proprietor-content-col {
+    padding-left: 0;
+  }
+
+  .proprietor-highlights-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .proprietor-section {
+    padding: 45px 0;
+  }
+
+  .proprietor-img {
+    height: 290px;
+  }
+
+  .proprietor-floating-badge {
+    padding: 10px 14px;
+    gap: 10px;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+  }
+
+  .pfb-crest {
+    width: 38px;
+    height: 38px;
+  }
+
+  .pfb-text h4 {
+    font-size: 13.5px;
+  }
+
+  .proprietor-content-col h2 {
+    font-size: clamp(23px, 5.5vw, 30px);
+  }
+
+  .proprietor-subtitle {
+    font-size: 13.5px;
+    gap: 6px;
+  }
+
+  .proprietor-quote {
+    padding: 14px 16px;
+  }
+
+  .proprietor-quote p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .proprietor-body {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .proprietor-signature-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .psr-motto-badge {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+}

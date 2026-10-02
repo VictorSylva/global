@@ -46,3 +46,80 @@
   background-color: #fff;
   color: #1eb2a6;
 }
+
+.testimonial-crest-badge {
+  align-items: center;
+  gap: 12px;
+  background: #f8fafc;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 18px;
+}
+
+.testimonal .items:hover .testimonial-crest-badge {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.tcb-logo {
+  width: 36px;
+  height: 36px;
+  background: #ffffff;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.tcb-logo img {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 0 !important;
+  object-fit: contain;
+}
+
+.tcb-text strong {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: #071626;
+  font-family: 'Outfit', sans-serif;
+  line-height: 1.2;
+}
+
+.tcb-text small {
+  display: block;
+  font-size: 11px;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.testimonal .items:hover .tcb-text strong,
+.testimonal .items:hover .tcb-text small {
+  color: #ffffff !important;
+}
+
+@media screen and (max-width: 768px) {
+  .testimonal .items {
+    padding: 20px 16px;
+  }
+  .testimonal img {
+    width: 70px;
+    height: 70px;
+  }
+  .testimonal .name {
+    margin: 15px 0 10px 0;
+  }
+  .testimonal .name h2 {
+    font-size: 17px;
+  }
+  .testimonal p {
+    font-size: 13.5px;
+    margin-top: 14px;
+  }
+}

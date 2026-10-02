@@ -1,77 +1,468 @@
-/*--------head------------*/
+/*-------- BLIS Head & Navigation Styles ------------*/
 .head {
-  padding: 20px 0;
+  padding: 16px 0;
   color: #fff;
+  background: linear-gradient(135deg, #071626 0%, #0c2438 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-.logo h1 {
-  font-size: 35px;
-  font-weight: 900;
+
+.school-crest {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+  overflow: hidden;
+  padding: 3px;
 }
+
+.school-crest img,
+.school-crest .logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.logo-text h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.logo-text span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: #10b981;
+  text-transform: uppercase;
+  margin-top: 3px;
+  display: block;
+}
+
+.head-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.contact-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 6px 14px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 12px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.contact-pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.contact-pill i {
+  color: #f59e0b;
+  font-size: 14px;
+}
+
+.contact-pill small {
+  display: block;
+  font-size: 10px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.contact-pill strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.portal-quick-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34d399;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.portal-quick-badge:hover {
+  background: #10b981;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.live-pulse {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse-green 1.8s infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+@keyframes pulse-green {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.head .social {
+  display: flex;
+  gap: 8px;
+}
+
 .head .icon {
-  margin-left: 10px;
+  width: 34px;
+  height: 34px;
+  line-height: 34px;
+  font-size: 13px;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  border-radius: 8px;
+  transition: all 0.3s;
 }
-/*--------head------------*/
-/*--------header------------*/
+
+.head .icon:hover {
+  background-color: #00a884;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/*-------- Main Header Bar ------------*/
 header {
-  background-color: rgba(255, 255, 255, 0.2);
-  margin: 0 30px;
+  background: rgba(11, 29, 48, 0.90);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  margin: 0 20px;
+  border-radius: 0 0 12px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: none;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  position: relative;
+  z-index: 99;
 }
-header .nav {
-  display: flex !important;
+
+header nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-header li {
-  margin-right: 40px;
-}
+
 header ul {
-  padding: 30px 20px;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  gap: 28px;
 }
+
 header ul li a {
-  color: #fff;
-  font-weight: 500;
-  transition: 0.5s;
+  color: #cbd5e1;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: all 0.25s ease;
+  position: relative;
+  padding: 6px 0;
 }
-header ul li a:hover {
-  color: #1eb2a6;
+
+header ul li a:hover,
+header ul li a.active {
+  color: #10b981;
 }
+
+header ul li a.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #10b981;
+  border-radius: 2px;
+}
+
 .start {
-  background-color: #1eb2a6;
-  padding: 30px 70px;
-  color: #fff;
-  clip-path: polygon(10% 0%, 100% 0, 100% 100%, 0% 100%);
+  padding: 0;
+  background: transparent;
 }
+
+.erp-launch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #00a884 0%, #059669 100%);
+  color: #ffffff !important;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.8px;
+  padding: 16px 28px;
+  border-radius: 0 0 12px 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 168, 132, 0.35);
+  text-decoration: none;
+}
+
+.erp-launch-btn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 8px 24px rgba(0, 168, 132, 0.5);
+  transform: translateY(-1px);
+}
+
+.erp-launch-btn .btn-badge {
+  background: #f59e0b;
+  color: #071626;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.mobile-brand-bar {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  padding-left: 16px;
+}
+
+.mobile-portal-link {
+  display: none;
+}
+
 .toggle {
   display: none;
 }
-/*--------header------------*/
-@media screen and (max-width: 768px) {
-  .start {
-    clip-path: none;
+
+/* ================================================================
+   Mobile & Tablet Header Responsive Rules
+   ================================================================ */
+
+@media screen and (max-width: 1024px) {
+  header ul {
+    gap: 16px;
+    padding: 14px 18px;
   }
+  header ul li a {
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .head {
+    padding: 12px 0;
+  }
+
+  .head .container {
+    width: 94%;
+  }
+
+  .school-crest {
+    width: 44px;
+    height: 44px;
+    margin-right: 10px;
+    border-radius: 8px;
+  }
+
+  .logo-text h1 {
+    font-size: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  .logo-text span {
+    font-size: 9.5px;
+    letter-spacing: 1px;
+  }
+
+  .head-right {
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .contact-pill {
+    padding: 5px 10px;
+    font-size: 11.5px;
+  }
+
+  .portal-quick-badge {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .head .icon {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+  }
+
   header {
     margin: 0;
-    background-color: #1eb2a6;
-    position: relative;
+    border-radius: 0;
+    background: #0c2438;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
+  
+  header nav {
+    min-height: 48px;
+    padding: 0 8px;
+  }
+
   header ul.flexSB {
     display: none;
   }
-  header ul li {
-    margin-bottom: 20px;
+
+  .mobile-brand-bar {
+    display: flex;
   }
+
+  .start {
+    display: none;
+  }
+
   .toggle {
     display: block;
-    background: none;
-    color: #fff;
-    font-size: 30px;
-    position: absolute;
-    right: 0;
-    top: -20px;
+    background: transparent;
+    color: #34d399;
+    font-size: 20px;
+    border: none;
+    box-shadow: none;
+    padding: 12px 14px;
+    margin: 0;
+    cursor: pointer;
   }
+
   .mobile-nav {
     position: absolute;
-    top: 7vh;
+    top: 100%;
     left: 0;
     width: 100%;
-    background-color: #1eb2a6;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    background-color: #0c2438;
+    padding: 18px 20px 28px 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.55);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-bottom: 3px solid #10b981;
+    z-index: 999;
+    box-sizing: border-box;
+  }
+
+  .mobile-nav li a {
+    color: #f1f5f9;
+    font-size: 15px;
+    display: block;
+    padding: 11px 14px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.2s ease;
+  }
+
+  .mobile-nav li a.active,
+  .mobile-nav li a:hover {
+    color: #ffffff;
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.4);
+    padding-left: 18px;
+  }
+
+  .mobile-portal-link {
+    display: block;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .portal-nav-btn {
+    display: block;
+    background: linear-gradient(135deg, #00a884 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    text-align: center;
+    padding: 14px !important;
+    border-radius: 8px;
+    font-weight: 700 !important;
+    font-size: 14px;
+    box-shadow: 0 4px 14px rgba(0, 168, 132, 0.4);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .logo-text h1 {
+    font-size: 18px;
+  }
+  .logo-text span {
+    font-size: 8.5px;
+  }
+  .head-right {
+    gap: 8px;
+  }
+  .portal-quick-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+  .head .social {
+    gap: 4px;
+  }
+  .head .icon {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 11px;
   }
 }

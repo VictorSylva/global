@@ -1,20 +1,22 @@
 import React from "react"
-import AboutCard from "../about/AboutCard"
-import Hblog from "./Hblog"
-import HAbout from "./HAbout"
 import Hero from "./hero/Hero"
-import Hprice from "./Hprice"
+import AboutCard from "../about/AboutCard"
+import ProprietorMessage from "./ProprietorMessage"
+import HAbout from "./HAbout"
+import ProspectusRequest from "./ProspectusRequest"
 import Testimonal from "./testimonal/Testimonal"
+import Hblog from "./Hblog"
 
 const Home = () => {
   return (
     <>
       <Hero />
       <AboutCard />
+      <ProprietorMessage />
       <HAbout />
+      <ProspectusRequest />
       <Testimonal />
       <Hblog />
-      <Hprice />
     </>
   )
 }

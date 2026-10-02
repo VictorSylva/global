@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "react-router-dom"
 import OnlineCourses from "../allcourses/OnlineCourses"
 import Heading from "../common/heading/Heading"
 import "../allcourses/courses.css"
@@ -9,55 +10,70 @@ const HAbout = () => {
     <>
       <section className='homeAbout'>
         <div className='container'>
-          <Heading subtitle='our courses' title='explore our popular online courses' />
+          <Heading
+            subtitle='ACADEMIC PATHWAYS & SPECIALIZATIONS'
+            title='Brighter Land Academic Divisions & Key Stages'
+          />
+          <p className='academic-divisions-intro' style={{ marginBottom: "35px" }}>
+            Explore our structured learning divisions from early years phonics and primary basic education to junior and senior secondary examination preparation.
+          </p>
 
-          <div className='coursesCard'>
-            {/* copy code form  coursesCard */}
-            <div className='grid2'>
-              {coursesCard.slice(0, 3).map((val) => (
-                <div className='items'>
-                  <div className='content flex'>
-                    <div className='left'>
-                      <div className='img'>
-                        <img src={val.cover} alt='' />
-                      </div>
-                    </div>
-                    <div className='text'>
-                      <h1>{val.coursesName}</h1>
-                      <div className='rate'>
-                        <i className='fa fa-star'></i>
-                        <i className='fa fa-star'></i>
-                        <i className='fa fa-star'></i>
-                        <i className='fa fa-star'></i>
-                        <i className='fa fa-star'></i>
-                        <label htmlFor=''>(5.0)</label>
-                      </div>
-                      <div className='details'>
-                        {val.courTeacher.map((details) => (
-                          <>
-                            <div className='box'>
-                              <div className='dimg'>
-                                <img src={details.dcover} alt='' />
-                              </div>
-                              <div className='para'>
-                                <h4>{details.name}</h4>
-                              </div>
-                            </div>
-                            <span>{details.totalTime}</span>
-                          </>
-                        ))}
-                      </div>
-                    </div>
+          <div className='academic-stages-grid' style={{ marginBottom: "35px" }}>
+            {coursesCard.slice(0, 3).map((val) => (
+              <div className='academic-stage-card' key={val.id}>
+                <div className='stage-card-top'>
+                  <div className='stage-icon-circle'>
+                    <i className={val.icon}></i>
                   </div>
-                  <div className='price'>
-                    <h3>
-                      {val.priceAll} / {val.pricePer}
-                    </h3>
-                  </div>
-                  <button className='outline-btn'>ENROLL NOW !</button>
+                  <span className='stage-badge'>{val.stage}</span>
                 </div>
-              ))}
-            </div>
+
+                <h2 className='stage-title'>{val.coursesName}</h2>
+                <div className='stage-age-pill'>
+                  <i className='far fa-clock'></i> {val.targetAge}
+                </div>
+
+                <p className='stage-summary'>{val.summary}</p>
+
+                <div className='stage-highlights-box'>
+                  <h4><i className='fas fa-compass'></i> Core Academic Focus:</h4>
+                  <ul>
+                    {val.highlights.map((item, idx) => (
+                      <li key={idx}>
+                        <i className='fas fa-check-circle'></i>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className='stage-leader-box'>
+                  <div className='leader-avatar-icon'>
+                    <i className='fas fa-user-tie'></i>
+                  </div>
+                  <div className='leader-meta'>
+                    <small>Division Leadership</small>
+                    <strong>{val.leader}</strong>
+                  </div>
+                </div>
+
+                <div className='stage-card-footer'>
+                  <span className='credential-pill'>
+                    <i className='fas fa-award'></i> {val.distinctive}
+                  </span>
+                  <Link to='/courses' className='stage-explore-link'>
+                    <span>All Divisions</span>
+                    <i className='fas fa-arrow-right'></i>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ textAlign: "center", marginBottom: "50px" }}>
+            <Link to='/courses' className='outline-btn' style={{ display: "inline-block", padding: "14px 32px", fontSize: "14px", fontWeight: "700" }}>
+              VIEW ALL ACADEMIC DIVISIONS & SYLLABUS <i className='fas fa-arrow-right' style={{ marginLeft: "8px" }}></i>
+            </Link>
           </div>
         </div>
         <OnlineCourses />

@@ -1,0 +1,191 @@
+.home-operations-promo {
+  background-color: #f8fafc;
+}
+
+.promo-intro-text p {
+  max-width: 780px;
+  margin: 0 auto 40px auto;
+  font-size: 16px;
+  color: #64748b;
+  text-align: center;
+}
+
+.operations-features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.op-card {
+  background: #ffffff;
+  padding: 32px 24px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.op-card:hover {
+  transform: translateY(-4px);
+  border-color: #00a884;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+}
+
+.op-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.op-card-icon.emerald { background: rgba(16, 185, 129, 0.12); color: #059669; }
+.op-card-icon.blue { background: rgba(59, 130, 246, 0.12); color: #2563eb; }
+.op-card-icon.amber { background: rgba(245, 158, 11, 0.12); color: #d97706; }
+.op-card-icon.purple { background: rgba(139, 92, 246, 0.12); color: #7c3aed; }
+
+.op-card h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: #071626;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.op-card p {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.op-list {
+  padding-left: 0;
+  margin-bottom: 24px;
+  flex-grow: 1;
+}
+
+.op-list li {
+  font-size: 13px;
+  color: #334155;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.op-list li i {
+  color: #00a884;
+  font-size: 12px;
+}
+
+.op-link {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #00a884;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.op-link:hover {
+  color: #059669;
+  gap: 10px;
+}
+
+/* Portal CTA Banner */
+.portal-cta-banner {
+  background: linear-gradient(135deg, #071626 0%, #0c2438 100%);
+  color: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.pcb-live-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34d399;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.pcb-left h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+}
+
+.pcb-left p {
+  font-size: 15px;
+  color: #cbd5e1;
+  max-width: 650px;
+  margin: 0;
+}
+
+.pcb-left strong {
+  color: #f59e0b;
+}
+
+.pcb-launch-btn {
+  white-space: nowrap;
+  padding: 18px 34px;
+  font-size: 14px;
+  box-shadow: 0 8px 24px rgba(0, 168, 132, 0.4);
+}
+
+@media screen and (max-width: 1100px) {
+  .operations-features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .operations-features-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .op-card {
+    padding: 22px 18px;
+  }
+  .portal-cta-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 26px 18px;
+  }
+  .pcb-left h2 {
+    font-size: clamp(22px, 5.5vw, 26px);
+  }
+  .pcb-left p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  .pcb-launch-btn {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 14px 20px;
+  }
+}

@@ -8,14 +8,23 @@ const Testimonal = () => {
     <>
       <section className='testimonal padding'>
         <div className='container'>
-          <Heading subtitle='TESTIMONIAL' title='Our Successful Students' />
+          <Heading subtitle='COMMUNITY VOICES & PARENT ADVOCATES' title='What Our Families & Alumni Say' />
 
           <div className='content grid2'>
             {testimonal.map((val) => (
-              <div className='items shadow'>
+              <div className='items shadow' key={val.id}>
+                <div className='testimonial-crest-badge flex'>
+                  <div className='tcb-logo'>
+                    <img src='/images/logo.png' alt="Brighter Land Int'l School" />
+                  </div>
+                  <div className='tcb-text'>
+                    <strong>BRIGHTER LAND INT'L SCHOOL</strong>
+                    <small>Verified Family • Study to Make Impact</small>
+                  </div>
+                </div>
                 <div className='box flex'>
                   <div className='img'>
-                    <img src={val.cover} alt='' />
+                    <img src={val.cover} alt={val.name} />
                     <i className='fa fa-quote-left icon'></i>
                   </div>
                   <div className='name'>

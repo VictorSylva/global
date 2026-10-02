@@ -10,16 +10,27 @@ const AboutCard = () => {
       <section className='aboutHome'>
         <div className='container flexSB'>
           <div className='left row'>
-            <img src='./images/about.webp' alt='' />
+            <div className='about-image-wrapper'>
+              <img src='./images/blis3.jpeg' alt='Brighter Land International School Campus' />
+              <div className='campus-exp-badge' style={{ display: 'inline-flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ width: '34px', height: '34px', background: '#ffffff', borderRadius: '6px', padding: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <img src='/images/logo.png' alt="Brighter Land Crest" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                </div>
+                <div>
+                  <strong>"Study to Make Impact"</strong>
+                  <span>Brighter Land Smart Campus</span>
+                </div>
+              </div>
+            </div>
           </div>
           <div className='right row'>
-            <Heading subtitle='LEARN ANYTHING' title='Benefits About Online Learning Expertise' />
+            <Heading subtitle='GLOBAL PEDAGOGY & PHILOSOPHY' title='The Brighter Land Educational Distinction' />
             <div className='items'>
               {homeAbout.map((val) => {
                 return (
-                  <div className='item flexSB'>
+                  <div className='item flexSB' key={val.id}>
                     <div className='img'>
-                      <img src={val.cover} alt='' />
+                      <img src={val.cover} alt={val.title} />
                     </div>
                     <div className='text'>
                       <h2>{val.title}</h2>

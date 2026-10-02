@@ -1,47 +1,740 @@
+/* ============================================================
+   Brighter Land International School - Prospectus & Pricing CSS
+   ============================================================ */
+
 .price .items {
-  padding: 40px;
-  text-align: center;
-}
-.price h1 {
-  font-size: 50px;
-  margin: 20px 0;
-  color: #1eb2a6;
-}
-.price h1 span {
-  font-size: 20px;
-  margin-right: 5px;
-  color: #000;
-}
-.price p {
-  color: grey;
-  margin: 40px 0;
-}
-/*--------------faq-------------*/
-.faq .container {
-  max-width: 70%;
-  border-radius: 5px;
-}
-.faq .box {
-  background-color: #fff;
-  margin-bottom: 20px;
-}
-.faq button {
-  padding: 0;
-  margin: 0;
+  padding: 30px 24px;
+  text-align: left;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
   display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 15px 20px;
-}
-.faq h2 {
-  font-weight: 500;
-}
-.faq p {
-  padding: 20px;
-}
-.faq .accordion:hover {
-  background-color: #1eb2a6;
-  color: #fff;
+  flex-direction: column;
 }
 
-/*--------------faq-------------*/
+.price .items:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+  border-color: #00a884;
+}
+
+.price-tier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.price-tier-header h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #071626;
+  margin: 0;
+}
+
+.term-badge {
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.price-amount {
+  font-family: 'Outfit', sans-serif;
+  font-size: 38px;
+  font-weight: 800;
+  margin: 8px 0;
+  color: #00a884;
+  display: flex;
+  align-items: baseline;
+}
+
+.price-amount .currency-symbol {
+  font-size: 26px;
+  margin-right: 2px;
+  color: #071626;
+}
+
+.price-amount small {
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
+  margin-left: 6px;
+}
+
+.section-a-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.price p {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.prospectus-card-breakdown {
+  background: #f8fafc;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.pcb-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pcb-row span {
+  color: #64748b;
+}
+
+.pcb-row strong {
+  color: #0f172a;
+}
+
+.card-requirement-box {
+  background: #fffbeb;
+  border: 1px dashed #f59e0b;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+}
+
+.card-requirement-box small {
+  font-size: 11px;
+  color: #92400e;
+  line-height: 1.4;
+  display: block;
+}
+
+/* --- Official First Bank Account Banner --- */
+.bank-account-banner {
+  background: linear-gradient(135deg, #071626 0%, #0c2438 100%);
+  color: #ffffff;
+  padding: 28px 32px;
+  border-radius: 14px;
+  border-left: 6px solid #f59e0b;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 6px solid #f59e0b;
+}
+
+.bank-logo-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #071626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin-right: 18px;
+  flex-shrink: 0;
+}
+
+.bank-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.bank-left h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  font-weight: 800;
+}
+
+.bank-meta-row {
+  gap: 12px;
+  font-size: 13px;
+  color: #cbd5e1;
+  flex-wrap: wrap;
+}
+
+.bank-meta-row .acc-num {
+  font-family: monospace;
+  font-size: 17px;
+  color: #34d399;
+  letter-spacing: 1px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.bank-meta-row .dot {
+  opacity: 0.5;
+}
+
+.copy-acc-btn {
+  background: #f59e0b;
+  color: #071626;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  transition: all 0.2s;
+  margin: 0;
+}
+
+.copy-acc-btn:hover {
+  background: #d97706;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* --- Tab Bar --- */
+.prospectus-tab-bar {
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.tab-buttons {
+  background: #e2e8f0;
+  padding: 4px;
+  border-radius: 8px;
+  gap: 4px;
+}
+
+.tab-btn {
+  background: transparent;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  box-shadow: none;
+  margin: 0;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-btn.active {
+  background: #ffffff;
+  color: #00a884;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.download-prospectus-btn {
+  background: #f8fafc;
+  color: #071626;
+  border: 1px solid #cbd5e1;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  box-shadow: none;
+}
+
+.download-prospectus-btn:hover {
+  background: #00a884;
+  color: #ffffff;
+  border-color: #00a884;
+}
+
+/* --- Itemized Prospectus Table Wrapper --- */
+.prospectus-table-wrapper {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.prospectus-level-section {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.level-header {
+  background: #071626;
+  color: #ffffff;
+  padding: 16px 20px;
+}
+
+.level-header h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  color: #ffffff;
+  margin: 0 0 2px 0;
+  font-weight: 800;
+}
+
+.age-tag {
+  font-size: 12px;
+  color: #34d399;
+  font-weight: 600;
+}
+
+.level-totals-badge {
+  gap: 16px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.level-totals-badge small {
+  display: block;
+  font-size: 10px;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.level-totals-badge strong {
+  font-size: 15px;
+  color: #ffffff;
+}
+
+.level-totals-badge .sep {
+  opacity: 0.3;
+}
+
+.level-tables-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  background: #ffffff;
+}
+
+.sub-table-card {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.sub-table-card h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inner-spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.inner-spec-table th {
+  background: #e2e8f0;
+  padding: 8px 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+.inner-spec-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.inner-spec-table tfoot td {
+  background: #f1f5f9;
+  border-top: 2px solid #cbd5e1;
+  font-size: 13px;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.prospectus-book-note {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  padding: 10px 18px;
+  font-size: 12px;
+  color: #1e40af;
+  margin: 0 20px 14px 20px;
+  border-radius: 4px;
+}
+
+.additional-req-strip {
+  background: #fffbeb;
+  border-top: 1px solid #fef3c7;
+  padding: 12px 20px;
+  font-size: 13px;
+  color: #92400e;
+}
+
+.additional-req-strip i {
+  color: #d97706;
+  margin-right: 6px;
+}
+
+.apply-level-btn {
+  background: #00a884;
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: none;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.apply-level-btn:hover {
+  background: #059669;
+}
+
+/* Payment Reminder Card */
+.payment-reminder-card {
+  background: #ffffff;
+  padding: 24px 30px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  margin-top: 36px;
+  gap: 24px;
+}
+
+.pr-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #ecfdf5;
+  color: #00a884;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.payment-reminder-card h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #071626;
+  margin: 0 0 4px 0;
+}
+
+.payment-reminder-card p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  max-width: 720px;
+}
+
+/* Printable Prospectus Modal */
+.prospectus-modal {
+  max-width: 780px;
+}
+
+.prospectus-print-paper {
+  padding: 32px 36px;
+  background: #ffffff;
+  color: #071626;
+}
+
+.prospectus-print-header {
+  border-bottom: 2px solid #071626;
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+
+.prospectus-print-header h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 2px 0;
+}
+
+.prospectus-print-header p {
+  color: #00a884;
+  font-weight: 700;
+  font-size: 13px;
+  margin: 0 0 4px 0;
+}
+
+.prospectus-print-header small {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.level-badge-large {
+  background: #071626;
+  color: #f59e0b;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.modal-section-block h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #071626;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.prospectus-print-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.prospectus-print-table th {
+  background: #f1f5f9;
+  padding: 8px 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.prospectus-print-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.subtotal-row td {
+  background: #ecfdf5;
+  border-top: 2px solid #00a884;
+  font-size: 13px;
+}
+
+.prospectus-print-req {
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 20px 0;
+  border: 1px solid #e2e8f0;
+  font-size: 13px;
+}
+
+.prospectus-print-req strong {
+  color: #d97706;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.prospectus-print-footer {
+  border-top: 1px solid #cbd5e1;
+  padding-top: 16px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Responsive */
+@media screen and (max-width: 900px) {
+  .bank-account-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 22px 18px;
+    gap: 16px;
+  }
+  .bank-left {
+    flex-direction: column;
+    align-items: center;
+  }
+  .bank-logo-badge {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+  .bank-meta-row {
+    justify-content: center;
+  }
+  .copy-acc-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .level-tables-grid {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+  .level-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .payment-reminder-card .flex {
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .price .items {
+    padding: 22px 18px;
+  }
+  .price-amount {
+    font-size: 32px;
+  }
+  .prospectus-tab-bar {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+  .tab-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .tab-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .download-prospectus-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .prospectus-table-wrapper {
+    padding: 14px 10px;
+  }
+  .sub-table-card {
+    padding: 12px 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .inner-spec-table {
+    min-width: 280px;
+  }
+  .inner-spec-table th,
+  .inner-spec-table td {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  .prospectus-book-note {
+    margin: 0 10px 10px 10px;
+    font-size: 11.5px;
+  }
+  .additional-req-strip {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  .payment-reminder-card {
+    padding: 18px 14px;
+    gap: 14px;
+  }
+  .prospectus-print-paper {
+    padding: 18px 14px;
+  }
+}
+
+/* Modal Actions & Buttons in Pricing */
+.btn-action-primary {
+  background: #00a884;
+  border: 1px solid #00a884;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: none;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-action-primary:hover {
+  background: #059669;
+  color: #ffffff;
+}
+
+.blis-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(7, 22, 38, 0.8) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 999999 !important;
+  padding: 24px !important;
+  box-sizing: border-box !important;
+  overflow-y: auto !important;
+}
+
+.blis-modal-card {
+  background: #ffffff !important;
+  color: #1e293b !important;
+  width: 100% !important;
+  max-width: 640px;
+  max-height: 90vh !important;
+  border-radius: 16px !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.45) !important;
+  border: 1px solid #e2e8f0 !important;
+  overflow-y: auto !important;
+  position: relative !important;
+  margin: auto !important;
+  box-sizing: border-box !important;
+}
+
+.blis-modal-card.prospectus-modal {
+  max-width: 820px !important;
+}
