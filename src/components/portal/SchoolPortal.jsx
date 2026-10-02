@@ -12,28 +12,65 @@ import {
   announcements,
   busFleet,
   initialPortalUsers,
+  institutionalDepartments,
   availableSchoolClasses,
   getSubjectsForClass,
 } from "../../dummydata"
 import "./portal.css"
 import { saveToCloud, subscribeToCloudDoc } from "../../firebase"
 
-// Clean schema initialization: Starts brand new with only the Master Admin (brighterlandschool2022@gmail.com)
+export const getDefaultDepartmentForRole = (role) => {
+  switch (role) {
+    case "proprietor": return "Executive Boardroom & Governance"
+    case "admin": return "School Administration & Central Registry"
+    case "teacher": return "Secondary School Faculty (JSS & SSS)"
+    case "bursary": return "Bursary & Accounts Directorate"
+    case "staff": return "Campus Logistics, Transport & Facilities"
+    case "parent": return "Parent-Teacher Association (PTA)"
+    case "student": return "Academic Scholar Registry"
+    default: return "School Administration & Central Registry"
+  }
+}
+
+export const getDefaultPrivilegesForRole = (role) => {
+  switch (role) {
+    case "proprietor": return "Executive Board Telemetry & Governance"
+    case "admin": return "Full Administrative Control"
+    case "teacher": return "Tutor Access (Assigned Classes only)"
+    case "bursary": return "Bursary Command (Fee Invoicing & Payment Verification)"
+    case "staff": return "Staff Operations (Bus Fleet, Attendance Verification)"
+    case "parent": return "Parent Access (Ward Academic Progress & Invoices)"
+    case "student": return "Student Access (Grades, Timetable & House Records)"
+    default: return "Standard Access"
+  }
+}
+
+// Clean schema initialization: Preserves all user registrations while ensuring Master Admin & Proprietor exist
 const sanitizeLegacyStorage = () => {
   if (typeof window !== "undefined" && window.localStorage) {
     try {
-      const freshReset = localStorage.getItem("blis_fresh_app_admin_reset_v5")
-      if (!freshReset) {
-        localStorage.setItem("blis_portal_users", JSON.stringify(initialPortalUsers))
-        localStorage.setItem("blis_students", JSON.stringify([]))
-        localStorage.setItem("blis_invoices", JSON.stringify([]))
-        localStorage.setItem("blis_gradebook_data", JSON.stringify([]))
-        localStorage.setItem("blis_admissions", JSON.stringify([]))
-        localStorage.setItem("blis_attendance_records", JSON.stringify({}))
-        localStorage.setItem("blis_announcements", JSON.stringify([]))
-        localStorage.removeItem("blis_current_user")
-        localStorage.setItem("blis_fresh_app_admin_reset_v5", "true")
+      const currentRaw = localStorage.getItem("blis_portal_users")
+      let currentUsers = []
+      if (currentRaw) {
+        try {
+          const parsed = JSON.parse(currentRaw)
+          if (Array.isArray(parsed)) currentUsers = parsed
+        } catch (e) {}
       }
+
+      const mergedUsers = [...currentUsers]
+      initialPortalUsers.forEach((defU) => {
+        const exists = mergedUsers.some(
+          (u) =>
+            u.id === defU.id ||
+            (u.email && defU.email && u.email.toLowerCase().trim() === defU.email.toLowerCase().trim()) ||
+            (u.username && defU.username && u.username.toLowerCase().trim() === defU.username.toLowerCase().trim())
+        )
+        if (!exists) {
+          mergedUsers.push(defU)
+        }
+      })
+      localStorage.setItem("blis_portal_users", JSON.stringify(mergedUsers))
     } catch (e) {
       console.error("Storage initialization notice:", e)
     }
@@ -92,9 +129,9 @@ const SchoolPortal = () => {
     name: "",
     email: "",
     username: "",
-    password: "password123",
+    password: "",
     role: "teacher",
-    department: "Secondary School Faculty",
+    department: "Secondary School Faculty (JSS & SSS)",
     assignedClasses: ["JSS 1"],
     headTeacherClass: "",
     assignedSubjects: "Mathematics",
@@ -109,10 +146,18 @@ const SchoolPortal = () => {
     if (currentUser.role === "teacher") return "teacher-dashboard"
     if (currentUser.role === "bursary") return "bursary-command"
     if (currentUser.role === "parent") return "parent-dashboard"
-    if (currentUser.role === "staff") return "bus"
     return "student-dashboard"
   })
-  const activeRole = currentUser ? currentUser.role : "admin"
+  const activeRole = currentUser ? currentUser.role : null
+
+  // Automatic Route Protection & Role Isolation Guard
+  useEffect(() => {
+    if (currentUser) {
+      if (!isTabAllowedForRole(activeTab, currentUser.role)) {
+        setActiveTab(getDefaultTabForRole(currentUser.role))
+      }
+    }
+  }, [currentUser, activeTab])
 
   // Real-Time System Clock (ticks every 30 seconds for live period active/past status)
   const [liveClock, setLiveClock] = useState(() => new Date())
@@ -230,7 +275,139 @@ const SchoolPortal = () => {
     }
   }
 
+  const getActiveTabIcon = (tab) => {
+    switch (tab) {
+      case "dashboard": return "fas fa-tachometer-alt"
+      case "proprietor-overview": return "fas fa-crown"
+      case "teacher-dashboard": return "fas fa-chalkboard-teacher"
+      case "bursary-command": return "fas fa-file-invoice-dollar"
+      case "parent-dashboard": return "fas fa-user-friends"
+      case "parent-report": return "fas fa-award"
+      case "parent-fees": return "fas fa-receipt"
+      case "parent-attendance": return "fas fa-clipboard-check"
+      case "student-dashboard": return "fas fa-user-graduate"
+      case "student-grades": return "fas fa-chart-line"
+      case "student-house": return "fas fa-shield-alt"
+      case "staff-management": return "fas fa-users-cog"
+      case "sis": return "fas fa-user-graduate"
+      case "gradebook": return "fas fa-award"
+      case "attendance": return "fas fa-clipboard-check"
+      case "finance": return "fas fa-file-invoice-dollar"
+      case "admissions": return "fas fa-user-plus"
+      case "bus":
+      case "transport": return "fas fa-bus"
+      case "notices": return "fas fa-bullhorn"
+      case "timetable": return "fas fa-calendar-alt"
+      case "settings": return "fas fa-sliders-h"
+      default: return "fas fa-th-large"
+    }
+  }
+
+  // Role-Based Access Control (RBAC) Permissions Matrix
+  const ROLE_PERMISSIONS = {
+    admin: [
+      "dashboard",
+      "proprietor-overview",
+      "teacher-dashboard",
+      "bursary-command",
+      "parent-dashboard",
+      "student-dashboard",
+      "staff-management",
+      "sis",
+      "gradebook",
+      "attendance",
+      "finance",
+      "admissions",
+      "timetable",
+      "notices",
+      "bus",
+      "transport",
+      "bursary-prospectus",
+    ],
+    proprietor: [
+      "proprietor-overview",
+      "dashboard",
+      "teacher-dashboard",
+      "bursary-command",
+      "parent-dashboard",
+      "student-dashboard",
+      "staff-management",
+      "sis",
+      "gradebook",
+      "attendance",
+      "finance",
+      "admissions",
+      "timetable",
+      "notices",
+      "bus",
+      "transport",
+      "bursary-prospectus",
+    ],
+    teacher: [
+      "teacher-dashboard",
+      "attendance",
+      "gradebook",
+      "timetable",
+      "notices",
+    ],
+    bursary: [
+      "bursary-command",
+      "finance",
+      "bursary-prospectus",
+      "notices",
+    ],
+    parent: [
+      "parent-dashboard",
+      "parent-report",
+      "parent-fees",
+      "parent-attendance",
+      "timetable",
+      "notices",
+    ],
+    student: [
+      "student-dashboard",
+      "student-grades",
+      "timetable",
+      "student-house",
+      "notices",
+    ],
+    staff: [
+      "bus",
+      "transport",
+      "attendance",
+      "notices",
+    ],
+  }
+
+  const getDefaultTabForRole = (role) => {
+    switch (role) {
+      case "proprietor": return "proprietor-overview"
+      case "admin": return "dashboard"
+      case "teacher": return "teacher-dashboard"
+      case "bursary": return "bursary-command"
+      case "parent": return "parent-dashboard"
+      case "staff": return "bus"
+      case "student": return "student-dashboard"
+      default: return "student-dashboard"
+    }
+  }
+
+  const isTabAllowedForRole = (tab, role) => {
+    if (!role) return false
+    const allowed = ROLE_PERMISSIONS[role] || []
+    return allowed.includes(tab)
+  }
+
   const handleTabSelect = (tabKey) => {
+    if (!currentUser) {
+      setMobileSidebarOpen(false)
+      return
+    }
+    if (!isTabAllowedForRole(tabKey, currentUser.role)) {
+      showToast(`Access Restricted: Your ${currentUser.roleTitle || currentUser.role} account does not have permission to access "${getActiveTabTitle(tabKey)}".`)
+      setMobileSidebarOpen(false)
+      return
+    }
     setActiveTab(tabKey)
     setMobileSidebarOpen(false)
   }
@@ -457,39 +634,47 @@ const SchoolPortal = () => {
       const savedUsers = getStoredPortalUsers()
       setPortalUsers(savedUsers)
 
-      // Synchronize clean start to Cloud Firestore so all devices/browsers reflect brand new state
-      const cloudReset = localStorage.getItem("blis_fresh_app_cloud_reset_v5")
-      if (!cloudReset) {
-        saveToCloud("portal_users", initialPortalUsers)
-        saveToCloud("students", [])
-        saveToCloud("gradebook", [])
-        saveToCloud("invoices", [])
-        saveToCloud("admissions", [])
-        saveToCloud("attendance", {})
-        saveToCloud("announcements", [])
-        saveToCloud("taught_lesson_log", {})
-        saveToCloud("terminal_collation", {})
-        localStorage.setItem("blis_fresh_app_cloud_reset_v5", "true")
-      }
     } catch (e) {
       console.error("Storage sync error on mount:", e)
     }
 
     // Set up real-time Firebase Firestore cloud sync across all devices
     const unsubUsers = subscribeToCloudDoc("portal_users", (cloudUsers) => {
-      if (Array.isArray(cloudUsers) && cloudUsers.length > 0) {
-        setPortalUsers((prev) => {
-          const merged = [...cloudUsers]
+      if (Array.isArray(cloudUsers)) {
+        if (cloudUsers.length > 0) {
+          const localStored = getStoredPortalUsers()
+          const combined = [...cloudUsers]
+          localStored.forEach((locU) => {
+            const exists = combined.some(
+              (c) =>
+                c.id === locU.id ||
+                (c.email && locU.email && c.email.toLowerCase().trim() === locU.email.toLowerCase().trim()) ||
+                (c.username && locU.username && c.username.toLowerCase().trim() === locU.username.toLowerCase().trim())
+            )
+            if (!exists) {
+              combined.push(locU)
+            }
+          })
           initialPortalUsers.forEach((defU) => {
-            if (!merged.some((u) => u.id === defU.id || (u.username && defU.username && u.username.toLowerCase() === defU.username.toLowerCase()))) {
-              merged.push(defU)
+            if (
+              !combined.some(
+                (u) =>
+                  u.id === defU.id ||
+                  (u.username && defU.username && u.username.toLowerCase().trim() === defU.username.toLowerCase().trim()) ||
+                  (u.email && defU.email && u.email.toLowerCase().trim() === defU.email.toLowerCase().trim())
+              )
+            ) {
+              combined.push(defU)
             }
           })
           try {
-            localStorage.setItem("blis_portal_users", JSON.stringify(merged))
+            localStorage.setItem("blis_portal_users", JSON.stringify(combined))
           } catch (e) {}
-          return merged
-        })
+          setPortalUsers(combined)
+        } else {
+          // Initialize empty Firestore with Master Admin
+          saveToCloud("portal_users", initialPortalUsers)
+        }
         setCloudConnected(true)
       }
     })
@@ -583,89 +768,87 @@ const SchoolPortal = () => {
     }
   }
 
-  // Secure dynamic login: Always checks localStorage directly and active state to discover dynamically created accounts
+  // Secure dynamic login: Enforces strict username/email/ID and exact password verification
   const handleLogin = (e) => {
     if (e) e.preventDefault()
     setLoginError("")
     const rawInput = (loginIdentifier || "").trim()
     const idClean = rawInput.toLowerCase().replace(/^@/, "").trim()
     if (!idClean) {
-      setLoginError("Please enter your username, full name, or official email.")
+      setLoginError("Please enter your official username, email address, or student ID.")
       return
     }
 
-    // Always fetch fresh from storage AND merge with active component state
+    const enteredPass = (loginPassword || "").trim()
+    if (!enteredPass) {
+      setLoginError("Password is required. Please enter your password to sign in.")
+      return
+    }
+
+    // Always fetch fresh from storage AND merge with active component state & initialPortalUsers
     const storedUsers = getStoredPortalUsers()
     const allUsers = [...storedUsers]
     if (Array.isArray(portalUsers)) {
       portalUsers.forEach((pu) => {
-        if (!allUsers.find((u) => u.id === pu.id || (u.username && pu.username && u.username.toLowerCase() === pu.username.toLowerCase()))) {
+        if (
+          !allUsers.find(
+            (u) =>
+              u.id === pu.id ||
+              (u.username && pu.username && u.username.toLowerCase().trim() === pu.username.toLowerCase().trim()) ||
+              (u.email && pu.email && u.email.toLowerCase().trim() === pu.email.toLowerCase().trim())
+          )
+        ) {
           allUsers.push(pu)
         }
       })
     }
+    initialPortalUsers.forEach((defU) => {
+      if (
+        !allUsers.find(
+          (u) =>
+            u.id === defU.id ||
+            (u.username && defU.username && u.username.toLowerCase().trim() === defU.username.toLowerCase().trim()) ||
+            (u.email && defU.email && u.email.toLowerCase().trim() === defU.email.toLowerCase().trim())
+        )
+      ) {
+        allUsers.push(defU)
+      }
+    })
 
-    const idAlphaNum = idClean.replace(/[^a-z0-9]/g, "")
-
+    // Strict credential matching (email, username, user ID, name, student ID, or registered phone)
     const found = allUsers.find((u) => {
       const uEmail = (u.email || "").toLowerCase().trim()
       const uUser = (u.username || "").toLowerCase().trim().replace(/^@/, "")
-      const uName = (u.name || "").toLowerCase().trim()
       const uId = (u.id || "").toLowerCase().trim()
+      const uName = (u.name || "").toLowerCase().trim()
       const uPhone = (u.phone || "").toLowerCase().trim()
       const uStudentId = (u.studentId || "").toLowerCase().trim()
+      const uAdmNo = (u.admissionNumber || "").toLowerCase().trim()
 
-      const uEmailPrefix = uEmail.split("@")[0]
-      const uEmailAlphaNum = uEmailPrefix.replace(/[^a-z0-9]/g, "")
-      const uUserAlphaNum = uUser.replace(/[^a-z0-9]/g, "")
-      const uNameAlphaNum = uName.replace(/[^a-z0-9]/g, "")
-      const uStudentAlphaNum = uStudentId.replace(/[^a-z0-9]/g, "")
-
-      // 1. Direct equality
-      if (uEmail === idClean || uUser === idClean || uName === idClean || uId === idClean || uEmailPrefix === idClean || (uStudentId && uStudentId === idClean)) {
-        return true
-      }
-      // 2. Alphanumeric match (ignoring spaces, dots, dashes, underscores)
-      if (idAlphaNum && (uUserAlphaNum === idAlphaNum || uEmailAlphaNum === idAlphaNum || uNameAlphaNum === idAlphaNum || (uStudentAlphaNum && uStudentAlphaNum === idAlphaNum))) {
-        return true
-      }
-      // 3. Name word match (e.g. entered "Trudy" or "Mbasiti" or "Sylva" or "Gambo" or "Samuel")
-      const nameParts = uName.split(/\s+/).map((p) => p.replace(/[^a-z0-9]/g, ""))
-      if (idAlphaNum && nameParts.includes(idAlphaNum)) {
-        return true
-      }
-      // 4. Substring / Prefix match
-      if (idClean.length >= 2) {
-        if (uName.includes(idClean) || idClean.includes(uName)) return true
-        if (uUser.includes(idClean) || idClean.includes(uUser)) return true
-      }
-      // 5. Phone match if available
-      if (uPhone && (uPhone === idClean || uPhone.replace(/[^0-9]/g, "") === idClean.replace(/[^0-9]/g, ""))) {
-        return true
-      }
-      return false
+      return (
+        uEmail === idClean ||
+        uUser === idClean ||
+        uId === idClean ||
+        uName === idClean ||
+        (uStudentId && uStudentId === idClean) ||
+        (uAdmNo && uAdmNo === idClean) ||
+        (uPhone && (uPhone === idClean || uPhone.replace(/[^0-9]/g, "") === idClean.replace(/[^0-9]/g, "")))
+      )
     })
 
     if (!found) {
-      setLoginError(`Account not found for "${loginIdentifier}". Please check your username, official email, or phone, or check the Active Accounts list below.`)
+      setLoginError(`Account not found for "${loginIdentifier}". Please check your login credentials and try again.`)
       return
     }
 
-    const enteredPass = loginPassword.trim()
-    if (
-      enteredPass &&
-      found.password &&
-      enteredPass !== found.password &&
-      enteredPass !== "password123" &&
-      enteredPass !== "teacher123" &&
-      enteredPass !== "admin123" &&
-      enteredPass !== "admin"
-    ) {
-      setLoginError("Incorrect password. Please verify your credentials and try again.")
+    // Strict password verification against account credentials
+    const expectedPassword = (found.password || "").trim()
+    if (enteredPass !== expectedPassword) {
+      setLoginError("Incorrect password. Please verify your password and try again.")
       return
     }
 
-    // Refresh operational data from localStorage so newly logged in user sees all persisted records!
+    // Refresh operational data from localStorage so newly logged in user sees all persisted records
     try {
       const sStudents = localStorage.getItem("blis_students")
       if (sStudents) setStudents(JSON.parse(sStudents))
@@ -686,22 +869,10 @@ const SchoolPortal = () => {
     setCurrentUser(found)
     try {
       localStorage.setItem("blis_current_user", JSON.stringify(found))
+      localStorage.setItem("blis_portal_users", JSON.stringify(allUsers))
     } catch (e) {}
 
-    const defTab =
-      found.role === "proprietor"
-        ? "proprietor-overview"
-        : found.role === "admin"
-        ? "dashboard"
-        : found.role === "teacher"
-        ? "teacher-dashboard"
-        : found.role === "bursary"
-        ? "bursary-command"
-        : found.role === "parent"
-        ? "parent-dashboard"
-        : found.role === "staff"
-        ? "bus"
-        : "student-dashboard"
+    const defTab = getDefaultTabForRole(found.role)
     setActiveTab(defTab)
 
     if (found.role === "teacher" && found.assignedClasses && found.assignedClasses.length > 0) {
@@ -712,51 +883,6 @@ const SchoolPortal = () => {
     setLoginIdentifier("")
     setLoginPassword("")
     showToast(`Welcome back, ${found.name} (${found.roleTitle})`)
-  }
-
-  const handleQuickLogin = (u) => {
-    // Refresh operational data from localStorage so 1-click accounts see all persisted records
-    try {
-      const sStudents = localStorage.getItem("blis_students")
-      if (sStudents) setStudents(JSON.parse(sStudents))
-      const sInvoices = localStorage.getItem("blis_invoices")
-      if (sInvoices) setInvoices(JSON.parse(sInvoices))
-      const sGradebook = localStorage.getItem("blis_gradebook_data")
-      if (sGradebook) setGradebookData(JSON.parse(sGradebook))
-      const sAdmissions = localStorage.getItem("blis_admissions")
-      if (sAdmissions) setApplications(JSON.parse(sAdmissions))
-      const sAtt = localStorage.getItem("blis_attendance_records")
-      if (sAtt) setAttendanceRecords(JSON.parse(sAtt))
-      const sTimetable = localStorage.getItem("blis_timetable_data")
-      if (sTimetable) setTimetables(JSON.parse(sTimetable))
-      const freshUsers = getStoredPortalUsers()
-      setPortalUsers(freshUsers)
-    } catch (err) {}
-
-    setCurrentUser(u)
-    try {
-      localStorage.setItem("blis_current_user", JSON.stringify(u))
-    } catch (e) {}
-
-    const defTab =
-      u.role === "proprietor"
-        ? "proprietor-overview"
-        : u.role === "admin"
-        ? "dashboard"
-        : u.role === "teacher"
-        ? "teacher-dashboard"
-        : u.role === "bursary"
-        ? "bursary-command"
-        : u.role === "parent"
-        ? "parent-dashboard"
-        : "student-dashboard"
-    setActiveTab(defTab)
-    if (u.role === "teacher" && u.assignedClasses && u.assignedClasses.length > 0) {
-      setAttendanceClass(u.assignedClasses[0])
-      setGradebookSelectedClass(u.assignedClasses[0])
-      setSelectedTimetableClass(u.assignedClasses[0])
-    }
-    showToast(`Signed in as ${u.name} (${u.roleTitle})`)
   }
 
   const handleLogout = () => {
@@ -871,12 +997,18 @@ const SchoolPortal = () => {
     })
   }
 
-  const handleAddStaffSubmit = (e) => {
+  const handleAddStaffSubmit = async (e) => {
     e.preventDefault()
     if (!newStaffForm.name.trim()) {
       showToast("Please provide staff full name.")
       return
     }
+    const cleanPassword = (newStaffForm.password || "").trim()
+    if (!cleanPassword) {
+      showToast("Please enter a password for this account.")
+      return
+    }
+
     const cleanEmail = (newStaffForm.email || "").trim().toLowerCase()
     const cleanUsername = (
       newStaffForm.username ||
@@ -886,7 +1018,6 @@ const SchoolPortal = () => {
       .trim()
       .toLowerCase()
       .replace(/^@/, "")
-    const cleanPassword = newStaffForm.password.trim() || "password123"
 
     const currentUsers = getStoredPortalUsers()
     const existingIndex = currentUsers.findIndex(
@@ -920,13 +1051,7 @@ const SchoolPortal = () => {
           : "Scholar",
       department:
         newStaffForm.department ||
-        (newStaffForm.role === "teacher"
-          ? "Secondary School Faculty"
-          : newStaffForm.role === "bursary"
-          ? "Bursary & Accounts Directorate"
-          : newStaffForm.role === "staff"
-          ? "Campus Logistics & Operations"
-          : "School Administration"),
+        getDefaultDepartmentForRole(newStaffForm.role),
       assignedClasses:
         newStaffForm.role === "teacher"
           ? newStaffForm.assignedClasses.length > 0
@@ -938,22 +1063,15 @@ const SchoolPortal = () => {
         newStaffForm.privileges ||
         (newStaffForm.role === "teacher"
           ? (isHead ? `Form Master (${newStaffForm.headTeacherClass}) & Tutor: ${newStaffForm.assignedClasses.join(", ")}` : `Tutor Access: ${newStaffForm.assignedClasses.join(", ")}`)
-          : newStaffForm.role === "bursary"
-          ? "Bursary Command (Fee Invoicing & Payment Verification)"
-          : newStaffForm.role === "staff"
-          ? "Staff Operations (Bus Fleet, Attendance Verification)"
-          : newStaffForm.role === "proprietor"
-          ? "Executive Board Telemetry & Governance"
-          : newStaffForm.role === "admin"
-          ? "Full Administrative Control"
-          : "Standard Access"),
+          : getDefaultPrivilegesForRole(newStaffForm.role)),
       status: "Active",
+      createdAt: new Date().toISOString(),
     }
 
     let updated
     if (existingIndex >= 0) {
       updated = [...currentUsers]
-      updated[existingIndex] = newStaffUser
+      updated[existingIndex] = { ...updated[existingIndex], ...newStaffUser }
     } else {
       updated = [...currentUsers, newStaffUser]
     }
@@ -964,7 +1082,7 @@ const SchoolPortal = () => {
     } catch (e) {
       console.error("Failed to save blis_portal_users:", e)
     }
-    saveToCloud("portal_users", updated)
+    await saveToCloud("portal_users", updated)
     setShowAddStaffModal(false)
     setCreatedAccountInfo(newStaffUser)
     showToast(`Account created for ${newStaffUser.name}! Username: "${newStaffUser.username}"`)
@@ -998,9 +1116,9 @@ const SchoolPortal = () => {
       name: "",
       email: "",
       username: "",
-      password: "password123",
+      password: "",
       role: "teacher",
-      department: "Secondary School Faculty",
+      department: "Secondary School Faculty (JSS & SSS)",
       assignedClasses: ["JSS 1"],
       headTeacherClass: "",
       assignedSubjects: "Mathematics",
@@ -1992,10 +2110,11 @@ const SchoolPortal = () => {
                 />
               </div>
               <div className='form-group'>
-                <label>Username (For Portal Login)</label>
+                <label>Username (For Portal Login) *</label>
                 <input
                   type='text'
-                  placeholder='e.g. sylva.teacher or mbasiti'
+                  required
+                  placeholder='e.g. fidelis.gambo or principal'
                   value={newStaffForm.username}
                   onChange={(e) => setNewStaffForm({ ...newStaffForm, username: e.target.value })}
                 />
@@ -2008,7 +2127,7 @@ const SchoolPortal = () => {
                 <input
                   type='email'
                   required
-                  placeholder='e.g. mbasitisylva@gmail.com'
+                  placeholder='e.g. fidelisgambo9@gmail.com'
                   value={newStaffForm.email}
                   onChange={(e) => setNewStaffForm({ ...newStaffForm, email: e.target.value })}
                 />
@@ -2018,6 +2137,7 @@ const SchoolPortal = () => {
                 <input
                   type='password'
                   required
+                  placeholder='Create account password'
                   value={newStaffForm.password}
                   onChange={(e) => setNewStaffForm({ ...newStaffForm, password: e.target.value })}
                 />
@@ -2029,7 +2149,15 @@ const SchoolPortal = () => {
                 <label>System Role *</label>
                 <select
                   value={newStaffForm.role}
-                  onChange={(e) => setNewStaffForm({ ...newStaffForm, role: e.target.value })}
+                  onChange={(e) => {
+                    const selectedRole = e.target.value
+                    setNewStaffForm({
+                      ...newStaffForm,
+                      role: selectedRole,
+                      department: getDefaultDepartmentForRole(selectedRole),
+                      privileges: getDefaultPrivilegesForRole(selectedRole),
+                    })
+                  }}
                 >
                   <option value='teacher'>Teacher (Academic Staff)</option>
                   <option value='bursary'>Bursary / Accounts (Non-Academic Staff)</option>
@@ -2041,13 +2169,15 @@ const SchoolPortal = () => {
                 </select>
               </div>
               <div className='form-group'>
-                <label>Department / Faculty</label>
-                <input
-                  type='text'
-                  placeholder='e.g. Secondary School Faculty'
+                <label>Department / Faculty *</label>
+                <select
                   value={newStaffForm.department}
                   onChange={(e) => setNewStaffForm({ ...newStaffForm, department: e.target.value })}
-                />
+                >
+                  {institutionalDepartments.map((dept) => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -2174,22 +2304,15 @@ const SchoolPortal = () => {
                   showToast("Credentials copied to clipboard!")
                 }}
               >
-                <i className='fas fa-copy'></i> Copy Details
+                <i className='fas fa-copy'></i> Copy Credentials
               </button>
               <button
                 type='button'
                 className='primary-btn'
                 style={{ background: '#00a884', color: '#fff' }}
-                onClick={() => {
-                  const targetUser = createdAccountInfo
-                  setCreatedAccountInfo(null)
-                  handleQuickLogin(targetUser)
-                }}
+                onClick={() => setCreatedAccountInfo(null)}
               >
-                <i className='fas fa-sign-in-alt'></i> Sign In As {createdAccountInfo.name.split(" ")[0]}
-              </button>
-              <button type='button' className='outline-btn' onClick={() => setCreatedAccountInfo(null)}>
-                Close
+                <i className='fas fa-check'></i> Done
               </button>
             </div>
           </div>
@@ -3027,6 +3150,8 @@ Motto: "Study to Make Impact"
   if (!currentUser) {
     return (
       <div className='portal-login-screen'>
+        {renderAddStaffModal()}
+        {renderCreatedAccountModal()}
         <div className='portal-login-card'>
           {/* Left Showcase Panel */}
           <div className='login-showcase-panel'>
@@ -3095,7 +3220,8 @@ Motto: "Study to Make Impact"
                   <i className='fas fa-key'></i>
                   <input
                     type='password'
-                    placeholder='Default: password123'
+                    required
+                    placeholder='Enter your password'
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                   />
@@ -3111,7 +3237,16 @@ Motto: "Study to Make Impact"
                 Institutional Security: Staff, Student & Parent accounts are provisioned exclusively by the School Administrator.
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '14px', margin: '12px 0 0 0', fontSize: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '14px', margin: '12px 0 0 0', fontSize: '12px', flexWrap: 'wrap' }}>
+                <button
+                  type='button'
+                  onClick={() => setShowAddStaffModal(true)}
+                  style={{ background: 'none', border: 'none', color: '#00a884', cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '5px', padding: 0 }}
+                  title='Register a new staff, teacher or proprietor account'
+                >
+                  <i className='fas fa-user-plus'></i> Register Staff / Executive
+                </button>
+                <span style={{ color: '#cbd5e1' }}>•</span>
                 <button
                   type='button'
                   onClick={handleExportDatabase}
@@ -3130,33 +3265,6 @@ Motto: "Study to Make Impact"
                 </label>
               </div>
             </form>
-
-            {/* Quick Demo Sign-Ins for Evaluation */}
-            <div className='quick-demo-section'>
-              <div className='flexSB' style={{ alignItems: 'center', marginBottom: '8px' }}>
-                <h5 style={{ margin: 0 }}><i className='fas fa-bolt' style={{ color: '#f59e0b' }}></i> Active Accounts (1-Click Switch / Quick Access)</h5>
-                <span style={{ fontSize: '11px', color: '#10b981', display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                  <i className='fas fa-fire' style={{ color: '#f59e0b' }}></i> Firebase: blis-jos
-                </span>
-              </div>
-              <div className='quick-demo-grid'>
-                {portalUsers.map((u) => (
-                  <button
-                    key={u.id}
-                    type='button'
-                    className='demo-account-pill'
-                    onClick={() => handleQuickLogin(u)}
-                    title={`Sign in as ${u.name} (@${u.username})`}
-                  >
-                    <i className={getRoleIcon(u.role)}></i>
-                    <div className='demo-role-text'>
-                      <span className='demo-role-name'>{u.name}</span>
-                      <span className='demo-role-label'>@{u.username} • {u.roleTitle.substring(0, 20)}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -3165,55 +3273,46 @@ Motto: "Study to Make Impact"
 
   return (
     <div className='blis-portal-wrapper'>
-      {/* Top Banner for Authenticated User */}
-      <div className='portal-top-bar'>
-        <div className='portal-top-left flex'>
-          <div className='portal-logo-icon' style={{ background: '#ffffff', padding: '3px', width: '46px', height: '46px', borderRadius: '8px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <img src='/images/logo.png' alt="Brighter Land Int'l School" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+      {/* Unified Responsive Top Navbar */}
+      <header className='portal-top-bar'>
+        <div className='portal-top-left'>
+          {/* Mobile Menu Hamburger Toggle */}
+          <button
+            type='button'
+            className={`portal-hamburger-btn ${mobileSidebarOpen ? "is-active" : ""}`}
+            onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+            aria-label={mobileSidebarOpen ? "Close navigation menu" : "Open navigation menu"}
+            title={mobileSidebarOpen ? "Close menu" : "Open menu"}
+          >
+            <i className={mobileSidebarOpen ? 'fas fa-times' : 'fas fa-bars'}></i>
+            <span className='hamburger-label'>Menu</span>
+          </button>
+
+          {/* School Brand Identity */}
+          <div className='portal-brand-wrap'>
+            <div className='portal-logo-icon'>
+              <img src='/images/logo.png' alt="Brighter Land Int'l School" />
+            </div>
+            <div className='portal-brand-text'>
+              <h3 className='portal-school-name'>BRIGHTER LAND INTERNATIONAL SCHOOL</h3>
+              <div className='portal-brand-sub'>
+                <span className='portal-sub-system'>OPERATIONS ERP & STUDENT INFORMATION SYSTEM</span>
+                <span className='portal-sub-sep'>•</span>
+                <span className='portal-session-tag'>2026/2027 SESSION</span>
+              </div>
+            </div>
           </div>
-          <div>
-            <h3>BRIGHTER LAND INTERNATIONAL SCHOOL</h3>
-            <span>OPERATIONS ERP & STUDENT INFORMATION SYSTEM • 2026/2027 SESSION</span>
+
+          {/* Active Section Breadcrumb Badge (Desktop & Tablet) */}
+          <div className='portal-active-tab-badge' title={`Current View: ${getActiveTabTitle(activeTab)}`}>
+            <i className={getActiveTabIcon(activeTab)}></i>
+            <span>{getActiveTabTitle(activeTab)}</span>
           </div>
         </div>
 
-        <div className='portal-top-right flex' style={{ alignItems: 'center', gap: '14px' }}>
-          {/* Admin & Proprietor Quick Dashboard Switcher */}
-          {(currentUser.role === "admin" || currentUser.role === "proprietor") && (
-            <div className='admin-quick-switch-bar'>
-              <label><i className='fas fa-exchange-alt'></i> View Dashboard:</label>
-              <select
-                value={activeTab}
-                onChange={(e) => setActiveTab(e.target.value)}
-                className='admin-switch-select'
-              >
-                <option value='dashboard'>🛡️ Operations ERP (Admin)</option>
-                <option value='proprietor-overview'>👑 Proprietor Governance</option>
-                <option value='teacher-dashboard'>👨‍🏫 Teacher Instruction Center</option>
-                <option value='bursary-command'>💰 Bursary Command Center</option>
-                <option value='parent-dashboard'>👨‍👩‍👧 Parent Academic Hub</option>
-                <option value='student-dashboard'>🎓 Student Scholar Portal</option>
-                <option value='staff-management'>👥 Staff & Access Privilege Control</option>
-                <option value='sis'>📚 Student Information System (SIS)</option>
-                <option value='gradebook'>📖 Master Continuous Assessment Gradebook</option>
-                <option value='attendance'>📅 Daily Homeroom Roll Call</option>
-                <option value='finance'>💳 Tuition Invoicing & Bank Reconciliation</option>
-              </select>
-            </div>
-          )}
-
-          <div className='term-indicator' style={{ background: cloudConnected ? 'rgba(0, 168, 132, 0.15)' : 'rgba(234, 179, 8, 0.15)', color: cloudConnected ? '#34d399' : '#f59e0b', border: '1px solid rgba(0, 168, 132, 0.3)', display: 'inline-flex', alignItems: 'center', gap: '6px' }} title="Real-time multi-browser cloud database powered by Google Firebase (blis-jos)">
-            <i className='fas fa-fire' style={{ color: '#f59e0b' }}></i>
-            <span>Firebase: <strong>{cloudConnected ? "blis-jos (Live)" : "blis-jos"}</strong></span>
-          </div>
-
-          <div className='term-indicator'>
-            <i className='fas fa-university'></i>
-            <span>First Bank: <strong>2043561832</strong></span>
-          </div>
-
-          {/* Active Logged-in Staff Badge */}
-          <div className='active-user-pill'>
+        <div className='portal-top-right'>
+          {/* Authenticated User Profile Pill */}
+          <div className='active-user-pill' title={`Logged in as ${currentUser.name} • ${currentUser.roleTitle}`}>
             <div className='active-user-avatar'>
               <i className={getRoleIcon(currentUser.role)}></i>
             </div>
@@ -3223,48 +3322,34 @@ Motto: "Study to Make Impact"
             </div>
           </div>
 
-          <button onClick={handleLogout} className='logout-portal-btn' title='Sign out of your dashboard'>
-            <i className='fas fa-sign-out-alt'></i> Sign Out
-          </button>
-
+          {/* Public Website Button */}
           <Link to='/' className='exit-portal-btn' title='Return to Public School Website'>
-            <i className='fas fa-external-link-alt'></i> Public Site
+            <i className='fas fa-globe'></i>
+            <span className='btn-text'>Public Site</span>
           </Link>
-        </div>
-      </div>
 
-      {/* Main Body */}
-      <div className='portal-container'>
-        {/* Mobile Portal Navigation Bar */}
-        <div className='portal-mobile-navbar'>
-          <button
-            type='button'
-            className='portal-mobile-menu-btn'
-            onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-            aria-label='Toggle Dashboard Menu'
-          >
-            <i className={mobileSidebarOpen ? 'fas fa-times' : 'fas fa-bars'}></i>
-            <span>{mobileSidebarOpen ? "Close Menu" : `Menu: ${getActiveTabTitle(activeTab)}`}</span>
+          {/* Sign Out Button */}
+          <button onClick={handleLogout} className='logout-portal-btn' title='Sign out of your dashboard'>
+            <i className='fas fa-sign-out-alt'></i>
+            <span className='btn-text'>Sign Out</span>
           </button>
-          <div className='portal-mobile-user-quick'>
-            <span className='mobile-role-badge'>{currentUser.roleTitle.split(" ")[0]}</span>
-            <button onClick={handleLogout} className='mobile-quick-logout' title='Sign Out'>
-              <i className='fas fa-sign-out-alt'></i>
-            </button>
-          </div>
         </div>
+      </header>
 
+      {/* Main Container */}
+      <div className='portal-container'>
         {/* Backdrop for mobile drawer */}
         {mobileSidebarOpen && (
           <div className='portal-mobile-backdrop' onClick={() => setMobileSidebarOpen(false)}></div>
         )}
 
-        {/* Left Navigation Sidebar (Role-Isolated) */}
+        {/* Left Navigation Sidebar / Mobile Drawer */}
         <aside className={`portal-sidebar ${mobileSidebarOpen ? "mobile-open" : ""}`}>
           <div className='portal-sidebar-mobile-close'>
-            <span style={{ fontSize: '12px', fontWeight: '800', color: '#34d399', letterSpacing: '1px' }}>
-              BLIS DASHBOARDS
-            </span>
+            <div className='sidebar-drawer-brand'>
+              <span className='sdb-dot'></span>
+              <span>BLIS DASHBOARDS</span>
+            </div>
             <button
               type='button'
               className='sidebar-close-btn'
@@ -3759,6 +3844,15 @@ Motto: "Study to Make Impact"
             })()}
           </nav>
 
+          <div className='sidebar-drawer-actions'>
+            <Link to='/' className='drawer-action-btn public-btn' onClick={() => setMobileSidebarOpen(false)}>
+              <i className='fas fa-globe'></i> Public School Site
+            </Link>
+            <button onClick={handleLogout} className='drawer-action-btn logout-btn'>
+              <i className='fas fa-sign-out-alt'></i> Sign Out
+            </button>
+          </div>
+
           <div className='sidebar-footer-card' style={{ marginBottom: '8px' }}>
             <div className='sfc-icon' style={{ background: '#00a884', color: '#fff' }}><i className='fas fa-user-tie'></i></div>
             <div className='sfc-text'>
@@ -3786,8 +3880,31 @@ Motto: "Study to Make Impact"
             </div>
           )}
 
+          {/* Access Control Guard Screen (Fallback for Unauthorized Tab Navigation) */}
+          {currentUser && !isTabAllowedForRole(activeTab, currentUser.role) && (
+            <div className='tab-view' style={{ textAlign: 'center', padding: '60px 20px' }}>
+              <div style={{ maxWidth: '520px', margin: '0 auto', background: '#ffffff', padding: '40px 24px', borderRadius: '16px', boxShadow: '0 10px 35px rgba(0,0,0,0.06)', border: '1px solid #e2e8f0' }}>
+                <div style={{ width: '68px', height: '68px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '30px', margin: '0 auto 18px auto' }}>
+                  <i className='fas fa-shield-alt'></i>
+                </div>
+                <h2 style={{ fontSize: '22px', color: '#0f172a', margin: '0 0 10px 0', fontWeight: '800' }}>Access Restricted</h2>
+                <p style={{ fontSize: '14.5px', color: '#64748b', lineHeight: '1.6', margin: '0 0 24px 0' }}>
+                  Your account role (<strong>{currentUser.roleTitle || currentUser.role}</strong>) does not have authorization to access this module.
+                </p>
+                <button
+                  type='button'
+                  className='primary-btn'
+                  style={{ width: '100%', padding: '13px 20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '700' }}
+                  onClick={() => setActiveTab(getDefaultTabForRole(currentUser.role))}
+                >
+                  <i className='fas fa-home'></i> Return to My Authorized Dashboard
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* PROPRIETOR EXECUTIVE GOVERNANCE VIEW */}
-          {activeTab === "proprietor-overview" && (
+          {activeTab === "proprietor-overview" && isTabAllowedForRole("proprietor-overview", currentUser?.role) && (
             <div className='tab-view proprietor-overview-view'>
               <div className='tab-header flexSB'>
                 <div>

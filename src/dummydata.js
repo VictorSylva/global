@@ -192,23 +192,23 @@ export const homeAbout = [
 export const awrapper = [
   {
     cover: "https://img.icons8.com/external-yogi-aprelliyanto-basic-outline-yogi-aprelliyanto/80/ffffff/external-graduation-education-yogi-aprelliyanto-basic-outline-yogi-aprelliyanto.png",
-    data: "1,200+",
+    data: "300+",
     title: "SCHOLARS ENROLLED",
   },
   {
     cover: "https://img.icons8.com/ios/80/ffffff/athlete.png",
-    data: "65+",
+    data: "35+",
     title: "EXPERIENCED EDUCATORS",
   },
   {
-    cover: "https://img.icons8.com/external-outline-icons-maxicons/80/ffffff/external-calender-insurance-outline-outline-icons-maxicons.png",
-    data: "100%",
-    title: "COMMON ENTRANCE & BECE PASS RATE",
+    cover: "https://img.icons8.com/ios/80/ffffff/diploma.png",
+    data: "58",
+    title: "GRADUATED STUDENTS",
   },
   {
     cover: "https://img.icons8.com/ios/80/ffffff/macbook-idea--v3.png",
-    data: "5",
-    title: "ACADEMIC DIVISIONS",
+    data: "4+",
+    title: "YEARS OF OPERATION",
   },
 ]
 
@@ -1118,6 +1118,21 @@ export const availableSchoolClasses = [
   "SS 3",
 ]
 
+export const institutionalDepartments = [
+  "Executive Boardroom & Governance",
+  "School Administration & Central Registry",
+  "Secondary School Faculty (JSS & SSS)",
+  "Primary School Faculty (Basic 1 - 5)",
+  "Early Childhood & Nursery Section (Crèche, Nursery 1 - 2)",
+  "Bursary & Accounts Directorate",
+  "Science Laboratory & ICT Directorate",
+  "Guidance, Counseling & Student Affairs",
+  "Campus Logistics, Transport & Facilities",
+  "Parent-Teacher Association (PTA)",
+  "Academic Scholar Registry",
+  "General Institutional Staff",
+]
+
 export const initialPortalUsers = [
   {
     id: "USR-ADMIN-01",
@@ -1127,7 +1142,7 @@ export const initialPortalUsers = [
     name: "BLIS School Administrator",
     role: "admin",
     roleTitle: "Super Administrator & Registry Secretariat",
-    department: "Executive Management & Central Registry",
+    department: "School Administration & Central Registry",
     privileges: "Master System Administrator (User Registry, Staff Access Control, Student Information System, Bursary & Fees, Gradebook, Class Timetables, Circulars)",
     assignedClasses: ["All Classes"],
     status: "Active",
