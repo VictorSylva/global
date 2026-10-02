@@ -15,9 +15,43 @@ import {
   institutionalDepartments,
   availableSchoolClasses,
   getSubjectsForClass,
+  getProspectusForGrade,
 } from "../../dummydata"
 import "./portal.css"
 import { saveToCloud, subscribeToCloudDoc } from "../../firebase"
+
+// Calculate Unified Section A & Section B fee breakdowns, installment allocation, and completion status
+export const calculateInvoiceBreakdown = (inv) => {
+  if (!inv) return { secATotal: 0, secBTotal: 0, effectiveTotal: 0, balance: 0, isReturning: true, isCompleted: false, secAPaid: 0, secBPaid: 0, prospectus: null }
+  const p = getProspectusForGrade(inv.grade)
+  const secATotal = inv.secATotal || (p && p.sectionA ? p.sectionA.total : 19500)
+  const secBTotal = inv.secBTotal || (p && p.sectionB ? p.sectionB.total : 50000)
+  const isReturning = inv.studentType === "returning" || inv.sectionBWaived === true
+  const effectiveTotal = isReturning ? secATotal : (secATotal + secBTotal)
+  const amountPaid = Number(inv.amountPaid) || 0
+  const balance = Math.max(0, effectiveTotal - amountPaid)
+  const isCompleted = amountPaid >= effectiveTotal
+
+  const secAPaid = Math.min(amountPaid, secATotal)
+  const secABalance = Math.max(0, secATotal - secAPaid)
+  const secBPaid = isReturning ? 0 : Math.min(Math.max(0, amountPaid - secATotal), secBTotal)
+  const secBBalance = isReturning ? 0 : Math.max(0, secBTotal - secBPaid)
+
+  return {
+    secATotal,
+    secBTotal,
+    isReturning,
+    effectiveTotal,
+    amountPaid,
+    balance,
+    isCompleted,
+    secAPaid,
+    secABalance,
+    secBPaid,
+    secBBalance,
+    prospectus: p,
+  }
+}
 
 export const getDefaultDepartmentForRole = (role) => {
   switch (role) {
@@ -459,8 +493,9 @@ const SchoolPortal = () => {
   const [newInvoiceForm, setNewInvoiceForm] = useState({
     studentId: "",
     studentName: "",
-    grade: "JSS 1",
+    grade: "Nursery 1",
     term: "Term 1 (2026/2027)",
+    studentType: "returning", // "returning" (Section A only) or "new" (Section A + B)
   })
 
   // Admissions applicant modal
@@ -485,6 +520,8 @@ const SchoolPortal = () => {
   const [receiptInvoice, setReceiptInvoice] = useState(null)
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [selectedInvoiceForPayment, setSelectedInvoiceForPayment] = useState(null)
+  const [paymentStudentType, setPaymentStudentType] = useState("returning")
+  const [markAsCompleted, setMarkAsCompleted] = useState(false)
   const [showNewNoticeModal, setShowNewNoticeModal] = useState(false)
   const [showProspectusModal, setShowProspectusModal] = useState(false)
   const [createdStudentCredentials, setCreatedStudentCredentials] = useState(null)
@@ -1727,14 +1764,15 @@ const SchoolPortal = () => {
   // Add new student form
   const [newStudentForm, setNewStudentForm] = useState({
     name: "",
-    grade: "JSS 1",
+    grade: "Nursery 1",
     house: "Phoenix",
-    dob: "2013-05-14",
+    dob: "2020-05-14",
     gender: "Female",
     guardian: "",
     email: "",
     phone: "",
     medical: "None",
+    studentType: "returning", // "returning" (Section A only) or "new" (Section A + B)
   })
 
   // Enroll scholar in SIS + auto-generate fee invoice & student/parent login accounts
@@ -1768,6 +1806,7 @@ const SchoolPortal = () => {
       status: "Active",
       feeStatus: "Pending",
       medical: newStudentForm.medical || "None",
+      studentType: newStudentForm.studentType || "returning",
       enrolledSubjects: ["Mathematics", "English Studies", "Basic Science", "Agricultural Science", "Computer Studies", "Social Studies"],
     }
     const updatedStudents = [newRecord, ...(currentStudents || [])]
@@ -1778,24 +1817,30 @@ const SchoolPortal = () => {
       console.error("Failed to save blis_students:", e)
     }
 
-    // Automatically generate Section A fee invoice based on prospectus
-    const classProspectus =
-      prospectusData.find((p) => p.level.toLowerCase().includes(newStudentForm.grade.toLowerCase())) ||
-      prospectusData[2]
-    const secATotal = classProspectus ? classProspectus.sectionA.total : 22000
+    // Automatically generate Section A/B fee invoice accurately mapped from prospectus
+    const classProspectus = getProspectusForGrade(newStudentForm.grade)
+    const isReturning = (newStudentForm.studentType || "returning") === "returning"
+    const secATotal = classProspectus ? classProspectus.sectionA.total : 19500
+    const secBTotal = classProspectus ? classProspectus.sectionB.total : 50000
+    const total = isReturning ? secATotal : (secATotal + secBTotal)
+
     const newInvoice = {
       invoiceNo: `INV-2026-${String(1000 + updatedStudents.length)}`,
       studentId: newId,
       studentName: newRecord.name,
       grade: newRecord.grade,
       term: "Term 1 (2026/2027)",
-      tuition: classProspectus ? classProspectus.sectionA.items[0].amount : 15000,
-      examFee: 2000,
-      lessonFee: 2000,
+      studentType: newStudentForm.studentType || "returning",
+      sectionBWaived: isReturning,
+      secATotal,
+      secBTotal,
+      tuition: classProspectus ? classProspectus.sectionA.items[0].amount : 14000,
+      examFee: classProspectus ? (classProspectus.sectionA.items.find((i) => i.name.toLowerCase().includes("exam")) || { amount: 1000 }).amount : 1000,
+      lessonFee: classProspectus ? (classProspectus.sectionA.items.find((i) => i.name.toLowerCase().includes("lesson")) || { amount: 2000 }).amount : 2000,
       devLevy: 1000,
       ptaLevy: 1000,
-      firstAid: 1000,
-      total: secATotal,
+      firstAid: classProspectus ? (classProspectus.sectionA.items.find((i) => i.name.toLowerCase().includes("aid")) || { amount: 500 }).amount : 500,
+      total,
       amountPaid: 0,
       status: "Pending",
       paymentDate: "N/A",
@@ -1942,17 +1987,33 @@ const SchoolPortal = () => {
     e.preventDefault()
     if (!selectedInvoiceForPayment) return
     const amt = parseFloat(paymentAmount) || 0
+    const targetStudentType = paymentStudentType || selectedInvoiceForPayment.studentType || "returning"
+    const isReturning = targetStudentType === "returning" || markAsCompleted
+
     const updatedInvoices = invoices.map((inv) => {
       if (inv.invoiceNo === selectedInvoiceForPayment.invoiceNo) {
-        const newPaid = inv.amountPaid + amt
-        const newStatus = newPaid >= inv.total ? "Paid" : "Partial"
+        const prospectus = getProspectusForGrade(inv.grade)
+        const secATotal = inv.secATotal || (prospectus && prospectus.sectionA ? prospectus.sectionA.total : 19500)
+        const secBTotal = inv.secBTotal || (prospectus && prospectus.sectionB ? prospectus.sectionB.total : 50000)
+        const total = isReturning ? secATotal : (secATotal + secBTotal)
+        let newPaid = (inv.amountPaid || 0) + amt
+        if (markAsCompleted && newPaid < total) {
+          newPaid = total
+        }
+        const newStatus = newPaid >= total ? "Paid" : newPaid > 0 ? "Partial" : "Pending"
+
         return {
           ...inv,
+          studentType: isReturning ? "returning" : "new",
+          sectionBWaived: isReturning,
+          secATotal,
+          secBTotal,
+          total,
           amountPaid: newPaid,
           status: newStatus,
           paymentDate: "2026-10-01",
           method: paymentMethod,
-          bankRef: `FB-2043561832-TX${Math.floor(100 + Math.random() * 900)}`,
+          bankRef: inv.bankRef && inv.bankRef !== "PENDING" ? inv.bankRef : `FB-2043561832-TX${Math.floor(100 + Math.random() * 900)}`,
         }
       }
       return inv
@@ -1961,7 +2022,68 @@ const SchoolPortal = () => {
     localStorage.setItem("blis_invoices", JSON.stringify(updatedInvoices))
     saveToCloud("invoices", updatedInvoices)
     setShowPaymentModal(false)
-    showToast(`Payment of ₦${amt.toLocaleString()} recorded for ${selectedInvoiceForPayment.invoiceNo} into First Bank.`)
+    const updatedTarget = updatedInvoices.find((i) => i.invoiceNo === selectedInvoiceForPayment.invoiceNo)
+    showToast(`Payment of ₦${amt.toLocaleString()} recorded for ${selectedInvoiceForPayment.invoiceNo} into First Bank. Status: ${updatedTarget ? updatedTarget.status : "Updated"}`)
+  }
+
+  // Bursar 1-click action: Switch between Returning Scholar (Section A Only) and New Intake (Section A+B)
+  const handleToggleStudentType = (invoiceNo, targetType) => {
+    const updatedInvoices = invoices.map((inv) => {
+      if (inv.invoiceNo === invoiceNo) {
+        const prospectus = getProspectusForGrade(inv.grade)
+        const secATotal = inv.secATotal || (prospectus && prospectus.sectionA ? prospectus.sectionA.total : 19500)
+        const secBTotal = inv.secBTotal || (prospectus && prospectus.sectionB ? prospectus.sectionB.total : 50000)
+        const isReturning = targetType === "returning"
+        const newTotal = isReturning ? secATotal : (secATotal + secBTotal)
+        const newStatus = (inv.amountPaid || 0) >= newTotal ? "Paid" : (inv.amountPaid || 0) > 0 ? "Partial" : "Pending"
+        return {
+          ...inv,
+          studentType: targetType,
+          sectionBWaived: isReturning,
+          secATotal,
+          secBTotal,
+          total: newTotal,
+          status: newStatus,
+        }
+      }
+      return inv
+    })
+    setInvoices(updatedInvoices)
+    localStorage.setItem("blis_invoices", JSON.stringify(updatedInvoices))
+    saveToCloud("invoices", updatedInvoices)
+    const updatedInv = updatedInvoices.find((i) => i.invoiceNo === invoiceNo)
+    showToast(`Invoice ${invoiceNo} updated to ${targetType === "returning" ? "Returning Scholar (Section A Only — Total: ₦" + (updatedInv ? updatedInv.total.toLocaleString() : "") + ")" : "New Intake (Section A + Section B — Total: ₦" + (updatedInv ? updatedInv.total.toLocaleString() : "") + ")"}`)
+  }
+
+  // Bursar 1-click action: Mark as Completed (Returning Scholar - Waive Section B & Clear Remaining Balance)
+  const handleMarkCompletedAsReturning = (invoiceNo) => {
+    const updatedInvoices = invoices.map((inv) => {
+      if (inv.invoiceNo === invoiceNo) {
+        const prospectus = getProspectusForGrade(inv.grade)
+        const secATotal = inv.secATotal || (prospectus && prospectus.sectionA ? prospectus.sectionA.total : 19500)
+        const secBTotal = inv.secBTotal || (prospectus && prospectus.sectionB ? prospectus.sectionB.total : 50000)
+        const finalPaid = Math.max(inv.amountPaid || 0, secATotal)
+        return {
+          ...inv,
+          studentType: "returning",
+          sectionBWaived: true,
+          secATotal,
+          secBTotal,
+          total: secATotal,
+          amountPaid: finalPaid,
+          status: "Paid",
+          paymentDate: inv.paymentDate && inv.paymentDate !== "N/A" ? inv.paymentDate : "2026-10-01",
+          method: inv.method && inv.method !== "Pending First Bank Payment" ? inv.method : "First Bank Direct Deposit",
+          bankRef: inv.bankRef && inv.bankRef !== "PENDING" ? inv.bankRef : `FB-2043561832-TX${Math.floor(100 + Math.random() * 900)}`,
+        }
+      }
+      return inv
+    })
+    setInvoices(updatedInvoices)
+    localStorage.setItem("blis_invoices", JSON.stringify(updatedInvoices))
+    saveToCloud("invoices", updatedInvoices)
+    const target = updatedInvoices.find((i) => i.invoiceNo === invoiceNo)
+    showToast(`✓ Invoice ${invoiceNo} for ${target ? target.studentName : "scholar"} marked Completed (Paid in Full as Returning Scholar). Balance is ₦0.`)
   }
 
   // Admissions pipeline transition
@@ -1989,23 +2111,29 @@ const SchoolPortal = () => {
       return
     }
     const studentId = newInvoiceForm.studentId || `BLIS-2026-${String(students.length + 1).padStart(3, "0")}`
-    const classProspectus =
-      prospectusData.find((p) => p.level.toLowerCase().includes(newInvoiceForm.grade.toLowerCase())) ||
-      prospectusData[2]
-    const secATotal = classProspectus ? classProspectus.sectionA.total : 22000
+    const classProspectus = getProspectusForGrade(newInvoiceForm.grade)
+    const isReturning = (newInvoiceForm.studentType || "returning") === "returning"
+    const secATotal = classProspectus ? classProspectus.sectionA.total : 19500
+    const secBTotal = classProspectus ? classProspectus.sectionB.total : 50000
+    const total = isReturning ? secATotal : (secATotal + secBTotal)
+
     const newInvoice = {
       invoiceNo: `INV-2026-${String(1001 + invoices.length)}`,
       studentId: studentId,
       studentName: newInvoiceForm.studentName.trim(),
       grade: newInvoiceForm.grade,
       term: newInvoiceForm.term || "Term 1 (2026/2027)",
-      tuition: classProspectus ? classProspectus.sectionA.items[0].amount : 15000,
-      examFee: 2000,
-      lessonFee: 2000,
+      studentType: newInvoiceForm.studentType || "returning",
+      sectionBWaived: isReturning,
+      secATotal,
+      secBTotal,
+      tuition: classProspectus ? classProspectus.sectionA.items[0].amount : 14000,
+      examFee: classProspectus ? (classProspectus.sectionA.items.find((i) => i.name.toLowerCase().includes("exam")) || { amount: 1000 }).amount : 1000,
+      lessonFee: classProspectus ? (classProspectus.sectionA.items.find((i) => i.name.toLowerCase().includes("lesson")) || { amount: 2000 }).amount : 2000,
       devLevy: 1000,
       ptaLevy: 1000,
-      firstAid: 1000,
-      total: secATotal,
+      firstAid: classProspectus ? (classProspectus.sectionA.items.find((i) => i.name.toLowerCase().includes("aid")) || { amount: 500 }).amount : 500,
+      total,
       amountPaid: 0,
       status: "Pending",
       paymentDate: "N/A",
@@ -2017,12 +2145,13 @@ const SchoolPortal = () => {
     localStorage.setItem("blis_invoices", JSON.stringify(updated))
     saveToCloud("invoices", updated)
     setShowAddInvoiceModal(false)
-    showToast(`Invoice ${newInvoice.invoiceNo} (₦${secATotal.toLocaleString()}) issued for ${newInvoice.studentName}!`)
+    showToast(`Invoice ${newInvoice.invoiceNo} (₦${total.toLocaleString()} — ${isReturning ? "Returning Scholar" : "New Intake"}) issued for ${newInvoice.studentName}!`)
     setNewInvoiceForm({
       studentId: "",
       studentName: "",
-      grade: "JSS 1",
+      grade: "Nursery 1",
       term: "Term 1 (2026/2027)",
+      studentType: "returning",
     })
   }
 
@@ -2689,12 +2818,18 @@ Motto: "Study to Make Impact"
   // Modal: Generate New Fee Invoice
   const renderAddInvoiceModal = () => {
     if (!showAddInvoiceModal) return null
+    const curProspectus = getProspectusForGrade(newInvoiceForm.grade)
+    const isRet = (newInvoiceForm.studentType || "returning") === "returning"
+    const pSecA = curProspectus ? curProspectus.sectionA.total : 19500
+    const pSecB = curProspectus ? curProspectus.sectionB.total : 50000
+    const pTotal = isRet ? pSecA : (pSecA + pSecB)
+
     return (
       <div className='blis-modal-overlay' onClick={() => setShowAddInvoiceModal(false)}>
-        <div className='blis-modal-card' onClick={(e) => e.stopPropagation()} style={{ maxWidth: '580px' }}>
+        <div className='blis-modal-card' onClick={(e) => e.stopPropagation()} style={{ maxWidth: '620px' }}>
           <div className='modal-header'>
             <div>
-              <h3>Generate Section A Fee Invoice</h3>
+              <h3>Generate Unified Fee Invoice (Section A & B)</h3>
               <small>First Bank Account: 2043561832 • Brighter Land International School</small>
             </div>
             <button className='modal-close' onClick={() => setShowAddInvoiceModal(false)}>×</button>
@@ -2713,6 +2848,7 @@ Motto: "Study to Make Impact"
                       studentId: selId,
                       studentName: st ? st.name : "",
                       grade: st ? st.grade : newInvoiceForm.grade,
+                      studentType: st && st.studentType ? st.studentType : newInvoiceForm.studentType || "returning",
                     })
                   }}
                 >
@@ -2725,7 +2861,7 @@ Motto: "Study to Make Impact"
                 <input
                   type='text'
                   required
-                  placeholder='e.g. Victor Sylva or Zainab Aliyu'
+                  placeholder='e.g. Victor Sylva or Emmanuel Danladi'
                   value={newInvoiceForm.studentName}
                   onChange={(e) => setNewInvoiceForm({ ...newInvoiceForm, studentName: e.target.value })}
                 />
@@ -2766,9 +2902,83 @@ Motto: "Study to Make Impact"
               </div>
             </div>
 
+            {/* Scholar Classification (Returning vs New Intake) */}
+            <div className='form-group'>
+              <label>Scholar Enrollment Type *</label>
+              <div className='scholar-type-selector' style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <label
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: isRet ? '2px solid #00a884' : '1px solid #cbd5e1',
+                    background: isRet ? '#f0fdf4' : '#ffffff',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '700', color: isRet ? '#065f46' : '#334155' }}>
+                    <input
+                      type='radio'
+                      name='modalInvoiceStudentType'
+                      checked={isRet}
+                      onChange={() => setNewInvoiceForm({ ...newInvoiceForm, studentType: "returning" })}
+                    />
+                    <span>⭐ Returning Scholar</span>
+                  </div>
+                  <small style={{ marginTop: '4px', color: '#64748b' }}>
+                    Section A fees only (Tuition & Levies: <strong>₦{pSecA.toLocaleString()}</strong>). Section B waived.
+                  </small>
+                </label>
+
+                <label
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: !isRet ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                    background: !isRet ? '#eff6ff' : '#ffffff',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '700', color: !isRet ? '#1e40af' : '#334155' }}>
+                    <input
+                      type='radio'
+                      name='modalInvoiceStudentType'
+                      checked={!isRet}
+                      onChange={() => setNewInvoiceForm({ ...newInvoiceForm, studentType: "new" })}
+                    />
+                    <span>📦 New Intake Scholar</span>
+                  </div>
+                  <small style={{ marginTop: '4px', color: '#64748b' }}>
+                    Section A (₦{pSecA.toLocaleString()}) + Section B (₦{pSecB.toLocaleString()}) = <strong>₦{(pSecA + pSecB).toLocaleString()}</strong>.
+                  </small>
+                </label>
+              </div>
+            </div>
+
+            {/* Real-time Prospectus Breakdown Summary */}
+            <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '14px' }}>
+              <div className='flexSB' style={{ fontSize: '13px', marginBottom: '6px' }}>
+                <span>Section A (Tuition, Exam, Lesson, PTA, Dev, First Aid):</span>
+                <strong>₦{pSecA.toLocaleString()}</strong>
+              </div>
+              <div className='flexSB' style={{ fontSize: '13px', marginBottom: '6px' }}>
+                <span>Section B (Uniforms, Sweater, Sports, Books):</span>
+                <strong>{isRet ? <span style={{ color: '#059669' }}>Waived (₦0)</span> : `₦${pSecB.toLocaleString()}`}</strong>
+              </div>
+              <div className='flexSB' style={{ fontSize: '15px', fontWeight: '800', borderTop: '1px solid #cbd5e1', paddingTop: '8px', color: '#071626' }}>
+                <span>Total Invoice Billing:</span>
+                <span style={{ color: '#00a884' }}>₦{pTotal.toLocaleString()}</span>
+              </div>
+            </div>
+
             <div className='modal-actions'>
               <button type='button' className='outline-btn' onClick={() => setShowAddInvoiceModal(false)}>Cancel</button>
-              <button type='submit' className='primary-btn'>Issue Tuition Invoice</button>
+              <button type='submit' className='primary-btn'>
+                <i className='fas fa-file-invoice-dollar'></i> Issue Tuition Invoice (₦{pTotal.toLocaleString()})
+              </button>
             </div>
           </form>
         </div>
@@ -4087,18 +4297,21 @@ Motto: "Study to Make Impact"
                   <thead>
                     <tr>
                       <th>Invoice No</th>
-                      <th>Scholar</th>
-                      <th>Class Level</th>
+                      <th>Scholar & Class</th>
+                      <th>Scholar Type</th>
+                      <th>Section A</th>
+                      <th>Section B</th>
                       <th>Billed Total</th>
                       <th>Amount Paid</th>
-                      <th>Payment Status</th>
+                      <th>Balance Due</th>
+                      <th>Status</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {invoices.length === 0 ? (
                       <tr>
-                        <td colSpan='7' style={{ textAlign: 'center', padding: '36px 20px', color: '#64748b' }}>
+                        <td colSpan='10' style={{ textAlign: 'center', padding: '36px 20px', color: '#64748b' }}>
                           <i className='fas fa-file-invoice-dollar' style={{ fontSize: '32px', color: '#94a3b8', display: 'block', marginBottom: '10px' }}></i>
                           <strong>Bursary Ledger is Clean (₦0)</strong>
                           <p style={{ margin: '6px 0 0', fontSize: '13px' }}>
@@ -4107,39 +4320,104 @@ Motto: "Study to Make Impact"
                         </td>
                       </tr>
                     ) : (
-                      invoices.map((inv) => (
-                      <tr key={inv.invoiceNo}>
-                        <td><strong>{inv.invoiceNo}</strong></td>
-                        <td>{inv.studentName}</td>
-                        <td>{inv.grade}</td>
-                        <td>₦{inv.total.toLocaleString()}</td>
-                        <td>₦{inv.amountPaid.toLocaleString()}</td>
-                        <td>
-                          <span className={`invoice-status ${inv.status.toLowerCase()}`}>
-                            {inv.status}
-                          </span>
-                        </td>
-                        <td>
-                          <div className='flex' style={{ gap: '6px' }}>
-                            <button
-                              className='btn-action-sm'
-                              onClick={() => {
-                                setSelectedInvoiceForPayment(inv)
-                                setShowPaymentModal(true)
-                              }}
-                            >
-                              <i className='fas fa-credit-card'></i> Pay
-                            </button>
-                            <button
-                              className='btn-action-sm'
-                              onClick={() => setReceiptInvoice(inv)}
-                            >
-                              <i className='fas fa-receipt'></i> Receipt
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    )))}
+                      invoices.map((inv) => {
+                        const { secATotal, secBTotal, isReturning, effectiveTotal, amountPaid, balance } = calculateInvoiceBreakdown(inv)
+                        return (
+                          <tr key={inv.invoiceNo}>
+                            <td><strong>{inv.invoiceNo}</strong></td>
+                            <td>
+                              <div>
+                                <strong>{inv.studentName}</strong>
+                                <small style={{ display: 'block', color: '#64748b' }}>{inv.grade}</small>
+                              </div>
+                            </td>
+                            <td>
+                              {isReturning ? (
+                                <span className='scholar-type-badge returning' title='Section A Termly Fees Only (Section B Waived)'>
+                                  <i className='fas fa-star'></i> Returning
+                                </span>
+                              ) : (
+                                <span className='scholar-type-badge new-intake' title='Section A + Section B Full Package'>
+                                  <i className='fas fa-box'></i> New Intake
+                                </span>
+                              )}
+                            </td>
+                            <td>₦{secATotal.toLocaleString()}</td>
+                            <td>
+                              {isReturning ? (
+                                <span className='sec-b-waived-pill'>Waived (₦0)</span>
+                              ) : (
+                                `₦${secBTotal.toLocaleString()}`
+                              )}
+                            </td>
+                            <td><strong>₦{effectiveTotal.toLocaleString()}</strong></td>
+                            <td><strong style={{ color: '#00a884' }}>₦{amountPaid.toLocaleString()}</strong></td>
+                            <td>
+                              {balance === 0 ? (
+                                <strong style={{ color: '#00a884', fontSize: '12px' }}>₦0 (Cleared)</strong>
+                              ) : (
+                                <strong style={{ color: '#ef4444' }}>₦{balance.toLocaleString()}</strong>
+                              )}
+                            </td>
+                            <td>
+                              <span className={`invoice-status ${inv.status.toLowerCase()}`}>
+                                {inv.status}
+                              </span>
+                            </td>
+                            <td>
+                              <div className='flex' style={{ gap: '4px', flexWrap: 'wrap' }}>
+                                <button
+                                  className='btn-action-sm'
+                                  title='Record Payment Transaction'
+                                  onClick={() => {
+                                    setSelectedInvoiceForPayment(inv)
+                                    setPaymentStudentType(isReturning ? "returning" : "new")
+                                    setPaymentAmount(balance > 0 ? balance : "")
+                                    setMarkAsCompleted(false)
+                                    setShowPaymentModal(true)
+                                  }}
+                                >
+                                  <i className='fas fa-credit-card'></i> Pay
+                                </button>
+                                <button
+                                  className='btn-action-sm'
+                                  title='Print Official BLIS Fee Receipt'
+                                  onClick={() => setReceiptInvoice(inv)}
+                                >
+                                  <i className='fas fa-receipt'></i> Receipt
+                                </button>
+                                {isReturning ? (
+                                  <button
+                                    className='btn-action-sm outline'
+                                    title='Switch to New Intake (Include Section B)'
+                                    onClick={() => handleToggleStudentType(inv.invoiceNo, "new")}
+                                  >
+                                    <i className='fas fa-box-open'></i> +Sec B
+                                  </button>
+                                ) : (
+                                  <button
+                                    className='btn-action-sm outline'
+                                    title='Switch to Returning Scholar (Waive Section B)'
+                                    onClick={() => handleToggleStudentType(inv.invoiceNo, "returning")}
+                                  >
+                                    <i className='fas fa-user-check'></i> Ret
+                                  </button>
+                                )}
+                                {(!isReturning || balance > 0 || inv.status !== "Paid") && (
+                                  <button
+                                    className='btn-action-sm success'
+                                    title='Mark as Completed (Returning Scholar — Waive Section B & Set Balance to ₦0)'
+                                    onClick={() => handleMarkCompletedAsReturning(inv.invoiceNo)}
+                                  >
+                                    <i className='fas fa-check-circle'></i> Complete
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      })
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -5048,7 +5326,10 @@ Motto: "Study to Make Impact"
                       <tr>
                         <th>Invoice ID</th>
                         <th>Term</th>
-                        <th>Amount Invoiced</th>
+                        <th>Scholar Classification</th>
+                        <th>Section A</th>
+                        <th>Section B</th>
+                        <th>Total Invoiced</th>
                         <th>Amount Paid</th>
                         <th>Balance Due</th>
                         <th>Status</th>
@@ -5058,20 +5339,39 @@ Motto: "Study to Make Impact"
                     <tbody>
                       {wardInvoices.length === 0 ? (
                         <tr>
-                          <td colSpan='7' style={{ textAlign: 'center', padding: '30px', color: '#64748b' }}>
+                          <td colSpan='10' style={{ textAlign: 'center', padding: '30px', color: '#64748b' }}>
                             <i className='fas fa-info-circle'></i> No tuition fee invoices generated yet for this ward.
                           </td>
                         </tr>
                       ) : (
                         wardInvoices.map((inv) => {
-                          const balance = inv.total - inv.amountPaid
+                          const { secATotal, secBTotal, isReturning, effectiveTotal, amountPaid, balance } = calculateInvoiceBreakdown(inv)
                           return (
                             <tr key={inv.invoiceNo}>
                               <td><strong>{inv.invoiceNo}</strong></td>
                               <td>{inv.term}</td>
-                              <td><strong>₦{inv.total.toLocaleString()}</strong></td>
-                              <td><strong style={{ color: '#00a884' }}>₦{inv.amountPaid.toLocaleString()}</strong></td>
-                              <td><strong style={{ color: balance > 0 ? '#ef4444' : '#10b981' }}>₦{balance.toLocaleString()}</strong></td>
+                              <td>
+                                {isReturning ? (
+                                  <span className='scholar-type-badge returning'>
+                                    <i className='fas fa-star'></i> Returning Scholar
+                                  </span>
+                                ) : (
+                                  <span className='scholar-type-badge new-intake'>
+                                    <i className='fas fa-box'></i> New Intake
+                                  </span>
+                                )}
+                              </td>
+                              <td>₦{secATotal.toLocaleString()}</td>
+                              <td>{isReturning ? <span className='sec-b-waived-pill'>Waived (₦0)</span> : `₦${secBTotal.toLocaleString()}`}</td>
+                              <td><strong>₦{effectiveTotal.toLocaleString()}</strong></td>
+                              <td><strong style={{ color: '#00a884' }}>₦{amountPaid.toLocaleString()}</strong></td>
+                              <td>
+                                {balance === 0 ? (
+                                  <strong style={{ color: '#00a884' }}>₦0 (Paid in Full)</strong>
+                                ) : (
+                                  <strong style={{ color: '#ef4444' }}>₦{balance.toLocaleString()}</strong>
+                                )}
+                              </td>
                               <td><span className={`status-pill ${inv.status.toLowerCase()}`}>{inv.status}</span></td>
                               <td>
                                 <button className='btn-action-primary' onClick={() => setReceiptInvoice(inv)}>
@@ -6512,8 +6812,11 @@ Motto: "Study to Make Impact"
                     <tr>
                       <th>Invoice ID</th>
                       <th>Scholar & Class</th>
+                      <th>Scholar Type</th>
                       <th>Term Period</th>
-                      <th>Section A Total</th>
+                      <th>Section A</th>
+                      <th>Section B</th>
+                      <th>Total Billed</th>
                       <th>Paid Amount</th>
                       <th>Balance Due</th>
                       <th>Status</th>
@@ -6523,7 +6826,7 @@ Motto: "Study to Make Impact"
                   <tbody>
                     {filteredInvoices.length === 0 ? (
                       <tr>
-                        <td colSpan='8' style={{ textAlign: 'center', padding: '60px 20px', color: '#64748b' }}>
+                        <td colSpan='11' style={{ textAlign: 'center', padding: '60px 20px', color: '#64748b' }}>
                           <div style={{ maxWidth: '420px', margin: '0 auto' }}>
                             <i className='fas fa-file-invoice-dollar' style={{ fontSize: '36px', color: '#94a3b8', marginBottom: '12px', display: 'block' }}></i>
                             <h4 style={{ color: '#071626', margin: '0 0 6px 0' }}>Bursary Billing Ledger is Clean (₦0)</h4>
@@ -6538,58 +6841,106 @@ Motto: "Study to Make Impact"
                       </tr>
                     ) : (
                       filteredInvoices.map((inv) => {
-                        const balance = inv.total - inv.amountPaid
+                        const { secATotal, secBTotal, isReturning, effectiveTotal, amountPaid, balance } = calculateInvoiceBreakdown(inv)
                         return (
                           <tr key={inv.invoiceNo}>
                             <td><strong>{inv.invoiceNo}</strong></td>
-                          <td>
-                            <div>
-                              <strong>{inv.studentName}</strong>
-                              <small style={{ display: 'block', color: '#64748b' }}>{inv.grade}</small>
-                            </div>
-                          </td>
-                          <td>{inv.term}</td>
-                          <td><strong>₦{inv.total.toLocaleString()}</strong></td>
-                          <td>
-                            <strong style={{ color: '#00a884' }}>₦{inv.amountPaid.toLocaleString()}</strong>
-                          </td>
-                          <td>
-                            <strong style={{ color: balance > 0 ? '#ef4444' : '#10b981' }}>
-                              ₦{balance.toLocaleString()}
-                            </strong>
-                          </td>
-                          <td>
-                            <span className={`status-pill ${inv.status.toLowerCase()}`}>
-                              {inv.status}
-                            </span>
-                          </td>
-                          <td>
-                            <div className='action-buttons'>
-                              <button
-                                className='btn-action'
-                                title='Print Official BLIS Fee Receipt'
-                                onClick={() => setReceiptInvoice(inv)}
-                              >
-                                <i className='fas fa-file-invoice-dollar'></i> Official Receipt
-                              </button>
-                              {balance > 0 && (
+                            <td>
+                              <div>
+                                <strong>{inv.studentName}</strong>
+                                <small style={{ display: 'block', color: '#64748b' }}>{inv.grade}</small>
+                              </div>
+                            </td>
+                            <td>
+                              {isReturning ? (
+                                <span className='scholar-type-badge returning' title='Section A Termly Fees Only (Section B Waived)'>
+                                  <i className='fas fa-star'></i> Returning Scholar
+                                </span>
+                              ) : (
+                                <span className='scholar-type-badge new-intake' title='Section A + Section B Full Package'>
+                                  <i className='fas fa-box'></i> New Intake
+                                </span>
+                              )}
+                            </td>
+                            <td>{inv.term}</td>
+                            <td>₦{secATotal.toLocaleString()}</td>
+                            <td>
+                              {isReturning ? (
+                                <span className='sec-b-waived-pill'>Waived (₦0)</span>
+                              ) : (
+                                `₦${secBTotal.toLocaleString()}`
+                              )}
+                            </td>
+                            <td><strong>₦{effectiveTotal.toLocaleString()}</strong></td>
+                            <td>
+                              <strong style={{ color: '#00a884' }}>₦{amountPaid.toLocaleString()}</strong>
+                            </td>
+                            <td>
+                              {balance === 0 ? (
+                                <strong style={{ color: '#00a884' }}>₦0 (Paid in Full)</strong>
+                              ) : (
+                                <strong style={{ color: '#ef4444' }}>₦{balance.toLocaleString()}</strong>
+                              )}
+                            </td>
+                            <td>
+                              <span className={`status-pill ${inv.status.toLowerCase()}`}>
+                                {inv.status}
+                              </span>
+                            </td>
+                            <td>
+                              <div className='action-buttons' style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                                <button
+                                  className='btn-action'
+                                  title='Print Official BLIS Fee Receipt'
+                                  onClick={() => setReceiptInvoice(inv)}
+                                >
+                                  <i className='fas fa-file-invoice-dollar'></i> Receipt
+                                </button>
                                 <button
                                   className='btn-action-primary'
                                   title='Record Payment Transaction'
                                   onClick={() => {
                                     setSelectedInvoiceForPayment(inv)
-                                    setPaymentAmount(balance)
+                                    setPaymentStudentType(isReturning ? "returning" : "new")
+                                    setPaymentAmount(balance > 0 ? balance : "")
+                                    setMarkAsCompleted(false)
                                     setShowPaymentModal(true)
                                   }}
                                 >
                                   <i className='fas fa-hand-holding-usd'></i> Pay
                                 </button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      )
-                    }))}
+                                {isReturning ? (
+                                  <button
+                                    className='btn-action-outline-warning'
+                                    title='Switch to New Intake (Include Section B)'
+                                    onClick={() => handleToggleStudentType(inv.invoiceNo, "new")}
+                                  >
+                                    <i className='fas fa-box-open'></i> +Sec B
+                                  </button>
+                                ) : (
+                                  <button
+                                    className='btn-action-outline-info'
+                                    title='Switch to Returning Scholar (Waive Section B)'
+                                    onClick={() => handleToggleStudentType(inv.invoiceNo, "returning")}
+                                  >
+                                    <i className='fas fa-user-check'></i> Ret
+                                  </button>
+                                )}
+                                {(!isReturning || balance > 0 || inv.status !== "Paid") && (
+                                  <button
+                                    className='btn-action-success'
+                                    title='Mark as Completed (Returning Scholar — Waive Section B & Set Balance to ₦0)'
+                                    onClick={() => handleMarkCompletedAsReturning(inv.invoiceNo)}
+                                  >
+                                    <i className='fas fa-check-circle'></i> Mark Completed
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      })
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -7121,6 +7472,62 @@ Motto: "Study to Make Impact"
                 />
               </div>
 
+              {/* Scholar Enrollment Classification */}
+              <div className='form-group'>
+                <label>Scholar Enrollment Classification *</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <label
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      border: (newStudentForm.studentType || "returning") === "returning" ? '2px solid #00a884' : '1px solid #cbd5e1',
+                      background: (newStudentForm.studentType || "returning") === "returning" ? '#f0fdf4' : '#ffffff',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '700', color: (newStudentForm.studentType || "returning") === "returning" ? '#065f46' : '#334155' }}>
+                      <input
+                        type='radio'
+                        name='newStudentStudentType'
+                        checked={(newStudentForm.studentType || "returning") === "returning"}
+                        onChange={() => setNewStudentForm({ ...newStudentForm, studentType: "returning" })}
+                      />
+                      <span>⭐ Returning Scholar</span>
+                    </div>
+                    <small style={{ marginTop: '4px', color: '#64748b' }}>
+                      Section A only (Tuition & Levies). Section B waived.
+                    </small>
+                  </label>
+
+                  <label
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      border: newStudentForm.studentType === "new" ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                      background: newStudentForm.studentType === "new" ? '#eff6ff' : '#ffffff',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '700', color: newStudentForm.studentType === "new" ? '#1e40af' : '#334155' }}>
+                      <input
+                        type='radio'
+                        name='newStudentStudentType'
+                        checked={newStudentForm.studentType === "new"}
+                        onChange={() => setNewStudentForm({ ...newStudentForm, studentType: "new" })}
+                      />
+                      <span>📦 New Intake Scholar</span>
+                    </div>
+                    <small style={{ marginTop: '4px', color: '#64748b' }}>
+                      Section A + Section B (Uniforms & Materials).
+                    </small>
+                  </label>
+                </div>
+              </div>
+
               <div className='modal-actions'>
                 <button type='button' className='outline-btn' onClick={() => setShowAddStudentModal(false)}>CANCEL</button>
                 <button type='submit' className='primary-btn'>CONFIRM ENROLLMENT</button>
@@ -7400,180 +7807,369 @@ Motto: "Study to Make Impact"
       )}
 
       {/* --- MODAL 4: OFFICIAL FEE RECEIPT MODAL --- */}
-      {receiptInvoice && (
-        <div className='blis-modal-overlay' onClick={() => setReceiptInvoice(null)}>
-          <div className='blis-modal-card receipt-modal' onClick={(e) => e.stopPropagation()}>
-            <div className='modal-header no-print'>
-              <div>
-                <h3>Official Bursar Fee Receipt</h3>
-                <small>{receiptInvoice.invoiceNo}</small>
-              </div>
-              <div className='flex' style={{ gap: '10px' }}>
-                <button className='btn-action-primary' onClick={() => window.print()}>
-                  <i className='fas fa-print'></i> Print Receipt
-                </button>
-                <button className='modal-close' onClick={() => setReceiptInvoice(null)}>×</button>
-              </div>
-            </div>
+      {receiptInvoice && (() => {
+        const { secATotal, secBTotal, isReturning, effectiveTotal, amountPaid, balance, secAPaid, secBPaid, prospectus } = calculateInvoiceBreakdown(receiptInvoice)
+        const pSecAItems = prospectus && prospectus.sectionA ? prospectus.sectionA.items : [
+          { name: "Tuition Fees", amount: 14000 },
+          { name: "Examination Fee", amount: 1000 },
+          { name: "Lesson Fee", amount: 2000 },
+          { name: "Development Levy", amount: 1000 },
+          { name: "PTA Levy", amount: 1000 },
+          { name: "First Aid Clinic Fee", amount: 500 },
+        ]
+        const pSecBItems = prospectus && prospectus.sectionB ? prospectus.sectionB.items : [
+          { name: "School Uniform (2 sets)", amount: 8000 },
+          { name: "Sweater", amount: 10000 },
+          { name: "Wednesday Wear", amount: 7000 },
+          { name: "Sportswear", amount: 14000 },
+          { name: "Books & Materials", amount: 11000 },
+        ]
 
-            <div className='receipt-paper'>
-              <div className='receipt-header flexSB'>
-                <div className='receipt-logo flex' style={{ gap: '14px', alignItems: 'center' }}>
-                  <div className='school-crest-report' style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '3px' }}>
-                    <img src='/images/logo.png' alt="Brighter Land Int'l School" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                  </div>
-                  <div>
-                    <h2>BRIGHTER LAND INTERNATIONAL SCHOOL</h2>
-                    <small>Gura-suga, Opposite Police Staff College Jos, Plateau State • Official Bursar Payment Receipt</small>
-                  </div>
+        return (
+          <div className='blis-modal-overlay' onClick={() => setReceiptInvoice(null)}>
+            <div className='blis-modal-card receipt-modal' onClick={(e) => e.stopPropagation()} style={{ maxWidth: '780px' }}>
+              <div className='modal-header no-print'>
+                <div>
+                  <h3>Official Bursar Fee Receipt</h3>
+                  <small>{receiptInvoice.invoiceNo} • {isReturning ? "Returning Scholar (Section A)" : "New Intake (Section A & B)"}</small>
                 </div>
-                <div className='receipt-meta text-right'>
-                  <span className='receipt-stamp'>OFFICIAL RECEIPT</span>
-                  <p><strong>Receipt #:</strong> {receiptInvoice.invoiceNo}</p>
-                  <p><strong>Payment Date:</strong> {receiptInvoice.paymentDate !== "N/A" ? receiptInvoice.paymentDate : "2026-10-01"}</p>
-                </div>
-              </div>
-
-              <div className='receipt-student-box'>
-                <div className='flexSB'>
-                  <div>
-                    <strong>Received From:</strong>
-                    <p style={{ fontSize: '15px', margin: '2px 0', color: '#071626' }}><strong>{receiptInvoice.studentName}</strong> ({receiptInvoice.studentId})</p>
-                    <small>Class Level: <strong>{receiptInvoice.grade}</strong></small>
-                  </div>
-                  <div className='text-right'>
-                    <strong>Term Period:</strong>
-                    <p>{receiptInvoice.term}</p>
-                    <small>Payment Mode: <strong>{receiptInvoice.method}</strong></small>
-                  </div>
+                <div className='flex' style={{ gap: '10px' }}>
+                  <button className='btn-action-primary' onClick={() => window.print()}>
+                    <i className='fas fa-print'></i> Print Receipt
+                  </button>
+                  <button className='modal-close' onClick={() => setReceiptInvoice(null)}>×</button>
                 </div>
               </div>
 
-              <table className='receipt-items-table'>
-                <thead>
-                  <tr>
-                    <th>Section A Item Description</th>
-                    <th>Schedule Classification</th>
-                    <th className='text-right'>Amount (₦)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Tuition Fees</td>
-                    <td>Payable to School</td>
-                    <td className='text-right'>₦{receiptInvoice.tuition.toLocaleString()}</td>
-                  </tr>
-                  <tr>
-                    <td>Examination Fee</td>
-                    <td>Terminal Examination Assessment</td>
-                    <td className='text-right'>₦{(receiptInvoice.examFee || 2000).toLocaleString()}</td>
-                  </tr>
-                  <tr>
-                    <td>Lesson Fee</td>
-                    <td>After-School Academic Lesson</td>
-                    <td className='text-right'>₦{(receiptInvoice.lessonFee || 2000).toLocaleString()}</td>
-                  </tr>
-                  <tr>
-                    <td>Development Levy</td>
-                    <td>School Infrastructure & Maintenance</td>
-                    <td className='text-right'>₦{(receiptInvoice.devLevy || 1000).toLocaleString()}</td>
-                  </tr>
-                  <tr>
-                    <td>PTA Levy</td>
-                    <td>Parent Teacher Association</td>
-                    <td className='text-right'>₦{(receiptInvoice.ptaLevy || 1000).toLocaleString()}</td>
-                  </tr>
-                  <tr>
-                    <td>First Aid Clinic Fee</td>
-                    <td>Health & Infirmary Services</td>
-                    <td className='text-right'>₦{(receiptInvoice.firstAid || 1000).toLocaleString()}</td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td colSpan='2'><strong>TOTAL SECTION A INVOICED:</strong></td>
-                    <td className='text-right'><strong>₦{receiptInvoice.total.toLocaleString()}</strong></td>
-                  </tr>
-                  <tr className='paid-row'>
-                    <td colSpan='2'><strong>AMOUNT PAID:</strong></td>
-                    <td className='text-right'><strong style={{ color: '#00a884' }}>₦{receiptInvoice.amountPaid.toLocaleString()}</strong></td>
-                  </tr>
-                  <tr>
-                    <td colSpan='2'><strong>BALANCE OUTSTANDING:</strong></td>
-                    <td className='text-right'><strong>₦{(receiptInvoice.total - receiptInvoice.amountPaid).toLocaleString()}</strong></td>
-                  </tr>
-                </tfoot>
-              </table>
-
-              <div className='receipt-bank-footer'>
-                <div className='flexSB' style={{ alignItems: 'center' }}>
-                  <div>
-                    <strong style={{ color: '#071626' }}>Bank Verification:</strong>
-                    <p style={{ margin: '2px 0', fontSize: '12px' }}>
-                      Paid into: <strong>{schoolAccountDetails.bankName}</strong> | Account Name: <strong>{schoolAccountDetails.accountName}</strong> | Acc No: <strong>{schoolAccountDetails.accountNumber}</strong>
-                    </p>
-                    <small style={{ color: '#64748b' }}>Bank Reference: {receiptInvoice.bankRef || "FB-2043561832-VERIFIED"}</small>
+              <div className='receipt-paper'>
+                <div className='receipt-header flexSB'>
+                  <div className='receipt-logo flex' style={{ gap: '14px', alignItems: 'center' }}>
+                    <div className='school-crest-report' style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '3px' }}>
+                      <img src='/images/logo.png' alt="Brighter Land Int'l School" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    </div>
+                    <div>
+                      <h2>BRIGHTER LAND INTERNATIONAL SCHOOL</h2>
+                      <small>Gura-suga, Opposite Police Staff College Jos, Plateau State • Official Bursar Payment Receipt</small>
+                    </div>
                   </div>
-                  <div className='bursar-sign text-center'>
-                    <div className='sig-line'></div>
-                    <small>Authorized Signature • Bursar's Office</small>
+                  <div className='receipt-meta text-right'>
+                    <span className='receipt-stamp'>OFFICIAL RECEIPT</span>
+                    <p><strong>Receipt #:</strong> {receiptInvoice.invoiceNo}</p>
+                    <p><strong>Payment Date:</strong> {receiptInvoice.paymentDate !== "N/A" ? receiptInvoice.paymentDate : "2026-10-01"}</p>
+                  </div>
+                </div>
+
+                <div className='receipt-student-box'>
+                  <div className='flexSB'>
+                    <div>
+                      <strong>Received From:</strong>
+                      <p style={{ fontSize: '15px', margin: '2px 0', color: '#071626' }}><strong>{receiptInvoice.studentName}</strong> ({receiptInvoice.studentId})</p>
+                      <small>Class Level: <strong>{receiptInvoice.grade}</strong> • Classification: <strong style={{ color: isReturning ? '#059669' : '#2563eb' }}>{isReturning ? "⭐ Returning Scholar" : "📦 New Intake"}</strong></small>
+                    </div>
+                    <div className='text-right'>
+                      <strong>Term Period:</strong>
+                      <p>{receiptInvoice.term}</p>
+                      <small>Payment Mode: <strong>{receiptInvoice.method || "First Bank Direct Deposit"}</strong></small>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section A: Tuition & Levies Table */}
+                <div style={{ marginBottom: '16px' }}>
+                  <div className='flexSB' style={{ background: '#f1f5f9', padding: '6px 10px', borderRadius: '4px 4px 0 0', borderBottom: '2px solid #00a884' }}>
+                    <strong style={{ fontSize: '13px', color: '#071626' }}>Section A: Tuition & Statutory Levies (Payable to School)</strong>
+                    <strong style={{ fontSize: '13px', color: '#00a884' }}>Subtotal: ₦{secATotal.toLocaleString()}</strong>
+                  </div>
+                  <table className='receipt-items-table' style={{ margin: 0 }}>
+                    <thead>
+                      <tr>
+                        <th>Item Description</th>
+                        <th>Classification</th>
+                        <th className='text-right'>Amount (₦)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pSecAItems.map((item, idx) => (
+                        <tr key={idx}>
+                          <td>{item.name}</td>
+                          <td>Termly Statutory Fee</td>
+                          <td className='text-right'>₦{item.amount.toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Section B: Uniforms & Learning Materials */}
+                <div style={{ marginBottom: '18px' }}>
+                  <div className='flexSB' style={{ background: '#f1f5f9', padding: '6px 10px', borderRadius: '4px 4px 0 0', borderBottom: '2px solid #2563eb' }}>
+                    <strong style={{ fontSize: '13px', color: '#071626' }}>Section B: Uniforms & Learning Materials (For Students)</strong>
+                    <strong style={{ fontSize: '13px', color: isReturning ? '#059669' : '#2563eb' }}>
+                      {isReturning ? "WAIVED (₦0.00)" : `Subtotal: ₦${secBTotal.toLocaleString()}`}
+                    </strong>
+                  </div>
+                  {isReturning ? (
+                    <div style={{ background: '#f0fdf4', padding: '12px 16px', border: '1px solid #a7f3d0', borderTop: 'none', borderRadius: '0 0 4px 4px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#065f46', fontWeight: '700', fontSize: '13px' }}>
+                        <i className='fas fa-check-circle' style={{ color: '#059669' }}></i>
+                        <span>RETURNING SCHOLAR EXEMPTION (SECTION B WAIVED)</span>
+                      </div>
+                      <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#166534' }}>
+                        School uniform, sweater, sportswear, and books package were previously supplied upon initial admission. Section B is not invoiced for returning scholars.
+                      </p>
+                    </div>
+                  ) : (
+                    <table className='receipt-items-table' style={{ margin: 0 }}>
+                      <thead>
+                        <tr>
+                          <th>Item Description</th>
+                          <th>Package Classification</th>
+                          <th className='text-right'>Amount (₦)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pSecBItems.map((item, idx) => (
+                          <tr key={idx}>
+                            <td>{item.name}</td>
+                            <td>New Intake Student Package</td>
+                            <td className='text-right'>₦{item.amount.toLocaleString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+
+                {/* Grand Total Reconciliation */}
+                <table className='receipt-items-table' style={{ marginTop: '10px' }}>
+                  <tfoot>
+                    <tr>
+                      <td colSpan='2'><strong>TOTAL AMOUNT INVOICED:</strong></td>
+                      <td className='text-right'><strong>₦{effectiveTotal.toLocaleString()}</strong></td>
+                    </tr>
+                    <tr className='paid-row'>
+                      <td colSpan='2'><strong>TOTAL AMOUNT PAID:</strong></td>
+                      <td className='text-right'><strong style={{ color: '#00a884' }}>₦{amountPaid.toLocaleString()}</strong></td>
+                    </tr>
+                    <tr>
+                      <td colSpan='2'><strong>BALANCE OUTSTANDING:</strong></td>
+                      <td className='text-right'>
+                        {balance === 0 ? (
+                          <strong style={{ color: '#00a884' }}>₦0.00 (PAID IN FULL ✓)</strong>
+                        ) : (
+                          <strong style={{ color: '#ef4444' }}>₦{balance.toLocaleString()}</strong>
+                        )}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+
+                {/* Installment reconciliation note */}
+                {!isReturning && (
+                  <div style={{ background: '#f8fafc', padding: '10px 14px', borderRadius: '6px', border: '1px solid #e2e8f0', marginTop: '10px', fontSize: '12px' }}>
+                    <strong>Installment Breakdown:</strong> Section A (Tuition & Levies): ₦{secAPaid.toLocaleString()}/₦{secATotal.toLocaleString()} {secAPaid >= secATotal ? "✓ CLEARED" : "PARTIAL"} • Section B (Materials): ₦{secBPaid.toLocaleString()}/₦{secBTotal.toLocaleString()}
+                  </div>
+                )}
+
+                <div className='receipt-bank-footer'>
+                  <div className='flexSB' style={{ alignItems: 'center' }}>
+                    <div>
+                      <strong style={{ color: '#071626' }}>Bank Verification & Settlement:</strong>
+                      <p style={{ margin: '2px 0', fontSize: '12px' }}>
+                        Paid into: <strong>{schoolAccountDetails.bankName}</strong> | Account Name: <strong>{schoolAccountDetails.accountName}</strong> | Acc No: <strong>{schoolAccountDetails.accountNumber}</strong>
+                      </p>
+                      <small style={{ color: '#64748b' }}>Bank Reference: {receiptInvoice.bankRef || "FB-2043561832-VERIFIED"} • Status: <strong>{receiptInvoice.status ? receiptInvoice.status.toUpperCase() : "PAID"}</strong></small>
+                    </div>
+                    <div className='bursar-sign text-center'>
+                      <div className='sig-line'></div>
+                      <small>Authorized Signature • Bursar's Office</small>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* --- MODAL 5: RECORD PAYMENT MODAL --- */}
-      {showPaymentModal && selectedInvoiceForPayment && (
-        <div className='blis-modal-overlay' onClick={() => setShowPaymentModal(false)}>
-          <div className='blis-modal-card' onClick={(e) => e.stopPropagation()}>
-            <div className='modal-header'>
-              <div>
-                <h3>Record School Fee Payment</h3>
-                <small>{selectedInvoiceForPayment.invoiceNo} • {selectedInvoiceForPayment.studentName} ({selectedInvoiceForPayment.grade})</small>
-              </div>
-              <button className='modal-close' onClick={() => setShowPaymentModal(false)}>×</button>
-            </div>
-            <form onSubmit={handleRecordPayment} className='modal-form'>
-              <div className='form-group'>
-                <label>Outstanding Balance Due</label>
-                <div className='form-static-val' style={{ color: '#ef4444', fontSize: '18px', fontWeight: '800' }}>
-                  ₦{(selectedInvoiceForPayment.total - selectedInvoiceForPayment.amountPaid).toLocaleString()}
+      {showPaymentModal && selectedInvoiceForPayment && (() => {
+        const curProspectus = getProspectusForGrade(selectedInvoiceForPayment.grade)
+        const secATotal = selectedInvoiceForPayment.secATotal || (curProspectus && curProspectus.sectionA ? curProspectus.sectionA.total : 19500)
+        const secBTotal = selectedInvoiceForPayment.secBTotal || (curProspectus && curProspectus.sectionB ? curProspectus.sectionB.total : 50000)
+        const isRet = paymentStudentType === "returning" || markAsCompleted
+        const effectiveTotal = isRet ? secATotal : (secATotal + secBTotal)
+        const alreadyPaid = selectedInvoiceForPayment.amountPaid || 0
+        const effectiveBal = Math.max(0, effectiveTotal - alreadyPaid)
+        const enteredAmt = parseFloat(paymentAmount) || 0
+        const simTotalPaid = alreadyPaid + enteredAmt
+        const simSecAPaid = Math.min(simTotalPaid, secATotal)
+        const simSecBPaid = isRet ? 0 : Math.min(Math.max(0, simTotalPaid - secATotal), secBTotal)
+
+        return (
+          <div className='blis-modal-overlay' onClick={() => setShowPaymentModal(false)}>
+            <div className='blis-modal-card' onClick={(e) => e.stopPropagation()} style={{ maxWidth: '640px' }}>
+              <div className='modal-header'>
+                <div>
+                  <h3>Record School Fee Payment</h3>
+                  <small>{selectedInvoiceForPayment.invoiceNo} • {selectedInvoiceForPayment.studentName} ({selectedInvoiceForPayment.grade})</small>
                 </div>
+                <button className='modal-close' onClick={() => setShowPaymentModal(false)}>×</button>
               </div>
+              <form onSubmit={handleRecordPayment} className='modal-form'>
+                {/* Scholar Classification Selector */}
+                <div className='form-group'>
+                  <label>Scholar Classification</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <label
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        padding: '10px 12px',
+                        borderRadius: '8px',
+                        border: isRet ? '2px solid #00a884' : '1px solid #cbd5e1',
+                        background: isRet ? '#f0fdf4' : '#ffffff',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '700', color: isRet ? '#065f46' : '#334155' }}>
+                        <input
+                          type='radio'
+                          name='paymentStudentTypeRadio'
+                          checked={isRet}
+                          onChange={() => {
+                            setPaymentStudentType("returning")
+                            const newBal = Math.max(0, secATotal - alreadyPaid)
+                            setPaymentAmount(newBal > 0 ? newBal : "")
+                          }}
+                        />
+                        <span>⭐ Returning Scholar</span>
+                      </div>
+                      <small style={{ marginTop: '4px', color: '#64748b' }}>
+                        Section A Only (Tuition & Levies: ₦{secATotal.toLocaleString()})
+                      </small>
+                    </label>
 
-              <div className='form-group'>
-                <label>Payment Amount Received (₦) *</label>
-                <input
-                  type='number'
-                  required
-                  min='1'
-                  max={selectedInvoiceForPayment.total - selectedInvoiceForPayment.amountPaid}
-                  value={paymentAmount}
-                  onChange={(e) => setPaymentAmount(e.target.value)}
-                />
-              </div>
+                    <label
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        padding: '10px 12px',
+                        borderRadius: '8px',
+                        border: !isRet ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                        background: !isRet ? '#eff6ff' : '#ffffff',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '700', color: !isRet ? '#1e40af' : '#334155' }}>
+                        <input
+                          type='radio'
+                          name='paymentStudentTypeRadio'
+                          checked={!isRet}
+                          onChange={() => {
+                            setPaymentStudentType("new")
+                            setMarkAsCompleted(false)
+                            const newBal = Math.max(0, (secATotal + secBTotal) - alreadyPaid)
+                            setPaymentAmount(newBal > 0 ? newBal : "")
+                          }}
+                        />
+                        <span>📦 New Intake Scholar</span>
+                      </div>
+                      <small style={{ marginTop: '4px', color: '#64748b' }}>
+                        Section A + Section B (Total: ₦{(secATotal + secBTotal).toLocaleString()})
+                      </small>
+                    </label>
+                  </div>
+                </div>
 
-              <div className='form-group'>
-                <label>Payment Destination Account *</label>
-                <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
-                  <option value='First Bank Direct Deposit (Acc: 2043561832)'>First Bank Direct Deposit (Acc: 2043561832)</option>
-                  <option value='First Bank Mobile App Transfer'>First Bank Mobile App Transfer</option>
-                  <option value='First Bank POS Terminal at Bursar Desk'>First Bank POS Terminal at Bursar Desk</option>
-                  <option value='Bank Wire / Electronic Settlement'>Bank Wire / Electronic Settlement</option>
-                </select>
-              </div>
+                {/* Real-time Breakdown Box */}
+                <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '14px' }}>
+                  <div className='flexSB' style={{ fontSize: '13px', marginBottom: '4px' }}>
+                    <span>Section A (Tuition, Exam, Lesson, Levies):</span>
+                    <strong>₦{secATotal.toLocaleString()}</strong>
+                  </div>
+                  <div className='flexSB' style={{ fontSize: '13px', marginBottom: '4px' }}>
+                    <span>Section B (Uniforms, Sweater, Sports, Books):</span>
+                    <strong>{isRet ? <span style={{ color: '#059669' }}>Waived / Returning (₦0)</span> : `₦${secBTotal.toLocaleString()}`}</strong>
+                  </div>
+                  <div className='flexSB' style={{ fontSize: '13px', marginBottom: '4px' }}>
+                    <span>Previously Collected:</span>
+                    <strong style={{ color: '#00a884' }}>₦{alreadyPaid.toLocaleString()}</strong>
+                  </div>
+                  <div className='flexSB' style={{ fontSize: '15px', fontWeight: '800', borderTop: '1px solid #cbd5e1', paddingTop: '6px', color: '#071626' }}>
+                    <span>Current Outstanding Balance:</span>
+                    <span style={{ color: effectiveBal > 0 ? '#ef4444' : '#00a884' }}>
+                      ₦{effectiveBal.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
 
-              <div className='modal-actions'>
-                <button type='button' className='outline-btn' onClick={() => setShowPaymentModal(false)}>Cancel</button>
-                <button type='submit' className='primary-btn'>Confirm Payment & Issue Receipt</button>
-              </div>
-            </form>
+                {/* Bursar 1-Click Returning Student Completion Option */}
+                <div style={{ background: '#ecfdf5', padding: '10px 14px', borderRadius: '8px', border: '1px solid #a7f3d0', marginBottom: '14px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: 0, fontWeight: '700', color: '#065f46', fontSize: '13px' }}>
+                    <input
+                      type='checkbox'
+                      checked={markAsCompleted}
+                      onChange={(e) => {
+                        const val = e.target.checked
+                        setMarkAsCompleted(val)
+                        if (val) {
+                          setPaymentStudentType("returning")
+                          const newBal = Math.max(0, secATotal - alreadyPaid)
+                          setPaymentAmount(newBal > 0 ? newBal : "0")
+                        }
+                      }}
+                    />
+                    <span>✓ Mark as Completed (Returning Scholar — Waive Section B & Clear Remaining Balance)</span>
+                  </label>
+                  <small style={{ display: 'block', marginTop: '4px', color: '#047857', paddingLeft: '24px' }}>
+                    Checking this clears any Section B balance so the system won't wait for Section B payment or show an outstanding balance.
+                  </small>
+                </div>
+
+                <div className='form-group'>
+                  <label>Payment Amount Received (₦) *</label>
+                  <input
+                    type='number'
+                    required
+                    min='0'
+                    value={paymentAmount}
+                    onChange={(e) => setPaymentAmount(e.target.value)}
+                  />
+                  {enteredAmt > 0 && (
+                    <div style={{ marginTop: '8px', background: '#f1f5f9', padding: '8px 12px', borderRadius: '6px', fontSize: '12px' }}>
+                      <div>Section A Allocation: <strong>₦{simSecAPaid.toLocaleString()} / ₦{secATotal.toLocaleString()}</strong> {simSecAPaid >= secATotal ? "✓ (100% Cleared)" : ""}</div>
+                      {!isRet && (
+                        <div>Section B Allocation: <strong>₦{simSecBPaid.toLocaleString()} / ₦{secBTotal.toLocaleString()}</strong></div>
+                      )}
+                      <div style={{ marginTop: '4px', color: simTotalPaid >= effectiveTotal || markAsCompleted ? '#059669' : '#d97706', fontWeight: '700' }}>
+                        Resulting Status: {simTotalPaid >= effectiveTotal || markAsCompleted ? "COMPLETED (Paid in Full ✓)" : "PARTIAL PAYMENT"}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className='form-group'>
+                  <label>Payment Destination Account *</label>
+                  <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+                    <option value='First Bank Direct Deposit (Acc: 2043561832)'>First Bank Direct Deposit (Acc: 2043561832)</option>
+                    <option value='First Bank Mobile App Transfer'>First Bank Mobile App Transfer</option>
+                    <option value='First Bank POS Terminal at Bursar Desk'>First Bank POS Terminal at Bursar Desk</option>
+                    <option value='Bank Wire / Electronic Settlement'>Bank Wire / Electronic Settlement</option>
+                  </select>
+                </div>
+
+                <div className='modal-actions'>
+                  <button type='button' className='outline-btn' onClick={() => setShowPaymentModal(false)}>Cancel</button>
+                  <button type='submit' className='primary-btn'>
+                    <i className='fas fa-check-circle'></i> Confirm Payment & Reconcile Receipt
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* --- MODAL 6: COMPOSE NEW NOTICE MODAL --- */}
       {showNewNoticeModal && (

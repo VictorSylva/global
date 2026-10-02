@@ -168,6 +168,27 @@ export const prospectusData = [
   },
 ]
 
+export const getProspectusForGrade = (gradeName) => {
+  if (!gradeName) return prospectusData[1]
+  const g = gradeName.toLowerCase().trim()
+  if (g.includes("crèche") || g.includes("creche") || g.includes("toddler") || g.includes("infant")) {
+    return prospectusData[0] // CRÈCHE (Section A: ₦19,500, Section B: ₦47,500, Grand Total: ₦67,000)
+  }
+  if (g.includes("nursery") || g.includes("kg") || g.includes("kindergarten")) {
+    return prospectusData[1] // NURSERY ONE & TWO (Section A: ₦19,500, Section B: ₦50,000, Grand Total: ₦69,500)
+  }
+  if (g.includes("primary") || g.includes("basic") || g.includes("pry")) {
+    return prospectusData[2] // PRIMARY ONE – FIVE (Section A: ₦22,000, Section B: ₦59,000, Grand Total: ₦81,000)
+  }
+  if (g.includes("jss") || g.includes("junior")) {
+    return prospectusData[3] // SECONDARY SCHOOL – JUNIOR (JSS 1–3) (Section A: ₦30,000, Section B: ₦64,000, Grand Total: ₦94,000)
+  }
+  if (g.includes("ss") || g.includes("senior")) {
+    return prospectusData[4] // SECONDARY SCHOOL – SENIOR (SS 1-2) (Section A: ₦30,000, Section B: ₦76,000, Grand Total: ₦106,000)
+  }
+  return prospectusData[1]
+}
+
 export const homeAbout = [
   {
     id: 1,
