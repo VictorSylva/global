@@ -1,41 +1,40 @@
 import React from "react"
 import { price } from "../../dummydata"
 
-const PriceCard = ({ onOpenApply, onOpenProspectusDetail }) => {
+const PriceCard = ({ onOpenApply, onOpenProspectusRequest }) => {
   return (
     <>
       {price.map((val, index) => (
         <div className='items shadow price-card-blis' key={index}>
           <div className='price-tier-header'>
-            <h4>{val.name}</h4>
-            <span className='term-badge'>2026/2027</span>
+            <div>
+              <h4>{val.name}</h4>
+              <span className='division-subtitle'>{val.division} • {val.age}</span>
+            </div>
+            <span className='term-badge'>{val.badge || "2026/2027"}</span>
           </div>
 
-          <div className='price-amount'>
-            <span className='currency-symbol'>₦</span>
-            {val.price}
-            <small>/ term</small>
+          <div className='prospectus-request-callout'>
+            <div className='prc-icon'>
+              <i className='fas fa-file-invoice-dollar'></i>
+            </div>
+            <div className='prc-text'>
+              <strong>Official Prospectus & Fee Guide</strong>
+              <span>Section A & B Itemized Schedules On Request</span>
+            </div>
           </div>
 
-          <div className='section-a-tag'>
-            <i className='fas fa-shield-alt'></i> Section A (Tuition & Levies)
-          </div>
+          <p className='division-desc'>{val.desc}</p>
 
-          <p>{val.desc}</p>
-
-          <div className='prospectus-card-breakdown'>
-            <div className='pcb-row'>
-              <span>Tuition Fees:</span>
-              <strong>{val.tuition}</strong>
-            </div>
-            <div className='pcb-row'>
-              <span>Total Section A:</span>
-              <strong style={{ color: "#00a884" }}>{val.sectionATotal}</strong>
-            </div>
-            <div className='pcb-row'>
-              <span>Section B (Materials):</span>
-              <strong>{val.sectionBTotal}</strong>
-            </div>
+          <div className='prospectus-card-highlights'>
+            <span className='pch-label'><i className='fas fa-check-circle'></i> Division Inclusions:</span>
+            <ul>
+              {val.highlights && val.highlights.map((h, i) => (
+                <li key={i}>
+                  <i className='fas fa-check'></i> {h}
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className='card-requirement-box'>
@@ -46,16 +45,16 @@ const PriceCard = ({ onOpenApply, onOpenProspectusDetail }) => {
             <button
               className='primary-btn'
               style={{ width: '100%', padding: '12px', fontSize: '13px' }}
-              onClick={() => onOpenApply ? onOpenApply(val.name) : window.location.assign('/contact')}
+              onClick={() => onOpenProspectusRequest ? onOpenProspectusRequest(val.name) : (window.location.href = '/pricing#prospectus-request')}
             >
-              ENROLL SCHOLAR <i className='fas fa-arrow-right'></i>
+              <i className='fas fa-file-download' style={{ marginRight: '6px' }}></i> REQUEST PROSPECTUS
             </button>
             <button
               className='outline-btn'
               style={{ width: '100%', padding: '10px', fontSize: '12px' }}
-              onClick={() => onOpenProspectusDetail ? onOpenProspectusDetail(val.name) : null}
+              onClick={() => onOpenApply ? onOpenApply(val.name) : (window.location.href = '/contact')}
             >
-              <i className='fas fa-file-invoice'></i> View Full Breakdown
+              <i className='fas fa-user-graduate' style={{ marginRight: '6px' }}></i> Enroll Scholar
             </button>
           </div>
         </div>
@@ -65,3 +64,4 @@ const PriceCard = ({ onOpenApply, onOpenProspectusDetail }) => {
 }
 
 export default PriceCard
+

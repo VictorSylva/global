@@ -1,38 +1,69 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
 import Back from "../common/back/Back"
 import PriceCard from "./PriceCard"
 import "./price.css"
 import Faq from "./Faq"
-import { schoolAccountDetails, prospectusData } from "../../dummydata"
+import ProspectusRequest from "../home/ProspectusRequest"
+import { schoolAccountDetails } from "../../dummydata"
 import { sendWebsiteForm } from "../../services/emailService"
 
 const Pricing = () => {
-  const [activeTab, setActiveTab] = useState("cards") // 'cards' or 'table'
-  const [selectedPlan, setSelectedPlan] = useState(null)
+  const location = useLocation()
+  const [selectedDivision, setSelectedDivision] = useState(null)
   const [showApplyModal, setShowApplyModal] = useState(false)
-  const [selectedProspectusLevel, setSelectedProspectusLevel] = useState(null)
+  const [showRequestModal, setShowRequestModal] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [sending, setSending] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  const [formData, setFormData] = useState({
+  // Enrollment Application Form State
+  const [applyFormData, setApplyFormData] = useState({
     parentName: "",
     email: "",
     phone: "",
     studentName: "",
-    grade: "Primary One – Five",
+    grade: "Primary 1",
     comments: "",
   })
 
-  const handleOpenApply = (planName) => {
-    setSelectedPlan(planName)
+  // Quick Prospectus Request Modal State
+  const [requestFormData, setRequestFormData] = useState({
+    parentName: "",
+    email: "",
+    phone: "",
+    division: "Primary One – Five",
+    term: "Term 1 (2026/2027 Session)",
+    notes: "",
+  })
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const requestParam = params.get("request")
+    const applyParam = params.get("apply")
+
+    if (requestParam) {
+      setRequestFormData((prev) => ({ ...prev, division: requestParam }))
+      setShowRequestModal(true)
+    } else if (applyParam) {
+      setSelectedDivision(applyParam)
+      setShowApplyModal(true)
+    }
+  }, [location])
+
+  const handleOpenApply = (divisionName) => {
+    setSelectedDivision(divisionName)
     setShowApplyModal(true)
     setSubmitted(false)
   }
 
-  const handleOpenProspectusDetail = (levelName) => {
-    const found = prospectusData.find((p) => p.level.toLowerCase().includes(levelName.toLowerCase().slice(0, 5)))
-    setSelectedProspectusLevel(found || prospectusData[0])
+  const handleOpenProspectusRequest = (divisionName) => {
+    setRequestFormData((prev) => ({
+      ...prev,
+      division: divisionName || "Primary One – Five",
+    }))
+    setShowRequestModal(true)
+    setSubmitted(false)
   }
 
   const handleCopyAccount = () => {
@@ -41,18 +72,37 @@ const Pricing = () => {
     setTimeout(() => setCopied(false), 3000)
   }
 
-  const handleSubmit = async (e) => {
+  const handleApplySubmit = async (e) => {
     e.preventDefault()
     setSending(true)
 
     await sendWebsiteForm({
-      formType: `Prospectus Enrollment Application (${selectedPlan || formData.grade})`,
-      fromName: formData.parentName,
-      fromEmail: formData.email,
-      phone: formData.phone,
-      subject: `Admissions Application: ${formData.studentName} (${formData.grade})`,
-      grade: formData.grade,
-      message: `Candidate Scholar: ${formData.studentName}\nClass Applying For: ${formData.grade}\nDivision Plan: ${selectedPlan || "General"}\nParent / Guardian: ${formData.parentName}\nPhone: ${formData.phone}\nNotes & Background: ${formData.comments || "None"}`,
+      formType: `Admissions Intake Application (${selectedDivision || applyFormData.grade})`,
+      fromName: applyFormData.parentName,
+      fromEmail: applyFormData.email,
+      phone: applyFormData.phone,
+      subject: `Admissions Application: ${applyFormData.studentName} (${applyFormData.grade})`,
+      grade: applyFormData.grade,
+      message: `Candidate Scholar: ${applyFormData.studentName}\nClass Applying For: ${applyFormData.grade}\nDivision Plan: ${selectedDivision || "General"}\nParent / Guardian: ${applyFormData.parentName}\nPhone: ${applyFormData.phone}\nNotes & Background: ${applyFormData.comments || "None"}`,
+    })
+
+    setSending(false)
+    setSubmitted(true)
+  }
+
+  const handleRequestSubmit = async (e) => {
+    e.preventDefault()
+    setSending(true)
+
+    await sendWebsiteForm({
+      formType: `Prospectus Package Request (${requestFormData.division})`,
+      fromName: requestFormData.parentName,
+      fromEmail: requestFormData.email,
+      phone: requestFormData.phone,
+      subject: `Prospectus Request: ${requestFormData.division}`,
+      grade: requestFormData.division,
+      entryTerm: requestFormData.term,
+      message: requestFormData.notes || `Requested official prospectus package & Section A/B fee schedule for ${requestFormData.division}.`,
     })
 
     setSending(false)
@@ -61,7 +111,7 @@ const Pricing = () => {
 
   return (
     <>
-      <Back title='2026/2027 Academic Session Prospectus' />
+      <Back title='2026/2027 Academic Session Prospectus & Admissions' />
       <section className='price padding'>
         <div className='container'>
           {/* Header Intro */}
@@ -70,10 +120,11 @@ const Pricing = () => {
               BRIGHTER LAND INTERNATIONAL SCHOOL
             </h3>
             <h1 style={{ fontFamily: "Outfit, sans-serif", fontSize: "36px", color: "#071626", marginTop: "8px" }}>
-              Official 2026/2027 Session School Fees & Prospectus
+              Academic Divisions & Official Prospectus Request
             </h1>
-            <p style={{ maxWidth: "760px", margin: "14px auto", color: "#64748b", fontSize: "15px" }}>
-              Approved schedule of fees covering Section A (Tuition & School Levies) and Section B (Uniforms, Books & Learning Materials) across Crèche, Nursery, Primary, Junior Secondary (JSS), and Senior Secondary (SSS).
+            <p style={{ maxWidth: "780px", margin: "14px auto", color: "#64748b", fontSize: "15px", lineHeight: "1.6" }}>
+              Explore our academic divisions across Crèche, Nursery, Primary, Junior Secondary (JSS), and Senior Secondary (SSS). 
+              Our official prospectus and itemized Section A (Tuition & Levies) & Section B (Uniforms, Sports & Books) schedules are provided upon request via our Admissions Secretariat.
             </p>
           </div>
 
@@ -104,271 +155,145 @@ const Pricing = () => {
             </div>
           </div>
 
-          {/* View Mode Switcher */}
-          <div className='prospectus-tab-bar flexSB' style={{ margin: '30px 0 24px 0' }}>
-            <div className='tab-buttons flex'>
-              <button
-                className={`tab-btn ${activeTab === "cards" ? "active" : ""}`}
-                onClick={() => setActiveTab("cards")}
-              >
-                <i className='fas fa-th-large'></i> Class Summary Cards
-              </button>
-              <button
-                className={`tab-btn ${activeTab === "table" ? "active" : ""}`}
-                onClick={() => setActiveTab("table")}
-              >
-                <i className='fas fa-list-alt'></i> Full Itemized Prospectus Table
-              </button>
-            </div>
-
-            <button
-              className='download-prospectus-btn'
-              onClick={() => handleOpenProspectusDetail("CRÈCHE")}
-            >
-              <i className='fas fa-print'></i> View Printable Prospectus
-            </button>
+          {/* Academic Division Cards Grid */}
+          <div className='grid' style={{ marginTop: '30px', marginBottom: '40px' }}>
+            <PriceCard
+              onOpenApply={handleOpenApply}
+              onOpenProspectusRequest={handleOpenProspectusRequest}
+            />
           </div>
 
-          {/* TAB 1: CARDS */}
-          {activeTab === "cards" && (
-            <div className='grid'>
-              <PriceCard
-                onOpenApply={handleOpenApply}
-                onOpenProspectusDetail={handleOpenProspectusDetail}
-              />
-            </div>
-          )}
-
-          {/* TAB 2: FULL ITEMIZED PROSPECTUS TABLE */}
-          {activeTab === "table" && (
-            <div className='prospectus-table-wrapper shadow'>
-              {prospectusData.map((sec, idx) => (
-                <div className='prospectus-level-section' key={idx}>
-                  <div className='level-header flexSB'>
-                    <div>
-                      <h3>{sec.level}</h3>
-                      <span className='age-tag'>{sec.ageGroup}</span>
-                    </div>
-                    <div className='level-totals-badge flex'>
-                      <div>
-                        <small>Section A Total:</small>
-                        <strong>₦{sec.sectionA.total.toLocaleString()}</strong>
-                      </div>
-                      <div className='sep'>|</div>
-                      <div>
-                        <small>Section B Total:</small>
-                        <strong>₦{sec.sectionB.total.toLocaleString()}</strong>
-                      </div>
-                      <div className='sep'>|</div>
-                      <div>
-                        <small>Grand Package:</small>
-                        <strong style={{ color: '#00a884' }}>₦{sec.grandTotal.toLocaleString()}</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className='level-tables-grid'>
-                    {/* Section A */}
-                    <div className='sub-table-card'>
-                      <h4><i className='fas fa-check-circle' style={{ color: '#00a884' }}></i> {sec.sectionA.title}</h4>
-                      <table className='inner-spec-table'>
-                        <thead>
-                          <tr>
-                            <th>Item Description</th>
-                            <th className='text-right'>Amount</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {sec.sectionA.items.map((it, i) => (
-                            <tr key={i}>
-                              <td>{it.name}</td>
-                              <td className='text-right font-bold'>₦{it.amount.toLocaleString()}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                        <tfoot>
-                          <tr>
-                            <td><strong>Total Section A (Payable to School):</strong></td>
-                            <td className='text-right'><strong>₦{sec.sectionA.total.toLocaleString()}</strong></td>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>
-
-                    {/* Section B */}
-                    <div className='sub-table-card'>
-                      <h4><i className='fas fa-book-reader' style={{ color: '#2563eb' }}></i> {sec.sectionB.title}</h4>
-                      <table className='inner-spec-table'>
-                        <thead>
-                          <tr>
-                            <th>Item Description</th>
-                            <th className='text-right'>Amount</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {sec.sectionB.items.map((it, i) => (
-                            <tr key={i}>
-                              <td>{it.name}</td>
-                              <td className='text-right font-bold'>₦{it.amount.toLocaleString()}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                        <tfoot>
-                          <tr>
-                            <td><strong>Total Section B (Uniforms & Materials):</strong></td>
-                            <td className='text-right'><strong>₦{sec.sectionB.total.toLocaleString()}</strong></td>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>
-                  </div>
-
-                  {sec.bookNote && (
-                    <div className='prospectus-book-note'>
-                      <i className='fas fa-info-circle'></i> {sec.bookNote}
-                    </div>
-                  )}
-
-                  <div className='additional-req-strip flexSB'>
-                    <span>
-                      <i className='fas fa-box-open'></i> <strong>Additional Requirement:</strong> {sec.additionalRequirements}
-                    </span>
-                    <button
-                      className='apply-level-btn'
-                      onClick={() => handleOpenApply(sec.level)}
-                    >
-                      Enroll For {sec.level} <i className='fas fa-arrow-right'></i>
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          {/* Embedded Prospectus Request Section */}
+          <div id='prospectus-request'>
+            <ProspectusRequest />
+          </div>
 
           {/* Quick Notice on Bank Payments */}
           <div className='payment-reminder-card shadow flexSB'>
             <div className='flex' style={{ gap: '16px', alignItems: 'center' }}>
               <div className='pr-icon'><i className='fas fa-receipt'></i></div>
               <div>
-                <h4>Important Payment Instructions</h4>
+                <h4>Official Fee Payment & Bursary Verification</h4>
                 <p>
-                  Pay directly into <strong>First Bank, Account No: 2043561832 (Brighter Land International School)</strong>. 
-                  Always write the scholar's name and class on the bank teller / narration, and present proof of payment to the Bursar for official receipt generation.
+                  All approved fee payments must be remitted directly to <strong>First Bank, Account No: 2043561832 ({schoolAccountDetails.accountName})</strong>. 
+                  Always include the scholar's full name on the payment narration, and present proof of transfer to the Bursar for official receipt issuance.
                 </p>
               </div>
             </div>
-            <button className='primary-btn' onClick={() => handleOpenApply("Admissions & Payment")}>
+            <button className='primary-btn' onClick={() => handleOpenApply("Direct Enrollment")}>
               BEGIN ENROLLMENT <i className='fas fa-chevron-right'></i>
             </button>
           </div>
         </div>
       </section>
 
-      {/* --- MODAL 1: ITEMIZE PROSPECTUS DETAIL MODAL --- */}
-      {selectedProspectusLevel && (
-        <div className='blis-modal-overlay' onClick={() => setSelectedProspectusLevel(null)}>
-          <div className='blis-modal-card prospectus-modal' onClick={(e) => e.stopPropagation()}>
-            <div className='modal-header no-print'>
+      {/* --- MODAL 1: PROSPECTUS PACKAGE REQUEST MODAL --- */}
+      {showRequestModal && (
+        <div className='blis-modal-overlay' onClick={() => setShowRequestModal(false)}>
+          <div className='blis-modal-card' onClick={(e) => e.stopPropagation()}>
+            <div className='modal-header'>
               <div>
-                <h3>Official Prospectus Breakdown</h3>
-                <small>{selectedProspectusLevel.level} • 2026/2027 Session</small>
+                <h3>Request Official School Prospectus</h3>
+                <small>{requestFormData.division} • 2026/2027 Academic Session</small>
               </div>
-              <div className='flex' style={{ gap: '10px' }}>
-                <button className='btn-action-primary' onClick={() => window.print()}>
-                  <i className='fas fa-print'></i> Print Prospectus
-                </button>
-                <button className='modal-close' onClick={() => setSelectedProspectusLevel(null)}>×</button>
-              </div>
+              <button className='modal-close' onClick={() => setShowRequestModal(false)}>×</button>
             </div>
 
-            <div className='prospectus-print-paper'>
-              <div className='prospectus-print-header flexSB'>
-                <div className='flex' style={{ gap: '14px', alignItems: 'center' }}>
-                  <div style={{ width: '60px', height: '60px', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '3px', flexShrink: 0 }}>
-                    <img src='/images/logo.png' alt="BLIS Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            {submitted ? (
+              <div className='modal-success' style={{ textAlign: 'center', padding: '30px 20px' }}>
+                <i className='fas fa-check-circle success-icon' style={{ fontSize: '48px', color: '#00a884', marginBottom: '14px', display: 'block' }}></i>
+                <h3>Prospectus Request Logged!</h3>
+                <p style={{ color: '#475569', fontSize: '14px', lineHeight: '1.6', maxWidth: '480px', margin: '10px auto' }}>
+                  Thank you, <strong>{requestFormData.parentName}</strong>. Our Admissions Secretariat has received your request for the <strong>{requestFormData.division}</strong> prospectus.
+                </p>
+                <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px', margin: '16px auto', maxWidth: '440px', border: '1px solid #e2e8f0', textAlign: 'left', fontSize: '13px' }}>
+                  <div style={{ marginBottom: '6px' }}><i className='fas fa-envelope' style={{ color: '#00a884', marginRight: '8px' }}></i> <strong>Recipient Email:</strong> {requestFormData.email}</div>
+                  <div style={{ marginBottom: '6px' }}><i className='fas fa-phone-alt' style={{ color: '#2563eb', marginRight: '8px' }}></i> <strong>Contact Phone:</strong> {requestFormData.phone}</div>
+                  <div><i className='fas fa-layer-group' style={{ color: '#f59e0b', marginRight: '8px' }}></i> <strong>Division:</strong> {requestFormData.division}</div>
+                </div>
+                <p style={{ fontSize: '12.5px', color: '#64748b' }}>
+                  The itemized Section A & Section B fee schedule and curriculum brochure will be dispatched to your email shortly.
+                </p>
+                <button className='primary-btn' style={{ marginTop: '14px' }} onClick={() => setShowRequestModal(false)}>DONE</button>
+              </div>
+            ) : (
+              <form onSubmit={handleRequestSubmit} className='modal-form' style={{ padding: '20px' }}>
+                <div className='form-row'>
+                  <div className='form-group'>
+                    <label>Parent / Guardian Name *</label>
+                    <input
+                      type='text'
+                      required
+                      placeholder='e.g. Dr. Kalu Nwachukwu'
+                      value={requestFormData.parentName}
+                      onChange={(e) => setRequestFormData({ ...requestFormData, parentName: e.target.value })}
+                    />
                   </div>
-                  <div>
-                    <h2>BRIGHTER LAND INTERNATIONAL SCHOOL</h2>
-                    <p>2026/2027 Academic Session Prospectus • <em>Study to Make Impact</em></p>
-                    <small>School Account: First Bank • Account No: 2043561832 • Brighter Land International School</small>
+                  <div className='form-group'>
+                    <label>Email Address (To Receive Prospectus) *</label>
+                    <input
+                      type='email'
+                      required
+                      placeholder='e.g. parent@domain.com'
+                      value={requestFormData.email}
+                      onChange={(e) => setRequestFormData({ ...requestFormData, email: e.target.value })}
+                    />
                   </div>
                 </div>
-                <div className='level-badge-large'>
-                  {selectedProspectusLevel.level}
+
+                <div className='form-row'>
+                  <div className='form-group'>
+                    <label>Phone / WhatsApp Number *</label>
+                    <input
+                      type='tel'
+                      required
+                      placeholder='e.g. 0803 456 7891'
+                      value={requestFormData.phone}
+                      onChange={(e) => setRequestFormData({ ...requestFormData, phone: e.target.value })}
+                    />
+                  </div>
+                  <div className='form-group'>
+                    <label>Division Interested In *</label>
+                    <select
+                      value={requestFormData.division}
+                      onChange={(e) => setRequestFormData({ ...requestFormData, division: e.target.value })}
+                    >
+                      <option value='Crèche Division (Infants & Toddlers)'>Crèche Division (Infants & Toddlers)</option>
+                      <option value='Nursery One & Two (Early Years)'>Nursery One & Two (Early Years)</option>
+                      <option value='Primary One – Five (Basic Education)'>Primary One – Five (Basic Education)</option>
+                      <option value='Junior Secondary School (JSS 1 – 3)'>Junior Secondary School (JSS 1 – 3)</option>
+                      <option value='Senior Secondary School (SS 1 – 3)'>Senior Secondary School (SS 1 – 3)</option>
+                      <option value='All Divisions Prospectus'>All Divisions Complete Prospectus</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
 
-              {/* Section A */}
-              <div className='modal-section-block'>
-                <h4>{selectedProspectusLevel.sectionA.title}</h4>
-                <table className='prospectus-print-table'>
-                  <thead>
-                    <tr>
-                      <th>S/N</th>
-                      <th>Levy Description</th>
-                      <th className='text-right'>Amount (₦)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selectedProspectusLevel.sectionA.items.map((it, idx) => (
-                      <tr key={idx}>
-                        <td>{idx + 1}</td>
-                        <td>{it.name}</td>
-                        <td className='text-right'>₦{it.amount.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                    <tr className='subtotal-row'>
-                      <td colSpan='2'><strong>TOTAL SECTION A (Payable to School):</strong></td>
-                      <td className='text-right'><strong>₦{selectedProspectusLevel.sectionA.total.toLocaleString()}</strong></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Section B */}
-              <div className='modal-section-block' style={{ marginTop: '20px' }}>
-                <h4>{selectedProspectusLevel.sectionB.title}</h4>
-                <table className='prospectus-print-table'>
-                  <thead>
-                    <tr>
-                      <th>S/N</th>
-                      <th>Material / Uniform Description</th>
-                      <th className='text-right'>Amount (₦)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selectedProspectusLevel.sectionB.items.map((it, idx) => (
-                      <tr key={idx}>
-                        <td>{idx + 1}</td>
-                        <td>{it.name}</td>
-                        <td className='text-right'>₦{it.amount.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                    <tr className='subtotal-row'>
-                      <td colSpan='2'><strong>TOTAL SECTION B (Uniforms & Learning Materials):</strong></td>
-                      <td className='text-right'><strong>₦{selectedProspectusLevel.sectionB.total.toLocaleString()}</strong></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Additional Requirements */}
-              <div className='prospectus-print-req'>
-                <strong>Additional Term Requirement:</strong>
-                <p>{selectedProspectusLevel.additionalRequirements}</p>
-              </div>
-
-              <div className='prospectus-print-footer flexSB'>
-                <div>
-                  <strong>Official Accounts Details:</strong>
-                  <p>Brighter Land International School | First Bank | Acc: 2043561832</p>
+                <div className='form-group'>
+                  <label>Additional Scholar Notes or Inquiries (Optional)</label>
+                  <textarea
+                    rows='3'
+                    placeholder='Specify any questions regarding admissions, transport, or scholarship considerations...'
+                    value={requestFormData.notes}
+                    onChange={(e) => setRequestFormData({ ...requestFormData, notes: e.target.value })}
+                  ></textarea>
                 </div>
-                <div className='text-right'>
-                  <p><strong>Approved by Management</strong></p>
-                  <small>Brighter Land International School</small>
+
+                <div className='modal-actions'>
+                  <button type='button' className='outline-btn' onClick={() => setShowRequestModal(false)}>CANCEL</button>
+                  <button type='submit' className='primary-btn' disabled={sending} style={{ opacity: sending ? 0.75 : 1 }}>
+                    {sending ? (
+                      <>
+                        <i className='fas fa-spinner fa-spin' style={{ marginRight: '6px' }}></i> DISPATCHING...
+                      </>
+                    ) : (
+                      <>
+                        <i className='fas fa-paper-plane' style={{ marginRight: '6px' }}></i> REQUEST PROSPECTUS PACKAGE
+                      </>
+                    )}
+                  </button>
                 </div>
-              </div>
-            </div>
+              </form>
+            )}
           </div>
         </div>
       )}
@@ -379,32 +304,32 @@ const Pricing = () => {
           <div className='blis-modal-card' onClick={(e) => e.stopPropagation()}>
             <div className='modal-header'>
               <div>
-                <h3>BLIS Online Admissions Intake</h3>
-                <small>{selectedPlan || "2026/2027 Academic Session"}</small>
+                <h3>BLIS Online Admissions Application</h3>
+                <small>{selectedDivision || "2026/2027 Academic Session"}</small>
               </div>
               <button className='modal-close' onClick={() => setShowApplyModal(false)}>×</button>
             </div>
 
             {submitted ? (
-              <div className='modal-success'>
-                <i className='fas fa-check-circle success-icon'></i>
+              <div className='modal-success' style={{ textAlign: 'center', padding: '30px 20px' }}>
+                <i className='fas fa-check-circle success-icon' style={{ fontSize: '48px', color: '#00a884', marginBottom: '14px', display: 'block' }}></i>
                 <h3>Application Successfully Registered!</h3>
-                <p>
-                  Thank you, <strong>{formData.parentName}</strong>. Your application for <strong>{formData.studentName}</strong> ({formData.grade}) has been received.
+                <p style={{ color: '#475569', fontSize: '14px', lineHeight: '1.6', maxWidth: '480px', margin: '10px auto' }}>
+                  Thank you, <strong>{applyFormData.parentName}</strong>. Your enrollment application for <strong>{applyFormData.studentName}</strong> ({applyFormData.grade}) has been received by our Admissions Registrar.
                 </p>
-                <div className='success-bank-box' style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', margin: '16px auto', maxWidth: '480px', border: '1px solid #cbd5e1' }}>
-                  <strong style={{ display: 'block', color: '#071626', marginBottom: '6px' }}>Fee Payment Account Details:</strong>
+                <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', margin: '16px auto', maxWidth: '480px', border: '1px solid #cbd5e1', textAlign: 'left' }}>
+                  <strong style={{ display: 'block', color: '#071626', marginBottom: '6px' }}>Approved School Bank Details:</strong>
                   <p style={{ margin: '2px 0', fontSize: '13px' }}><strong>Bank:</strong> {schoolAccountDetails.bankName}</p>
                   <p style={{ margin: '2px 0', fontSize: '13px' }}><strong>Account Name:</strong> {schoolAccountDetails.accountName}</p>
                   <p style={{ margin: '2px 0', fontSize: '15px', color: '#00a884', fontWeight: '800' }}>
                     <strong>Account Number:</strong> {schoolAccountDetails.accountNumber}
                   </p>
                 </div>
-                <p>Please present your payment confirmation to the school Bursar for formal enrollment confirmation.</p>
-                <button className='primary-btn' onClick={() => setShowApplyModal(false)}>CLOSE</button>
+                <p style={{ fontSize: '12.5px', color: '#64748b' }}>Our Admissions Officer will reach out via WhatsApp/Phone ({applyFormData.phone}) to confirm assessment date.</p>
+                <button className='primary-btn' style={{ marginTop: '14px' }} onClick={() => setShowApplyModal(false)}>CLOSE</button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className='modal-form'>
+              <form onSubmit={handleApplySubmit} className='modal-form' style={{ padding: '20px' }}>
                 <div className='form-row'>
                   <div className='form-group'>
                     <label>Parent / Guardian Name *</label>
@@ -412,8 +337,8 @@ const Pricing = () => {
                       type='text'
                       required
                       placeholder='e.g. Dr. Chukwuma Okafor'
-                      value={formData.parentName}
-                      onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
+                      value={applyFormData.parentName}
+                      onChange={(e) => setApplyFormData({ ...applyFormData, parentName: e.target.value })}
                     />
                   </div>
                   <div className='form-group'>
@@ -422,8 +347,8 @@ const Pricing = () => {
                       type='email'
                       required
                       placeholder='e.g. chukwuma.okafor@example.com'
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      value={applyFormData.email}
+                      onChange={(e) => setApplyFormData({ ...applyFormData, email: e.target.value })}
                     />
                   </div>
                 </div>
@@ -435,8 +360,8 @@ const Pricing = () => {
                       type='tel'
                       required
                       placeholder='e.g. 0803 456 7891'
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      value={applyFormData.phone}
+                      onChange={(e) => setApplyFormData({ ...applyFormData, phone: e.target.value })}
                     />
                   </div>
                   <div className='form-group'>
@@ -445,8 +370,8 @@ const Pricing = () => {
                       type='text'
                       required
                       placeholder='e.g. Chimamanda Okafor'
-                      value={formData.studentName}
-                      onChange={(e) => setFormData({ ...formData, studentName: e.target.value })}
+                      value={applyFormData.studentName}
+                      onChange={(e) => setApplyFormData({ ...applyFormData, studentName: e.target.value })}
                     />
                   </div>
                 </div>
@@ -454,8 +379,8 @@ const Pricing = () => {
                 <div className='form-group'>
                   <label>Class Division Applying For *</label>
                   <select
-                    value={formData.grade}
-                    onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
+                    value={applyFormData.grade}
+                    onChange={(e) => setApplyFormData({ ...applyFormData, grade: e.target.value })}
                   >
                     <option value='Crèche'>Crèche (Infants & Toddlers)</option>
                     <option value='Nursery 1'>Nursery 1</option>
@@ -478,8 +403,8 @@ const Pricing = () => {
                   <textarea
                     rows='3'
                     placeholder='Previous school attended, special learning interests, or medical considerations...'
-                    value={formData.comments}
-                    onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
+                    value={applyFormData.comments}
+                    onChange={(e) => setApplyFormData({ ...applyFormData, comments: e.target.value })}
                   ></textarea>
                 </div>
 

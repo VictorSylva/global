@@ -8,13 +8,20 @@ const Hprice = () => {
     <>
       <section className='hprice padding'>
         <div className='container'>
-          <Heading subtitle='TUITION & ADMISSIONS' title='Academic Division Investment' />
+          <Heading subtitle='ACADEMIC DIVISIONS & ADMISSIONS' title='Excellence Across Every Stage of Learning' />
           <div className='price grid'>
-            <PriceCard />
+            <PriceCard
+              onOpenProspectusRequest={(name) => {
+                window.location.href = `/pricing?request=${encodeURIComponent(name)}#prospectus-request`
+              }}
+              onOpenApply={(name) => {
+                window.location.href = `/pricing?apply=${encodeURIComponent(name)}`
+              }}
+            />
           </div>
           <div className='text-center' style={{ textAlign: "center", marginTop: "30px" }}>
             <Link to='/pricing' className='outline-btn' style={{ display: 'inline-block', width: 'auto', padding: '14px 32px' }}>
-              VIEW DETAILED TUITION & SCHOLARSHIPS <i className='fas fa-arrow-right'></i>
+              REQUEST OFFICIAL PROSPECTUS & FEE SCHEDULE <i className='fas fa-arrow-right'></i>
             </Link>
           </div>
         </div>
