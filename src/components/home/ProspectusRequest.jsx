@@ -88,7 +88,7 @@ const ProspectusRequest = () => {
                 </div>
                 <div className='pr-benefit-text'>
                   <h4>Crèche to Senior Secondary Syllabi</h4>
-                  <p>Comprehensive academic curriculum tailored for Early Years, Primary, BECE, WAEC, and NECO success.</p>
+                  <p>Comprehensive academic curriculum tailored for Early Years, Primary, BECE, WAEC, NECO, and NABTEB success.</p>
                 </div>
               </li>
 

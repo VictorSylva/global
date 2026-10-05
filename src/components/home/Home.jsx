@@ -1,5 +1,6 @@
 import React from "react"
 import Hero from "./hero/Hero"
+import MissionVision from "../common/mission/MissionVision"
 import AboutCard from "../about/AboutCard"
 import ProprietorMessage from "./ProprietorMessage"
 import HAbout from "./HAbout"
@@ -11,6 +12,7 @@ const Home = () => {
   return (
     <>
       <Hero />
+      <MissionVision />
       <AboutCard />
       <ProprietorMessage />
       <HAbout />

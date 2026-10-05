@@ -1,14 +1,89 @@
-/*-------- BLIS Head & Navigation Styles ------------*/
+/* ================================================================
+   BRIGHTER LAND INT'L SCHOOL - PREMIUM HEADER & NAVIGATION STYLES
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   1. Top Head Section (Desktop + Mobile Announcement)
+   ---------------------------------------------------------------- */
 .head {
-  padding: 16px 0;
-  color: #fff;
+  color: #ffffff;
   background: linear-gradient(135deg, #071626 0%, #0c2438 100%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  z-index: 101;
+}
+
+/* Mobile Slim Top Bar (Hidden on desktop) */
+.mobile-top-announcement {
+  display: none;
+  background: rgba(0, 0, 0, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 0;
+  font-size: 11.5px;
+}
+
+.mobile-top-announcement .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 94%;
+  margin: 0 auto;
+}
+
+.announcement-text {
+  color: #cbd5e1;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+}
+
+.announcement-text strong {
+  color: #34d399;
+}
+
+.mobile-top-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-phone-link {
+  color: #fbbf24;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mobile-mission-link {
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(56, 189, 248, 0.15);
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+/* Desktop Main Head Header */
+.desktop-head-content {
+  padding: 14px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 90%;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 .school-crest {
-  width: 56px;
-  height: 56px;
+  width: 54px;
+  height: 54px;
   border-radius: 10px;
   background: #ffffff;
   display: flex;
@@ -19,6 +94,12 @@
   flex-shrink: 0;
   overflow: hidden;
   padding: 3px;
+  text-decoration: none;
+  transition: transform 0.25s ease;
+}
+
+.school-crest:hover {
+  transform: scale(1.04);
 }
 
 .school-crest img,
@@ -30,7 +111,7 @@
 
 .logo-text h1 {
   font-family: 'Outfit', sans-serif;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: 1px;
   color: #ffffff;
@@ -39,7 +120,7 @@
 }
 
 .logo-text span {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 1.5px;
   color: #10b981;
@@ -51,9 +132,49 @@
 .head-right {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
 }
 
+/* Parent Ministry Pill */
+.mission-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 6px 14px;
+  border-radius: 30px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  font-size: 12px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.mission-pill:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+  transform: translateY(-1px);
+}
+
+.mission-pill i {
+  color: #38bdf8;
+  font-size: 15px;
+}
+
+.mission-pill small {
+  display: block;
+  font-size: 9.5px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mission-pill strong {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* Contact Pill */
 .contact-pill {
   display: flex;
   align-items: center;
@@ -79,7 +200,7 @@
 
 .contact-pill small {
   display: block;
-  font-size: 10px;
+  font-size: 9.5px;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -88,31 +209,135 @@
 .contact-pill strong {
   color: #ffffff;
   font-weight: 600;
+  font-size: 12px;
 }
 
-.portal-quick-badge {
-  display: inline-flex;
-  align-items: center;
+/* Social Media Icons */
+.head .social {
+  display: flex;
   gap: 8px;
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.4);
-  color: #34d399;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
+}
+
+.head .social a {
   text-decoration: none;
 }
 
-.portal-quick-badge:hover {
-  background: #10b981;
-  color: #ffffff;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+.head .icon {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  font-size: 13px;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  border-radius: 8px;
+  transition: all 0.25s;
+  display: inline-block;
 }
 
+.head .icon:hover {
+  background-color: #00a884;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* ----------------------------------------------------------------
+   2. Main Header & Navigation Bar (Desktop)
+   ---------------------------------------------------------------- */
+.blis-main-header {
+  background: rgba(11, 29, 48, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  margin: 0 20px;
+  border-radius: 0 0 14px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: none;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  position: relative;
+  z-index: 100;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.desktop-nav {
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  gap: 26px;
+  list-style: none;
+}
+
+.desktop-nav li a {
+  color: #cbd5e1;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: all 0.25s ease;
+  position: relative;
+  padding: 6px 0;
+  text-decoration: none;
+}
+
+.desktop-nav li a:hover,
+.desktop-nav li a.active {
+  color: #10b981;
+}
+
+.desktop-nav li a.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #10b981;
+  border-radius: 2px;
+}
+
+.desktop-erp-cta {
+  padding: 0;
+}
+
+.erp-launch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #00a884 0%, #059669 100%);
+  color: #ffffff !important;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.8px;
+  padding: 15px 26px;
+  border-radius: 0 0 14px 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 168, 132, 0.35);
+  text-decoration: none;
+}
+
+.erp-launch-btn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 8px 24px rgba(0, 168, 132, 0.5);
+  transform: translateY(-1px);
+}
+
+.erp-launch-btn .btn-badge {
+  background: #f59e0b;
+  color: #071626;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* Pulse animation */
 .live-pulse {
   width: 8px;
   height: 8px;
@@ -139,330 +364,544 @@
   }
 }
 
-.head .social {
-  display: flex;
-  gap: 8px;
-}
-
-.head .icon {
-  width: 34px;
-  height: 34px;
-  line-height: 34px;
-  font-size: 13px;
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #e2e8f0;
-  border-radius: 8px;
-  transition: all 0.3s;
-}
-
-.head .icon:hover {
-  background-color: #00a884;
-  color: #fff;
-  transform: translateY(-2px);
-}
-
-/*-------- Main Header Bar ------------*/
-header {
-  background: rgba(11, 29, 48, 0.90);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  margin: 0 20px;
-  border-radius: 0 0 12px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-top: none;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-  position: relative;
-  z-index: 99;
-}
-
-header nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-header ul {
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  margin: 0;
-  gap: 28px;
-}
-
-header ul li a {
-  color: #cbd5e1;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  transition: all 0.25s ease;
-  position: relative;
-  padding: 6px 0;
-}
-
-header ul li a:hover,
-header ul li a.active {
-  color: #10b981;
-}
-
-header ul li a.active::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: #10b981;
-  border-radius: 2px;
-}
-
-.start {
-  padding: 0;
-  background: transparent;
-}
-
-.erp-launch-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: linear-gradient(135deg, #00a884 0%, #059669 100%);
-  color: #ffffff !important;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.8px;
-  padding: 16px 28px;
-  border-radius: 0 0 12px 0;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 168, 132, 0.35);
-  text-decoration: none;
-}
-
-.erp-launch-btn:hover {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
-  box-shadow: 0 8px 24px rgba(0, 168, 132, 0.5);
-  transform: translateY(-1px);
-}
-
-.erp-launch-btn .btn-badge {
-  background: #f59e0b;
-  color: #071626;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
-  letter-spacing: 0.5px;
-}
-
-.mobile-brand-bar {
-  display: none;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: #ffffff;
-  padding-left: 16px;
-}
-
-.mobile-portal-link {
+/* Mobile brand & controls (hidden on desktop) */
+.mobile-nav-brand {
   display: none;
 }
 
-.toggle {
+.mobile-header-controls {
   display: none;
 }
 
-/* ================================================================
-   Mobile & Tablet Header Responsive Rules
-   ================================================================ */
-
-@media screen and (max-width: 1024px) {
-  header ul {
-    gap: 16px;
-    padding: 14px 18px;
-  }
-  header ul li a {
-    font-size: 13px;
-  }
+.mobile-nav-backdrop {
+  display: none;
 }
 
+.mobile-nav-drawer {
+  display: none;
+}
+
+/* ----------------------------------------------------------------
+   3. Mobile & Tablet Responsive Layout (< 992px)
+   ---------------------------------------------------------------- */
 @media screen and (max-width: 992px) {
-  .hide-mobile {
+  /* Show slim top bar */
+  .mobile-top-announcement {
+    display: block;
+  }
+
+  /* Hide bulky desktop head on mobile to keep page clean & uncluttered */
+  .desktop-head-content {
     display: none !important;
   }
-}
 
-@media screen and (max-width: 768px) {
-  .head {
-    padding: 12px 0;
-  }
-
-  .head .container {
-    width: 94%;
-  }
-
-  .school-crest {
-    width: 44px;
-    height: 44px;
-    margin-right: 10px;
-    border-radius: 8px;
-  }
-
-  .logo-text h1 {
-    font-size: 20px;
-    letter-spacing: 0.5px;
-  }
-
-  .logo-text span {
-    font-size: 9.5px;
-    letter-spacing: 1px;
-  }
-
-  .head-right {
-    width: 100%;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-  }
-
-  .contact-pill {
-    padding: 5px 10px;
-    font-size: 11.5px;
-  }
-
-  .portal-quick-badge {
-    padding: 5px 10px;
-    font-size: 11px;
-  }
-
-  .head .icon {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    font-size: 12px;
-  }
-
-  header {
+  /* Mobile Sticky Header Bar */
+  .blis-main-header {
+    position: sticky;
+    top: 0;
     margin: 0;
     border-radius: 0;
-    background: #0c2438;
+    background: rgba(7, 22, 38, 0.97);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  header nav {
-    min-height: 48px;
-    padding: 0 8px;
-  }
-
-  header ul.flexSB {
-    display: none;
-  }
-
-  .mobile-brand-bar {
-    display: flex;
-  }
-
-  .start {
-    display: none;
-  }
-
-  .toggle {
-    display: block;
-    background: transparent;
-    color: #34d399;
-    font-size: 20px;
-    border: none;
-    box-shadow: none;
-    padding: 12px 14px;
-    margin: 0;
-    cursor: pointer;
-  }
-
-  .mobile-nav {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    max-height: calc(100vh - 120px);
-    overflow-y: auto;
-    background-color: #0c2438;
-    padding: 18px 20px 28px 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.55);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-bottom: 3px solid #10b981;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
     z-index: 999;
+  }
+
+  .nav-container {
+    padding: 10px 16px;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     box-sizing: border-box;
   }
 
-  .mobile-nav li a {
-    color: #f1f5f9;
-    font-size: 15px;
+  /* Mobile Brand Logo on Left */
+  .mobile-nav-brand {
     display: block;
-    padding: 11px 14px;
+  }
+
+  .mobile-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .mobile-crest {
+    width: 40px;
+    height: 40px;
+    background: #ffffff;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+  }
+
+  .mobile-crest img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .mobile-logo-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+  }
+
+  .mobile-sub {
+    font-size: 9px;
+    font-weight: 700;
+    color: #10b981;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* Hide Desktop Nav and Launch button */
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .desktop-erp-cta {
+    display: none !important;
+  }
+
+  /* Mobile Controls on Right */
+  .mobile-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mobile-quick-call-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    color: #fbbf24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    text-decoration: none;
     transition: all 0.2s ease;
   }
 
-  .mobile-nav li a.active,
-  .mobile-nav li a:hover {
+  .mobile-quick-call-btn:active {
+    transform: scale(0.92);
+    background: #f59e0b;
+    color: #071626;
+  }
+
+  .mobile-portal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #34d399;
+    padding: 6px 10px;
+    border-radius: 16px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-portal-badge:active {
+    background: #10b981;
     color: #ffffff;
-    background: rgba(16, 185, 129, 0.2);
+  }
+
+  /* Hamburger Toggle Button */
+  .mobile-toggle-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #34d399;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-toggle-btn.is-open {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #f87171;
+  }
+
+  /* ----------------------------------------------------------------
+     Mobile Navigation Drawer & Overlay
+     ---------------------------------------------------------------- */
+  .mobile-nav-backdrop {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(3, 10, 18, 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .mobile-nav-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-nav-drawer {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 330px;
+    max-width: 88vw;
+    height: 100vh;
+    background: #071626;
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.6);
+    z-index: 1001;
+    transform: translateX(100%);
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .mobile-nav-drawer.open {
+    transform: translateX(0);
+  }
+
+  /* Drawer Header */
+  .drawer-header {
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: #0c2438;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .drawer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .drawer-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 6px;
+    padding: 2px;
+  }
+
+  .drawer-brand strong {
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    color: #ffffff;
+    display: block;
+    line-height: 1.1;
+  }
+
+  .drawer-brand small {
+    font-size: 9px;
+    color: #10b981;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .drawer-close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: #cbd5e1;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .drawer-close-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+  }
+
+  /* Drawer Body */
+  .drawer-body {
+    padding: 16px 18px 30px 18px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-sizing: border-box;
+  }
+
+  /* Quick ERP Launch Card */
+  .drawer-erp-card {
+    background: linear-gradient(135deg, rgba(0, 168, 132, 0.2) 0%, rgba(5, 150, 105, 0.1) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  .erp-card-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #34d399;
+    letter-spacing: 0.8px;
+  }
+
+  .live-tag {
+    background: #f59e0b;
+    color: #071626;
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .drawer-erp-card h4 {
+    color: #ffffff;
+    font-size: 15px;
+    margin: 4px 0 4px 0;
+    font-weight: 700;
+  }
+
+  .drawer-erp-card p {
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.4;
+    margin: 0 0 12px 0;
+  }
+
+  .drawer-portal-launch-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #00a884 0%, #059669 100%);
+    color: #ffffff !important;
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    box-shadow: 0 4px 12px rgba(0, 168, 132, 0.4);
+    transition: all 0.2s ease;
+  }
+
+  .drawer-portal-launch-btn:active {
+    transform: translateY(1px);
+  }
+
+  /* Founding Ministry Link in Drawer */
+  .drawer-mission-link {
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+  }
+
+  .drawer-mission-link:hover {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: #38bdf8;
+  }
+
+  .mission-icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(56, 189, 248, 0.2);
+    color: #38bdf8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* Drawer Navigation Links List */
+  .drawer-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .drawer-nav-list li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #e2e8f0;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+  }
+
+  .drawer-nav-list li a i {
+    color: #94a3b8;
+    font-size: 14px;
+    width: 18px;
+    text-align: center;
+  }
+
+  .drawer-nav-list li a:hover,
+  .drawer-nav-list li a.active {
+    color: #ffffff;
+    background: rgba(16, 185, 129, 0.18);
     border-color: rgba(16, 185, 129, 0.4);
     padding-left: 18px;
   }
 
-  .mobile-portal-link {
-    display: block;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  .drawer-nav-list li a.active i,
+  .drawer-nav-list li a:hover i {
+    color: #34d399;
   }
 
-  .portal-nav-btn {
-    display: block;
-    background: linear-gradient(135deg, #00a884 0%, #059669 100%) !important;
-    color: #ffffff !important;
-    text-align: center;
-    padding: 14px !important;
-    border-radius: 8px;
-    font-weight: 700 !important;
-    font-size: 14px;
-    box-shadow: 0 4px 14px rgba(0, 168, 132, 0.4);
+  /* Drawer Contact Info */
+  .drawer-contact-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .drawer-contact-box h5 {
+    color: #f59e0b;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 0 0 2px 0;
+  }
+
+  .drawer-contact-item {
+    color: #cbd5e1;
+    font-size: 12px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.4;
+  }
+
+  .drawer-contact-item i {
+    color: #10b981;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .drawer-contact-item.address {
+    font-size: 11.5px;
+    color: #94a3b8;
+  }
+
+  /* Drawer Social Row */
+  .drawer-social-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  .drawer-social-icons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .drawer-social-icons a {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .drawer-social-icons a:hover {
+    background: #00a884;
+    color: #fff;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .logo-text h1 {
-    font-size: 18px;
+  .mobile-title {
+    font-size: 14.5px;
   }
-  .logo-text span {
+  .mobile-sub {
     font-size: 8.5px;
   }
-  .head-right {
-    gap: 8px;
+  .mobile-crest {
+    width: 36px;
+    height: 36px;
   }
-  .portal-quick-badge {
+  .announcement-text {
     font-size: 10px;
-    padding: 4px 8px;
   }
-  .head .social {
-    gap: 4px;
+  .mobile-phone-link {
+    font-size: 10px;
   }
-  .head .icon {
-    width: 28px;
-    height: 28px;
-    line-height: 28px;
-    font-size: 11px;
+  .mobile-mission-link {
+    font-size: 10px;
   }
 }

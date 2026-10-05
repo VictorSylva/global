@@ -13,18 +13,36 @@ const Hero = () => {
           <div className='hero-content'>
             <div className='hero-badge flex' style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
               <img src='/images/logo.png' alt='BLIS Logo' style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
-              <span>Crèche • Nursery • Primary • JSS 1–3 • SS 1–2 | <em>"Study to Make Impact"</em></span>
+              <span>Crèche • Nursery • Primary • JSS 1–3 • SS 1–3 | <em>"Study to Make Impact"</em></span>
             </div>
             
             <Heading
-              subtitle='WELCOME TO BRIGHTER LAND INTERNATIONAL SCHOOL'
-              title='Nurturing Global Leaders, Inspiring Excellence'
+              subtitle='WHERE EDUCATION MEETS PURPOSE • STUDY TO MAKE IMPACT'
+              title='Nurturing Mind, Character & Purpose in Every Child'
             />
             
             <p className='hero-desc'>
-              A premier institution of academic distinction, moral integrity, and technological innovation. 
-              Providing world-class foundational care from Crèche and Nursery through Primary and Junior & Senior Secondary with outstanding success in BECE, WAEC, NECO, and international examinations.
+              Welcome to Brighter Land International School — a faith-based institution offering world-class education from Crèche to Secondary School. We are dedicated to raising confident, impactful leaders, with special scholarship support for orphans, missionary children, and vulnerable youths.
             </p>
+
+            {/* Founding Parent Ministry Website Button */}
+            <div className='hero-mission-cta'>
+              <a
+                href='https://brighterlandglobalmission.org/'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='hero-mission-btn'
+                title='Visit Brighter Land Global Mission Website'
+              >
+                <div className='hm-icon-box'>
+                  <i className='fas fa-globe-africa'></i>
+                </div>
+                <div className='hm-text-box'>
+                  <small>FOUNDING PARENT MINISTRY</small>
+                  <strong>Brighter Land Global Mission <i className='fas fa-arrow-right'></i></strong>
+                </div>
+              </a>
+            </div>
 
             <div className='hero-buttons'>
               <a
@@ -43,42 +61,54 @@ const Hero = () => {
                 <span>EXPLORE ACADEMICS</span>
                 <i className='fa fa-graduation-cap'></i>
               </Link>
-              <Link to='/about' className='hero-btn outline-hero-btn'>
-                <span>ABOUT OUR SCHOOL</span>
+              <a
+                href='#mission-vision'
+                className='hero-btn outline-hero-btn'
+                onClick={(e) => {
+                  e.preventDefault()
+                  const el = document.getElementById("mission-vision")
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth" })
+                  } else {
+                    window.location.href = "/about"
+                  }
+                }}
+              >
+                <span>OUR MISSION & MANDATE</span>
                 <i className='fa fa-university'></i>
-              </Link>
+              </a>
             </div>
 
             <div className='hero-features-grid'>
               <div className='hero-feature-card'>
-                <div className='hf-icon'><i className='fas fa-globe-americas'></i></div>
+                <div className='hf-icon'><i className='fas fa-book-open'></i></div>
                 <div>
-                  <h4>Global Curriculum</h4>
-                  <small>National & Global Standards</small>
+                  <h4>Building Minds</h4>
+                  <small>World-Class Curriculum</small>
                 </div>
               </div>
 
               <div className='hero-feature-card'>
-                <div className='hf-icon'><i className='fas fa-microchip'></i></div>
+                <div className='hf-icon'><i className='fas fa-seedling'></i></div>
                 <div>
-                  <h4>STEAM & Computing</h4>
-                  <small>Robotics & Digital Skills</small>
+                  <h4>Shaping Character</h4>
+                  <small>Faith & Moral Integrity</small>
                 </div>
               </div>
 
               <div className='hero-feature-card'>
-                <div className='hf-icon'><i className='fas fa-user-graduate'></i></div>
+                <div className='hf-icon'><i className='fas fa-bullseye'></i></div>
                 <div>
-                  <h4>100% Exam Pass</h4>
-                  <small>WAEC, NECO & BECE Distinctions</small>
+                  <h4>Discovering Purpose</h4>
+                  <small>Proverbs 22:6 Mentorship</small>
                 </div>
               </div>
 
               <div className='hero-feature-card'>
-                <div className='hf-icon'><i className='fas fa-shield-alt'></i></div>
+                <div className='hf-icon'><i className='fas fa-globe-africa'></i></div>
                 <div>
-                  <h4>Integrated ERP</h4>
-                  <small>Real-Time Parent Portal</small>
+                  <h4>Preparing Leaders</h4>
+                  <small>Impact & Scholarship Care</small>
                 </div>
               </div>
             </div>

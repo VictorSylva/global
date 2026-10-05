@@ -6,12 +6,25 @@ export const schoolAccountDetails = {
   accountNumber: "2043561832",
   session: "2026/2027 Academic Session",
   motto: "Study to Make Impact",
+  tagline: "Where Education Meets Purpose",
+  scripture: "Train up a child in the way he should go… — Proverbs 22:6",
+  mission: "To provide quality, faith-based education and compassionate scholarships that nurture children—especially orphans, missionary children, and the vulnerable—into responsible, confident, and impactful global leaders.",
+  vision: "To be a premier Christian institution where education meets purpose, raising a generation of godly, intellectually formidable, and purpose-driven leaders who transform society.",
+  mandate: "To provide quality education and nurture children—especially orphans, missionary children, children from conflict-affected communities, and the less privileged—into responsible, confident and impactful leaders.",
+  pillars: [
+    { title: "Building Minds", desc: "World-class foundational curriculum from Crèche to Senior Secondary." },
+    { title: "Shaping Character", desc: "Solid faith-based moral discipline, integrity, and godly virtue." },
+    { title: "Discovering Purpose", desc: "Unlocking God-given potential through personalized mentorship." },
+    { title: "Preparing Future Leaders", desc: "Raising confident, responsible, and impactful societal change-makers." },
+  ],
   logo: "/images/logo.png",
   proprietor: "Rev. Fidelis Gambo",
-  proprietorTitle: "Proprietor & Founder (Police Chaplain & Former University Lecturer)",
+  proprietorTitle: "Proprietor & Founder (Police Chaplain & Lectured at Theological Seminary)",
+  proprietress: "Mrs. Sifon Gambo",
+  proprietressTitle: "Proprietress & Co-Founder (Dedicated Educator & Pastoral Care Director)",
   email: "brighterlandschool2022@gmail.com",
   phone: "+234 803 436 7951",
-  address: "Gura-suga, Opposite Police Staff College Jos, Jos-South Local Government, Plateau State",
+  address: "Gura-Suga, Opposite Police Staff College, Jos, Plateau State, Nigeria",
 }
 
 export const prospectusData = [
@@ -137,9 +150,9 @@ export const prospectusData = [
     bookNote: "Books: JSS 1 – ₦20,000 | JSS 2 – ₦16,500 | JSS 3 – ₦16,500",
   },
   {
-    level: "SECONDARY SCHOOL – SENIOR (SS 1-2)",
+    level: "SECONDARY SCHOOL – SENIOR (SS 1–3)",
     code: "sss",
-    ageGroup: "SS 1 & SS 2",
+    ageGroup: "SS 1, SS 2, & SS 3",
     sectionA: {
       title: "Section A: Tuition & Levies (Payable to School)",
       items: [
@@ -164,7 +177,7 @@ export const prospectusData = [
     },
     additionalRequirements: "1 big mop stick or 1 big hoe or 2 big bunches of brooms",
     grandTotal: 106000,
-    bookNote: "Books: SS 1 – SS 2 – ₦32,000 comprehensive package",
+    bookNote: "Books: SS 1 – SS 3 – ₦32,000 comprehensive package",
   },
 ]
 
@@ -184,7 +197,7 @@ export const getProspectusForGrade = (gradeName) => {
     return prospectusData[3] // SECONDARY SCHOOL – JUNIOR (JSS 1–3) (Section A: ₦30,000, Section B: ₦64,000, Grand Total: ₦94,000)
   }
   if (g.includes("ss") || g.includes("senior")) {
-    return prospectusData[4] // SECONDARY SCHOOL – SENIOR (SS 1-2) (Section A: ₦30,000, Section B: ₦76,000, Grand Total: ₦106,000)
+    return prospectusData[4] // SECONDARY SCHOOL – SENIOR (SS 1–3) (Section A: ₦30,000, Section B: ₦76,000, Grand Total: ₦106,000)
   }
   return prospectusData[1]
 }
@@ -200,7 +213,7 @@ export const homeAbout = [
     id: 2,
     cover: "https://img.icons8.com/ios/80/000000/diploma.png",
     title: "Outstanding Board Examination Track Record",
-    desc: "Proven excellence in Common Entrance, Basic Education Certificate Examination (BECE), WAEC, NECO, and JAMB UTME.",
+    desc: "Proven excellence in Common Entrance, Basic Education Certificate Examination (BECE), WAEC, NECO, NABTEB, and JAMB UTME.",
   },
   {
     id: 3,
@@ -291,7 +304,7 @@ export const coursesCard = [
       "Hands-on digital studies & keyboarding literacy",
     ],
     leader: "Alheri Maga (Head Teacher & V.P Admin)",
-    distinctive: "100% Common Entrance Pass Rate",
+    distinctive: "Outstanding Common Entrance Success",
     courTeacher: [
       {
         dcover: "./images/team/t2.webp",
@@ -325,7 +338,7 @@ export const coursesCard = [
   {
     id: 5,
     icon: "fas fa-atom",
-    coursesName: "Senior Secondary — Science Track (SS 1 – 2)",
+    coursesName: "Senior Secondary — Science Track (SS 1 – 3)",
     stage: "Senior STEM Honors Track",
     targetAge: "Ages 14 – 17 Years",
     summary: "Intensive science education in Physics, Chemistry, Biology, Agriculture, and Geography for future engineers, medical professionals, and researchers.",
@@ -347,7 +360,7 @@ export const coursesCard = [
   {
     id: 6,
     icon: "fas fa-balance-scale",
-    coursesName: "Senior Secondary — Arts & Commercial (SS 1 – 2)",
+    coursesName: "Senior Secondary — Arts & Commercial (SS 1 – 3)",
     stage: "Humanities & Business Specialization",
     targetAge: "Ages 14 – 17 Years",
     summary: "Comprehensive academic training in Government, Economics, Accounting, Commerce, and Literature in English for careers in Law, Finance, and Public Administration.",
@@ -387,7 +400,7 @@ export const curriculumData = {
     ],
   },
   seniorScience: {
-    title: "Senior Secondary — Science Department (SS 1 – 2)",
+    title: "Senior Secondary — Science Department (SS 1 – 3)",
     description: "Rigorous science track preparing scholars for WAEC, NECO, and university STEM disciplines.",
     subjects: [
       { name: "English Language (General Core)", desc: "Formal discourse, advanced summary writing, comprehension, and oral English communication.", icon: "./images/courses/online/o2.png" },
@@ -402,7 +415,7 @@ export const curriculumData = {
     ],
   },
   seniorSocial: {
-    title: "Senior Secondary — Social Science & Commercial Department (SS 1 – 2)",
+    title: "Senior Secondary — Social Science & Commercial Department (SS 1 – 3)",
     description: "Curriculum preparing scholars for careers in law, business, finance, public administration, and social sciences.",
     subjects: [
       { name: "English Language (General Core)", desc: "Formal discourse, advanced summary writing, comprehension, and oral English communication.", icon: "./images/courses/online/o2.png" },
@@ -439,13 +452,11 @@ export const curriculumData = {
     title: "Nursery School Classes (Early Years)",
     description: "Early childhood development nurturing early literacy, numeracy, discovery, social habits, fine motor coordination, and sensory exploration.",
     subjects: [
-      { name: "Maths", desc: "Number recognition, object counting (1–50), identification of basic shapes, sizes, and concrete number concepts.", icon: "./images/courses/online/o1.png" },
-      { name: "English", desc: "Phonics letter sounds, alphabet recognition, picture reading, oral expression, nursery rhymes, and vocabulary.", icon: "./images/courses/online/o2.png" },
-      { name: "Quantitative", desc: "Pattern matching, sequence recognition, object grouping, counting puzzles, and early reasoning readiness.", icon: "./images/courses/online/o1.png" },
-      { name: "Verbal", desc: "Word-picture association, rhyming sounds, vocabulary recognition, listening skills, and speech clarity.", icon: "./images/courses/online/o2.png" },
+      { name: "Numeracy / Quantitative", desc: "Number recognition, object counting (1–50), quantitative patterns, basic shapes, sizes, and concrete number concepts.", icon: "./images/courses/online/o1.png" },
+      { name: "Literacy / Verbal", desc: "Phonics letter sounds, alphabet recognition, picture reading, oral expression, verbal reasoning, nursery rhymes, and vocabulary.", icon: "./images/courses/online/o2.png" },
+      { name: "Basic Science Discovery", desc: "Foundational nature discovery, living systems, physical phenomena, and sensory exploration.", icon: "./images/courses/online/o4.png" },
       { name: "Handwriting", desc: "Pencil grip mastery, stroke tracing, pre-writing curves, and forming letters neatly within guidelines.", icon: "./images/courses/online/o2.png" },
-      { name: "Colouring", desc: "Color identification, staying within lines, crayon coordination, and creative visual expression.", icon: "./images/courses/online/o10.png" },
-      { name: "Creative Art", desc: "Playdough modeling, finger painting, paper crafts, sensory art exploration, and hands-on creativity.", icon: "./images/courses/online/o10.png" },
+      { name: "Colouring & Creative Art", desc: "Color identification, staying within lines, crayon coordination, and creative visual expression.", icon: "./images/courses/online/o10.png" },
       { name: "C.R.S", desc: "Simple Bible stories, praise songs, God's love, kindness, sharing, and godly character formation.", icon: "./images/courses/online/o9.png" },
       { name: "Social Habit", desc: "Courteous greetings, polite manners, sharing toys, obeying instructions, classroom etiquette, and kindness.", icon: "./images/courses/online/o6.png" },
       { name: "Health Habit", desc: "Hand washing routines, tooth care, clean uniform habits, toilet etiquette, and eating healthy fruit snacks.", icon: "./images/courses/online/o11.png" },
@@ -770,34 +781,18 @@ export const online = [
 
   // NURSERY CLASSES (EARLY YEARS SECTION)
   {
-    courseName: "Maths",
+    courseName: "Numeracy / Quantitative",
     course: "Nursery School (Early Years)",
     category: "nursery",
-    desc: "Number recognition, object counting (1–50), identification of basic shapes, sizes, and concrete number concepts.",
+    desc: "Number recognition, object counting (1–50), quantitative reasoning, identification of basic shapes, sizes, and concrete number concepts.",
     cover: "./images/courses/online/o1.png",
     hoverCover: "./images/courses/online/o1.1.png",
   },
   {
-    courseName: "English",
+    courseName: "Literacy / Verbal",
     course: "Nursery School (Early Years)",
     category: "nursery",
-    desc: "Phonics letter sounds, alphabet recognition, picture reading, oral expression, nursery rhymes, and vocabulary.",
-    cover: "./images/courses/online/o2.png",
-    hoverCover: "./images/courses/online/o2.1.png",
-  },
-  {
-    courseName: "Quantitative",
-    course: "Nursery School (Early Years)",
-    category: "nursery",
-    desc: "Pattern matching, sequence recognition, object grouping, counting puzzles, and early reasoning readiness.",
-    cover: "./images/courses/online/o1.png",
-    hoverCover: "./images/courses/online/o1.1.png",
-  },
-  {
-    courseName: "Verbal",
-    course: "Nursery School (Early Years)",
-    category: "nursery",
-    desc: "Word-picture association, rhyming sounds, vocabulary recognition, listening skills, and speech clarity.",
+    desc: "Phonics letter sounds, alphabet recognition, picture reading, verbal reasoning, oral expression, nursery rhymes, and vocabulary.",
     cover: "./images/courses/online/o2.png",
     hoverCover: "./images/courses/online/o2.1.png",
   },
@@ -858,6 +853,15 @@ export const team = [
     work: "PROPRIETOR & FOUNDER (POLICE CHAPLAIN & FORMER UNIV. LECTURER)",
     role: "Proprietor & Founder",
     bio: "Founding visionary with an illustrious background in education, university lecturing, ministry, and public service.",
+    badge: "PROPRIETOR & FOUNDER",
+  },
+  {
+    cover: "./images/team/sifon_gambo.png",
+    name: "Mrs. Sifon Gambo",
+    work: "PROPRIETRESS & CO-FOUNDER",
+    role: "Proprietress & Co-Founder",
+    bio: "A dedicated educator, Mrs. Gambo, also the wife of Reverend Gambo, serves as proprietress — bringing compassion, discipline, and a motherly touch to the school and mission work.",
+    badge: "PROPRIETRESS & CO-FOUNDER",
   },
   {
     cover: "./images/team/t1.webp",
@@ -865,6 +869,7 @@ export const team = [
     work: "PRINCIPAL",
     role: "Head of School & Chief Administrator",
     bio: "Guiding institutional discipline, secondary education delivery, and outstanding success in WAEC, NECO, and BECE examinations.",
+    badge: "LEADERSHIP TEAM",
   },
   {
     cover: "./images/team/t2.webp",
@@ -941,9 +946,9 @@ export const price = [
     req: "1 big mop stick or 1 big hoe or 2 big bunches of brooms",
   },
   {
-    name: "SECONDARY – SENIOR (SS 1-2)",
+    name: "SECONDARY – SENIOR (SS 1–3)",
     price: "30,000",
-    desc: "SS 1 & SS 2. Section A (Tuition ₦23k, Exam ₦2k, Lesson ₦2k, Dev Levy ₦1k, PTA ₦1k, First Aid ₦1k: ₦30,000). Section B: ₦76,000.",
+    desc: "SS 1 to 3. Section A (Tuition ₦23k, Exam ₦2k, Lesson ₦2k, Dev Levy ₦1k, PTA ₦1k, First Aid ₦1k: ₦30,000). Section B: ₦76,000.",
     tuition: "₦23,000",
     sectionATotal: "₦30,000",
     sectionBTotal: "₦76,000",
@@ -958,7 +963,7 @@ export const faq = [
   },
   {
     title: "What is included in Section A (Tuition & Levies)?",
-    desc: "Section A is payable directly to the school each term and covers: Tuition Fees, PTA Levy, School Development Levy, Terminal Examination Fee, School First Aid Clinic Fee, and Compulsory Lesson Fee. For Crèche/Nursery, total is ₦19,500; for Primary 1-5, total is ₦22,000; and for Secondary (JSS 1-3 & SS 1-2), total is ₦30,000.",
+    desc: "Section A is payable directly to the school each term and covers: Tuition Fees, PTA Levy, School Development Levy, Terminal Examination Fee, School First Aid Clinic Fee, and Compulsory Lesson Fee. For Crèche/Nursery, total is ₦19,500; for Primary 1-5, total is ₦22,000; and for Secondary (JSS 1-3 & SS 1-3), total is ₦30,000.",
   },
   {
     title: "What is included in Section B (Uniforms & Learning Materials)?",
@@ -966,7 +971,7 @@ export const faq = [
   },
   {
     title: "What are the additional term requirements for enrolled scholars?",
-    desc: "For Crèche, Nursery 1-2, and Primary 1-5: 2 rolls of tissue paper and 1 medium-size detergent. For Secondary School (JSS 1-3 & SS 1-2): 1 big mop stick OR 1 big hoe OR 2 big bunches of brooms.",
+    desc: "For Crèche, Nursery 1-2, and Primary 1-5: 2 rolls of tissue paper and 1 medium-size detergent. For Secondary School (JSS 1-3 & SS 1-3): 1 big mop stick OR 1 big hoe OR 2 big bunches of brooms.",
   },
   {
     title: "How does the BLIS Operations Portal assist parents in tracking fees and report cards?",
@@ -1027,11 +1032,11 @@ export const generateDefaultTimetable = (className) => {
 
   if (isNursery) {
     return [
-      { period: "Period 1 (08:00 - 08:45)", mon: "Numeracy / Mathematics", tue: "Literacy / English", wed: "Quantitative Reasoning", thu: "Verbal Reasoning", fri: "Numeracy / Mathematics" },
-      { period: "Period 2 (08:45 - 09:30)", mon: "Literacy / English", tue: "Numeracy / Mathematics", wed: "Basic Science Discovery", thu: "Social Habits", fri: "Literacy / English" },
+      { period: "Period 1 (08:00 - 08:45)", mon: "Numeracy / Quantitative", tue: "Literacy / Verbal", wed: "Numeracy / Quantitative", thu: "Literacy / Verbal", fri: "Numeracy / Quantitative" },
+      { period: "Period 2 (08:45 - 09:30)", mon: "Literacy / Verbal", tue: "Numeracy / Quantitative", wed: "Basic Science Discovery", thu: "Social Habits", fri: "Literacy / Verbal" },
       { period: "Period 3 (09:30 - 10:15)", mon: "Handwriting & Tracing", tue: "Colouring & Creative Art", wed: "Christian Religious Studies (CRS)", thu: "Health Habits", fri: "Rhymes & Singing" },
       { period: "Snack & Nap Break (10:15 - 11:00)", mon: "Snack & Rest Time", tue: "Snack & Rest Time", wed: "Snack & Rest Time", thu: "Snack & Rest Time", fri: "Snack & Rest Time" },
-      { period: "Period 4 (11:00 - 11:45)", mon: "Social Habits", tue: "Health Habits", wed: "Colouring & Creative Art", thu: "Numeracy / Mathematics", fri: "Playground & Gross Motor" },
+      { period: "Period 4 (11:00 - 11:45)", mon: "Social Habits", tue: "Health Habits", wed: "Colouring & Creative Art", thu: "Numeracy / Quantitative", fri: "Playground & Gross Motor" },
       { period: "Period 5 (11:45 - 12:30)", mon: "Story Time & Flashcards", tue: "Rhymes & Alphabet Play", wed: "Basic Science Discovery", thu: "Handwriting & Tracing", fri: "Closing Circle & Dismissal" },
     ]
   }
@@ -1079,10 +1084,42 @@ export const schoolTimetable = {
 
 export const announcements = []
 
+export const schoolCampuses = [
+  {
+    id: "headquarters",
+    name: "Headquarters (Main Campus)",
+    shortCode: "HQ",
+    badgeColor: "#00a884",
+    address: "Gura-Suga, Opposite Police Staff College, Jos, Plateau State, Nigeria",
+    lead: "Rev. Fidelis Gambo (Proprietor), Mrs. Sifon Gambo (Proprietress) & Mr. Tangai Samuel (Principal)",
+    phone: "+234 803 436 7951",
+    email: "hq@brighterland.sch.ng",
+    levels: ["Crèche", "Nursery 1 & 2", "Primary 1 - 5", "JSS 1 - 3", "SS 1 - 3"],
+    capacity: 350,
+    established: "2022",
+    features: "Main Administrative Complex, Science Laboratory, ICT Centre, Central Library & Sports Field",
+  },
+  {
+    id: "annex",
+    name: "Annex Campus",
+    shortCode: "Annex",
+    badgeColor: "#2563eb",
+    address: "Rayfield / Zawan Road Annex Campus, Jos, Plateau State, Nigeria",
+    lead: "Mrs. Alheri Maga (VP Admin / Head Mistress)",
+    phone: "+234 802 123 4567",
+    email: "annex@brighterland.sch.ng",
+    levels: ["Crèche", "Nursery 1 & 2", "Primary 1 - 5", "JSS 1 - 3"],
+    capacity: 200,
+    established: "2024",
+    features: "Early Learning Wing, Play Arena, Primary Classrooms, Junior Science & Phonics Lab",
+  },
+]
+
 export const busFleet = [
   {
     route: "Route 1 - Town Center & Main Express",
     busNo: "BLIS-BUS-01",
+    campus: "Headquarters",
     driver: "Mr. Sunday Okafor",
     phone: "0803 111 2233",
     capacity: "36 / 40",
@@ -1093,6 +1130,7 @@ export const busFleet = [
   {
     route: "Route 2 - GRA & Residential Layout",
     busNo: "BLIS-BUS-02",
+    campus: "Headquarters",
     driver: "Mr. Yakubu Musa",
     phone: "0802 333 4455",
     capacity: "38 / 40",
@@ -1101,8 +1139,9 @@ export const busFleet = [
     etaSchool: "Arrived",
   },
   {
-    route: "Route 3 - Phase 2 & Commercial Corridor",
+    route: "Route 3 - Rayfield, Zawan & Annex Corridor",
     busNo: "BLIS-BUS-03",
+    campus: "Annex",
     driver: "Mr. Samuel Adeleke",
     phone: "0805 555 6677",
     capacity: "32 / 40",
@@ -1113,6 +1152,7 @@ export const busFleet = [
   {
     route: "Route 4 - Hilltop & New Extension",
     busNo: "BLIS-BUS-04",
+    campus: "Annex",
     driver: "Mr. Gregory Nnamdi",
     phone: "0809 777 8899",
     capacity: "35 / 40",
@@ -1163,8 +1203,9 @@ export const initialPortalUsers = [
     name: "BLIS School Administrator",
     role: "admin",
     roleTitle: "Super Administrator & Registry Secretariat",
+    campus: "All Campuses",
     department: "School Administration & Central Registry",
-    privileges: "Master System Administrator (User Registry, Staff Access Control, Student Information System, Bursary & Fees, Gradebook, Class Timetables, Circulars)",
+    privileges: "Master System Administrator (Multi-Branch Telemetry, User Registry, Staff Access Control, Student Information System, Bursary & Fees, Gradebook, Class Timetables, Circulars)",
     assignedClasses: ["All Classes"],
     status: "Active",
   },
@@ -1257,10 +1298,8 @@ export const getSubjectsForClass = (className) => {
   }
   if (lower.startsWith("nursery") || lower.startsWith("crèche") || lower.startsWith("creche")) {
     return [
-      "Numeracy / Mathematics",
-      "Literacy / English",
-      "Quantitative Reasoning",
-      "Verbal Reasoning",
+      "Numeracy / Quantitative",
+      "Literacy / Verbal",
       "Basic Science Discovery",
       "Handwriting",
       "Colouring & Creative Art",
