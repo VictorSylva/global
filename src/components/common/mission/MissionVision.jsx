@@ -125,6 +125,101 @@ const MissionVision = () => {
           </div>
         </div>
 
+        {/* Founder's Story & Genesis Video: From Global Mission to the School */}
+        <div className='mv-genesis-video-card' id='founder-interview'>
+          <div className='mvg-badge-row'>
+            <span className='mvg-pill'>
+              <i className='fas fa-video'></i> FOUNDER'S STORY & MISSION INTERVIEW
+            </span>
+            <span className='mvg-tagline'>THE GENESIS OF BRIGHTER LAND</span>
+          </div>
+
+          <div className='mvg-content-grid'>
+            {/* Left: Video Player */}
+            <div className='mvg-video-pane'>
+              <div className='mvg-video-frame'>
+                <video
+                  controls
+                  playsInline
+                  preload='metadata'
+                  poster='/images/proprietor.png'
+                  className='mvg-video'
+                >
+                  <source src='/images/gallery/mission.mp4' type='video/mp4' />
+                  Your browser does not support the video tag.
+                </video>
+                <div className='mvg-video-overlay-badge'>
+                  <i className='fas fa-play-circle'></i>
+                  <span>Interview with Rev. Fidelis Gambo</span>
+                </div>
+              </div>
+              <div className='mvg-video-caption'>
+                <i className='fas fa-info-circle'></i>
+                <span>Watch Rev. Fidelis Gambo explain how God birthed Brighter Land Global Mission and established the school.</span>
+              </div>
+            </div>
+
+            {/* Right: Narrative Context & Key Takeaways */}
+            <div className='mvg-text-pane'>
+              <div className='mvg-speaker-badge'>
+                <img src='/images/proprietor.png' alt='Rev. Fidelis Gambo' className='mvg-avatar' />
+                <div>
+                  <strong>Rev. Fidelis Gambo</strong>
+                  <small>Founder & Proprietor • Police Chaplain & Seminary Lecturer</small>
+                </div>
+              </div>
+
+              <h3>How the Global Mission Birthed the School</h3>
+              <p className='mvg-lead'>
+                In this documentary interview, Rev. Fidelis Gambo reflects on the humble beginnings of 
+                <strong> Brighter Land Global Mission</strong>—a divine vision rooted in evangelism, compassionate community outreaches, 
+                clean water boreholes, and relief for vulnerable families.
+              </p>
+              <p className='mvg-body'>
+                As the mission took root across communities in Plateau State, the urgent need for a Christ-centered institution of high academic distinction became undeniable. That burden gave birth to <strong>Brighter Land International School (BLIS)</strong>—providing foundational education, moral grounding, and life-changing scholarships for orphans and missionary children.
+              </p>
+
+              <div className='mvg-takeaway-grid'>
+                <div className='mvg-takeaway-item'>
+                  <div className='mvg-ti-icon'>
+                    <i className='fas fa-cross'></i>
+                  </div>
+                  <div>
+                    <strong>The Mother Ministry</strong>
+                    <span>Brighter Land Global Mission's heartbeat for community transformation and humanitarian aid.</span>
+                  </div>
+                </div>
+                <div className='mvg-takeaway-item'>
+                  <div className='mvg-ti-icon'>
+                    <i className='fas fa-graduation-cap'></i>
+                  </div>
+                  <div>
+                    <strong>Birthing the School</strong>
+                    <span>From Crèche to Secondary: Raising purposeful, godly champions under the motto <em>"Study to Make Impact."</em></span>
+                  </div>
+                </div>
+              </div>
+
+              <div className='mvg-action-row'>
+                <Link to='/gallery' className='mvg-btn primary'>
+                  <i className='fas fa-images'></i>
+                  <span>View Excursions & Mission Gallery</span>
+                </Link>
+                <a
+                  href='https://brighterlandglobalmission.org/'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='mvg-btn secondary'
+                  title='Parent Ministry Website'
+                >
+                  <i className='fas fa-globe-africa'></i>
+                  <span>Parent Ministry Portal</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Four Core Pillars */}
         <div className='mv-pillars-wrapper'>
           <div className='mv-pillars-header'>
@@ -176,3 +271,4 @@ const MissionVision = () => {
 }
 
 export default MissionVision
+

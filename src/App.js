@@ -9,6 +9,7 @@ import Team from "./components/team/Team"
 import Pricing from "./components/pricing/Pricing"
 import Blog from "./components/blog/Blog"
 import Contact from "./components/contact/Contact"
+import Gallery from "./components/gallery/Gallery"
 import Footer from "./components/common/footer/Footer"
 import Home from "./components/home/Home"
 import SchoolPortal from "./components/portal/SchoolPortal"
@@ -31,6 +32,9 @@ const AppContent = () => {
         <Route exact path='/faculty' component={Team} />
         <Route exact path='/pricing' component={Pricing} />
         <Route exact path='/admissions' component={Pricing} />
+        <Route exact path='/gallery' component={Gallery} />
+        <Route exact path='/impact' component={Gallery} />
+        <Route exact path='/excursions' component={Gallery} />
         <Route exact path='/journal' component={Blog} />
         <Route exact path='/notices' component={Blog} />
         <Route exact path='/contact' component={Contact} />

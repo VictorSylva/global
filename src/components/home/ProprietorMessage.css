@@ -304,6 +304,39 @@
   color: #64748b;
 }
 
+.psr-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.proprietor-fb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #1877f2;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.25);
+}
+
+.proprietor-fb-btn:hover {
+  background: #166fe5;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(24, 119, 242, 0.35);
+}
+
+.proprietor-fb-btn i {
+  font-size: 14px;
+}
+
 .psr-motto-badge {
   display: inline-flex;
   align-items: center;

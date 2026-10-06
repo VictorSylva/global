@@ -58,6 +58,9 @@ const Header = () => {
               <Link to='/about' className={isActive("/about")}>About BLIS</Link>
             </li>
             <li>
+              <Link to='/gallery' className={isActive("/gallery") || isActive("/impact") || isActive("/excursions")}>Gallery & Impact</Link>
+            </li>
+            <li>
               <Link to='/team' className={isActive("/team") || isActive("/faculty")}>Faculty & Deans</Link>
             </li>
             <li>
@@ -173,6 +176,12 @@ const Header = () => {
                 <Link to='/about' className={isActive("/about")} onClick={() => setClick(false)}>
                   <i className='fas fa-university'></i>
                   <span>About BLIS & Mandate</span>
+                </Link>
+              </li>
+              <li>
+                <Link to='/gallery' className={isActive("/gallery") || isActive("/impact") || isActive("/excursions")} onClick={() => setClick(false)}>
+                  <i className='fas fa-camera-retro'></i>
+                  <span>Gallery & Mission Impact</span>
                 </Link>
               </li>
               <li>

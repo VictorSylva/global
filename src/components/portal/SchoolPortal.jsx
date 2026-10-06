@@ -20,6 +20,12 @@ import {
 } from "../../dummydata"
 import "./portal.css"
 import { saveToCloud, subscribeToCloudDoc } from "../../firebase"
+import {
+  getStoredPublicNews,
+  savePublicNews,
+  subscribeToPublicNews,
+  DEFAULT_NEWS_COVERS,
+} from "../../services/newsService"
 
 // Calculate Unified Section A & Section B fee breakdowns, installment allocation, and completion status
 export const calculateInvoiceBreakdown = (inv) => {
@@ -479,6 +485,7 @@ const SchoolPortal = () => {
       case "finance": return "Tuition & Bursary Ledger"
       case "bus": return "School Bus Operations"
       case "notices": return "Official Circulars"
+      case "public-news": return "Public Website News & Articles"
       case "timetable": return "Academic Timetables"
       case "fee-breakdown": return "Payment Streams (Section A & B)"
       case "settings": return "System Settings"
@@ -509,6 +516,7 @@ const SchoolPortal = () => {
       case "bus":
       case "transport": return "fas fa-bus"
       case "notices": return "fas fa-bullhorn"
+      case "public-news": return "fas fa-newspaper"
       case "timetable": return "fas fa-calendar-alt"
       case "settings": return "fas fa-sliders-h"
       default: return "fas fa-th-large"
@@ -533,6 +541,7 @@ const SchoolPortal = () => {
       "admissions",
       "timetable",
       "notices",
+      "public-news",
       "bus",
       "transport",
       "bursary-prospectus",
@@ -553,6 +562,7 @@ const SchoolPortal = () => {
       "admissions",
       "timetable",
       "notices",
+      "public-news",
       "bus",
       "transport",
       "bursary-prospectus",
@@ -720,6 +730,20 @@ const SchoolPortal = () => {
   const [showProspectusModal, setShowProspectusModal] = useState(false)
   const [createdStudentCredentials, setCreatedStudentCredentials] = useState(null)
   const [parentSelectedWardId, setParentSelectedWardId] = useState(null)
+
+  // Public Website News & Articles Management State
+  const [publicNews, setPublicNews] = useState(getStoredPublicNews)
+  const [showNewsModal, setShowNewsModal] = useState(false)
+  const [editingNewsItem, setEditingNewsItem] = useState(null)
+  const [newsForm, setNewsForm] = useState({
+    title: "",
+    type: "School News",
+    date: "",
+    com: "0 COMMENTS",
+    desc: "",
+    cover: "./images/blog/b1.webp",
+    customCover: "",
+  })
 
   // Toast feedback state
   const [toastMessage, setToastMessage] = useState(null)
@@ -1148,6 +1172,12 @@ const SchoolPortal = () => {
       }
     })
 
+    const unsubPublicNews = subscribeToPublicNews((cloudNews) => {
+      if (Array.isArray(cloudNews)) {
+        setPublicNews(cloudNews)
+      }
+    })
+
     return () => {
       if (typeof unsubUsers === "function") unsubUsers()
       if (typeof unsubStudents === "function") unsubStudents()
@@ -1157,6 +1187,7 @@ const SchoolPortal = () => {
       if (typeof unsubNotices === "function") unsubNotices()
       if (typeof unsubTaught === "function") unsubTaught()
       if (typeof unsubCollation === "function") unsubCollation()
+      if (typeof unsubPublicNews === "function") unsubPublicNews()
     }
   }, [])
 
@@ -5484,6 +5515,15 @@ Motto: "Study to Make Impact"
                   <i className='fas fa-bullhorn'></i>
                   <span>Official Board Directives</span>
                 </button>
+
+                <button
+                  className={`menu-item ${activeTab === "public-news" ? "active" : ""}`}
+                  onClick={() => handleTabSelect("public-news")}
+                >
+                  <i className='fas fa-newspaper'></i>
+                  <span>Public Website News</span>
+                  <span className='menu-count green'>{publicNews.length}</span>
+                </button>
               </>
             )}
 
@@ -5615,6 +5655,15 @@ Motto: "Study to Make Impact"
                 >
                   <i className='fas fa-bullhorn'></i>
                   <span>Circulars & Notices</span>
+                </button>
+
+                <button
+                  className={`menu-item ${activeTab === "public-news" ? "active" : ""}`}
+                  onClick={() => handleTabSelect("public-news")}
+                >
+                  <i className='fas fa-newspaper'></i>
+                  <span>Public Website News</span>
+                  <span className='menu-count green'>{publicNews.length}</span>
                 </button>
 
                 <button
@@ -11244,7 +11293,16 @@ Motto: "Study to Make Impact"
                   <h2>Official Circulars & Community Notices</h2>
                   <p>Broadcast communications for parents, staff, and scholars.</p>
                 </div>
-                <div className='flex' style={{ gap: '10px' }}>
+                <div className='flex' style={{ gap: '10px', flexWrap: 'wrap' }}>
+                  <button
+                    type='button'
+                    className='outline-btn'
+                    style={{ color: '#00a884', borderColor: '#00a884' }}
+                    onClick={() => setActiveTab("public-news")}
+                    title='Manage news and blog articles displayed on the public school website'
+                  >
+                    <i className='fas fa-newspaper'></i> Public Website News &rarr;
+                  </button>
                   {notices && notices.length > 0 && (
                     <button
                       type='button'
@@ -11317,6 +11375,230 @@ Motto: "Study to Make Impact"
                     </p>
                     <button className='primary-btn' onClick={() => setShowNewNoticeModal(true)}>
                       <i className='fas fa-plus'></i> Compose First Circular
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* 8b. PUBLIC WEBSITE NEWS & BLOG POSTS MANAGER */}
+          {activeTab === "public-news" && (
+            <div className='tab-view public-news-view'>
+              <div className='tab-header flexSB'>
+                <div>
+                  <h2>Public Website News & Blog Articles</h2>
+                  <p>Publish, edit, and manage articles showcased on the public website (Homepage, Journal/Notices, and Footer).</p>
+                </div>
+                <div className='flex' style={{ gap: '10px', flexWrap: 'wrap' }}>
+                  <Link
+                    to='/journal'
+                    target='_blank'
+                    rel='noreferrer'
+                    className='outline-btn'
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <i className='fas fa-external-link-alt'></i> View Public Site
+                  </Link>
+                  {publicNews && publicNews.length > 0 && (
+                    <button
+                      type='button'
+                      className='outline-btn'
+                      style={{ color: '#ef4444', borderColor: '#fca5a5' }}
+                      onClick={() => {
+                        if (window.confirm("Are you sure you want to clear all public news articles from the website?")) {
+                          setPublicNews([])
+                          savePublicNews([])
+                          showToast("All public news posts removed from the website.")
+                        }
+                      }}
+                    >
+                      <i className='fas fa-trash-alt'></i> Clear All
+                    </button>
+                  )}
+                  <button
+                    className='primary-btn'
+                    onClick={() => {
+                      const today = new Date()
+                      const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+                      const formattedDate = `${months[today.getMonth()]}. ${String(today.getDate()).padStart(2, "0")}, ${today.getFullYear()}`
+                      setEditingNewsItem(null)
+                      setNewsForm({
+                        title: "",
+                        type: "School News",
+                        date: formattedDate,
+                        com: "0 COMMENTS",
+                        desc: "",
+                        cover: "./images/blog/b1.webp",
+                        customCover: "",
+                      })
+                      setShowNewsModal(true)
+                    }}
+                  >
+                    <i className='fas fa-plus'></i> Publish News Post
+                  </button>
+                </div>
+              </div>
+
+              {/* Public Site Connection Banner */}
+              <div
+                style={{
+                  background: '#ecfdf5',
+                  border: '1px solid #a7f3d0',
+                  borderRadius: '10px',
+                  padding: '14px 18px',
+                  marginBottom: '20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '12px',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <i className='fas fa-broadcast-tower' style={{ fontSize: '20px', color: '#059669' }}></i>
+                  <div>
+                    <strong style={{ color: '#065f46', fontSize: '14px' }}>Public Website Broadcast Active</strong>
+                    <p style={{ margin: 0, fontSize: '13px', color: '#047857' }}>
+                      Posts created here sync instantly to the public Homepage, the Notices & Journal page (<code>/journal</code>), and the global footer.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type='button'
+                  className='outline-btn'
+                  style={{ fontSize: '12px', padding: '6px 14px', background: '#fff', borderColor: '#059669', color: '#065f46' }}
+                  onClick={() => setActiveTab("notices")}
+                >
+                  <i className='fas fa-bullhorn'></i> Go to Internal Portal Circulars
+                </button>
+              </div>
+
+              {/* Public News Posts Grid */}
+              <div className='notices-grid'>
+                {publicNews && publicNews.length > 0 ? (
+                  publicNews.map((n) => (
+                    <div className='notice-card' key={n.id} style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                      <div style={{ height: '160px', width: 'calc(100% + 32px)', overflow: 'hidden', background: '#e2e8f0', position: 'relative', borderRadius: '8px 8px 0 0', margin: '-16px -16px 14px -16px' }}>
+                        <img
+                          src={n.cover || "./images/blog/b1.webp"}
+                          alt={n.title}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          onError={(e) => {
+                            e.target.onerror = null
+                            e.target.src = "./images/blog/b1.webp"
+                          }}
+                        />
+                        <span
+                          style={{
+                            position: 'absolute',
+                            top: '10px',
+                            left: '10px',
+                            background: '#00a884',
+                            color: '#fff',
+                            fontSize: '11px',
+                            fontWeight: '700',
+                            padding: '4px 10px',
+                            borderRadius: '4px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px',
+                            boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                          }}
+                        >
+                          {n.type || "School News"}
+                        </span>
+                      </div>
+
+                      <div className='notice-head flexSB' style={{ marginBottom: '8px' }}>
+                        <small style={{ color: '#64748b', fontWeight: '600' }}>
+                          <i className='fas fa-calendar-alt' style={{ color: '#00a884', marginRight: '5px' }}></i> {n.date || "Recent"}
+                        </small>
+                        <div className='flex' style={{ gap: '6px' }}>
+                          <button
+                            type='button'
+                            title='Edit Article'
+                            style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '6px', color: '#0284c7', cursor: 'pointer', padding: '4px 8px', fontSize: '12px' }}
+                            onClick={() => {
+                              setEditingNewsItem(n)
+                              setNewsForm({
+                                title: n.title || "",
+                                type: n.type || "School News",
+                                date: n.date || "",
+                                com: n.com || "0 COMMENTS",
+                                desc: n.desc || "",
+                                cover: n.cover || "./images/blog/b1.webp",
+                                customCover: DEFAULT_NEWS_COVERS.some((c) => c.path === n.cover) ? "" : n.cover,
+                              })
+                              setShowNewsModal(true)
+                            }}
+                          >
+                            <i className='fas fa-edit'></i> Edit
+                          </button>
+                          <button
+                            type='button'
+                            title='Delete Article'
+                            style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', padding: '4px 8px', fontSize: '12px' }}
+                            onClick={() => {
+                              if (window.confirm(`Delete news article "${n.title}" from the public website?`)) {
+                                const updated = publicNews.filter((item) => item.id !== n.id)
+                                setPublicNews(updated)
+                                savePublicNews(updated)
+                                showToast(`Article "${n.title}" deleted from public site.`)
+                              }
+                            }}
+                          >
+                            <i className='fas fa-trash'></i>
+                          </button>
+                        </div>
+                      </div>
+
+                      <h3 style={{ fontSize: '16px', lineHeight: '1.4', marginBottom: '8px', color: '#0f172a' }}>{n.title}</h3>
+                      <p className='notice-content' style={{ flex: 1, fontSize: '13.5px', color: '#475569', lineHeight: '1.6', marginBottom: '14px' }}>
+                        {n.desc}
+                      </p>
+
+                      <div className='notice-footer flexSB' style={{ borderTop: '1px solid #e2e8f0', paddingTop: '10px', marginTop: 'auto' }}>
+                        <span style={{ fontSize: '12px', color: '#64748b' }}>
+                          <i className='fas fa-comments'></i> {n.com || "0 COMMENTS"}
+                        </span>
+                        <Link
+                          to='/journal'
+                          target='_blank'
+                          rel='noreferrer'
+                          style={{ fontSize: '12px', color: '#00a884', fontWeight: '700', textDecoration: 'none' }}
+                        >
+                          Preview Live <i className='fas fa-arrow-right'></i>
+                        </Link>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 20px', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
+                    <i className='fas fa-newspaper' style={{ fontSize: '44px', color: '#94a3b8', marginBottom: '14px', display: 'inline-block' }}></i>
+                    <h3 style={{ color: '#071626', marginBottom: '8px' }}>No Public News Articles Published Yet</h3>
+                    <p style={{ color: '#64748b', fontSize: '14px', maxWidth: '480px', margin: '0 auto 20px' }}>
+                      Compose articles, event announcements, and academic updates to showcase directly on the public school website.
+                    </p>
+                    <button
+                      className='primary-btn'
+                      onClick={() => {
+                        const today = new Date()
+                        const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+                        const formattedDate = `${months[today.getMonth()]}. ${String(today.getDate()).padStart(2, "0")}, ${today.getFullYear()}`
+                        setEditingNewsItem(null)
+                        setNewsForm({
+                          title: "",
+                          type: "School News",
+                          date: formattedDate,
+                          com: "0 COMMENTS",
+                          desc: "",
+                          cover: "./images/blog/b1.webp",
+                          customCover: "",
+                        })
+                        setShowNewsModal(true)
+                      }}
+                    >
+                      <i className='fas fa-plus'></i> Compose First News Post
                     </button>
                   </div>
                 )}
@@ -12826,6 +13108,205 @@ Motto: "Study to Make Impact"
               <div className='modal-actions'>
                 <button type='button' className='outline-btn' onClick={() => setShowNewNoticeModal(false)}>Cancel</button>
                 <button type='submit' className='primary-btn'>Broadcast Circular</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* --- MODAL: COMPOSE / EDIT PUBLIC WEBSITE NEWS MODAL --- */}
+      {showNewsModal && (
+        <div className='blis-modal-overlay' onClick={() => setShowNewsModal(false)}>
+          <div className='blis-modal-card' onClick={(e) => e.stopPropagation()} style={{ maxWidth: '680px' }}>
+            <div className='modal-header'>
+              <div>
+                <h3>{editingNewsItem ? "Edit Public Website News Article" : "Publish News to Public Website"}</h3>
+                <small>Displays live on Homepage, /journal & Footer</small>
+              </div>
+              <button className='modal-close' onClick={() => setShowNewsModal(false)}>×</button>
+            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                const finalCover = newsForm.customCover && newsForm.customCover.trim() ? newsForm.customCover.trim() : (newsForm.cover || "./images/blog/b1.webp")
+                
+                if (editingNewsItem) {
+                  const updated = publicNews.map((item) => {
+                    if (item.id === editingNewsItem.id) {
+                      return {
+                        ...item,
+                        title: newsForm.title,
+                        type: newsForm.type,
+                        date: newsForm.date,
+                        com: newsForm.com || "0 COMMENTS",
+                        desc: newsForm.desc,
+                        cover: finalCover,
+                      }
+                    }
+                    return item
+                  })
+                  setPublicNews(updated)
+                  savePublicNews(updated)
+                  showToast(`Article "${newsForm.title}" updated successfully on public site!`)
+                } else {
+                  const newArticle = {
+                    id: Date.now(),
+                    title: newsForm.title,
+                    type: newsForm.type,
+                    date: newsForm.date,
+                    com: newsForm.com || "0 COMMENTS",
+                    desc: newsForm.desc,
+                    cover: finalCover,
+                  }
+                  const updated = [newArticle, ...publicNews]
+                  setPublicNews(updated)
+                  savePublicNews(updated)
+                  showToast("🎉 News post published live to public website!")
+                }
+                setShowNewsModal(false)
+              }}
+              className='modal-form'
+            >
+              <div className='form-group'>
+                <label>News Headline / Article Title *</label>
+                <input
+                  type='text'
+                  required
+                  value={newsForm.title}
+                  onChange={(e) => setNewsForm({ ...newsForm, title: e.target.value })}
+                  placeholder='e.g. 2026/2027 Academic Session Resumption Date & Welcome Address'
+                />
+              </div>
+
+              <div className='form-row'>
+                <div className='form-group'>
+                  <label>Category / Tag</label>
+                  <select
+                    value={newsForm.type}
+                    onChange={(e) => setNewsForm({ ...newsForm, type: e.target.value })}
+                  >
+                    <option value='School News'>School News</option>
+                    <option value='Academic Excellence'>Academic Excellence</option>
+                    <option value='Sports & Athletics'>Sports & Athletics</option>
+                    <option value='Campus Events'>Campus Events</option>
+                    <option value='Admissions & Entry'>Admissions & Entry</option>
+                    <option value='Principal Desk'>Principal's Desk</option>
+                    <option value='STEM & Robotics'>STEM & Robotics</option>
+                    <option value='Arts & Culture'>Arts & Culture</option>
+                  </select>
+                </div>
+                <div className='form-group'>
+                  <label>Publication Date</label>
+                  <input
+                    type='text'
+                    required
+                    value={newsForm.date}
+                    onChange={(e) => setNewsForm({ ...newsForm, date: e.target.value })}
+                    placeholder='e.g. OCT. 05, 2026'
+                  />
+                </div>
+              </div>
+
+              {/* Cover Image Selector */}
+              <div className='form-group'>
+                <label>Select Cover Image (Presets or Custom URL)</label>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
+                    gap: '8px',
+                    maxHeight: '130px',
+                    overflowY: 'auto',
+                    padding: '8px',
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '8px',
+                    marginBottom: '10px',
+                  }}
+                >
+                  {DEFAULT_NEWS_COVERS.map((cov) => {
+                    const isSelected = (!newsForm.customCover && newsForm.cover === cov.path)
+                    return (
+                      <div
+                        key={cov.id}
+                        onClick={() => setNewsForm({ ...newsForm, cover: cov.path, customCover: "" })}
+                        title={cov.label}
+                        style={{
+                          cursor: 'pointer',
+                          borderRadius: '6px',
+                          overflow: 'hidden',
+                          border: isSelected ? '3px solid #00a884' : '1px solid #cbd5e1',
+                          boxShadow: isSelected ? '0 0 0 2px rgba(0,168,132,0.3)' : 'none',
+                          height: '56px',
+                          position: 'relative',
+                        }}
+                      >
+                        <img src={cov.path} alt={cov.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        {isSelected && (
+                          <div style={{ position: 'absolute', top: 2, right: 2, background: '#00a884', color: '#fff', borderRadius: '50%', width: '16px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px' }}>
+                            <i className='fas fa-check'></i>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+                <input
+                  type='text'
+                  value={newsForm.customCover}
+                  onChange={(e) => setNewsForm({ ...newsForm, customCover: e.target.value })}
+                  placeholder='Or paste custom image URL (https://... or ./images/...)'
+                  style={{ fontSize: '13px' }}
+                />
+              </div>
+
+              <div className='form-group'>
+                <label>Article Story / Summary *</label>
+                <textarea
+                  rows='5'
+                  required
+                  value={newsForm.desc}
+                  onChange={(e) => setNewsForm({ ...newsForm, desc: e.target.value })}
+                  placeholder='Write the news story or announcement details...'
+                ></textarea>
+              </div>
+
+              {/* Live Preview */}
+              {newsForm.title && (
+                <div style={{ background: '#f8fafc', border: '1px dashed #cbd5e1', borderRadius: '8px', padding: '12px', marginBottom: '14px' }}>
+                  <small style={{ fontWeight: '700', color: '#64748b', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+                    <i className='fas fa-eye'></i> Live Public Website Preview
+                  </small>
+                  <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <img
+                      src={newsForm.customCover || newsForm.cover || "./images/blog/b1.webp"}
+                      alt='Preview'
+                      style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '6px' }}
+                      onError={(e) => {
+                        e.target.onerror = null
+                        e.target.src = "./images/blog/b1.webp"
+                      }}
+                    />
+                    <div>
+                      <span style={{ fontSize: '11px', background: '#00a884', color: '#fff', padding: '2px 6px', borderRadius: '3px', fontWeight: '700' }}>
+                        {newsForm.type}
+                      </span>
+                      <strong style={{ display: 'block', fontSize: '13px', color: '#0f172a', marginTop: '2px' }}>
+                        {newsForm.title}
+                      </strong>
+                      <small style={{ color: '#64748b', fontSize: '11px' }}>
+                        {newsForm.date} • {newsForm.desc ? `${newsForm.desc.slice(0, 60)}...` : ""}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className='modal-actions'>
+                <button type='button' className='outline-btn' onClick={() => setShowNewsModal(false)}>Cancel</button>
+                <button type='submit' className='primary-btn'>
+                  <i className='fas fa-paper-plane'></i> {editingNewsItem ? "Save Changes" : "Publish to Website"}
+                </button>
               </div>
             </form>
           </div>

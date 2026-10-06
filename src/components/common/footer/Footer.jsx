@@ -1,6 +1,6 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { blog } from "../../../dummydata"
+import { getStoredPublicNews, subscribeToPublicNews } from "../../../services/newsService"
 import "./footer.css"
 import { sendWebsiteForm } from "../../../services/emailService"
 
@@ -8,6 +8,16 @@ const Footer = () => {
   const [email, setEmail] = useState("")
   const [subscribed, setSubscribed] = useState(false)
   const [sending, setSending] = useState(false)
+  const [newsList, setNewsList] = useState(getStoredPublicNews)
+
+  useEffect(() => {
+    const unsub = subscribeToPublicNews((updatedList) => {
+      setNewsList(updatedList)
+    })
+    return () => {
+      if (typeof unsub === "function") unsub()
+    }
+  }, [])
 
   const handleSubscribe = async (e) => {
     e.preventDefault()
@@ -99,29 +109,37 @@ const Footer = () => {
           </div>
 
           <div className='box link'>
-            <h3>Operations & Bursary</h3>
+            <h3>Operations & Impact</h3>
             <ul>
               <li><Link to='/portal' style={{ color: '#34d399', fontWeight: '700' }}><i className='fas fa-laptop-code'></i> Operations ERP Suite</Link></li>
+              <li><Link to='/gallery' style={{ color: '#fbbf24', fontWeight: '700' }}><i className='fas fa-camera-retro'></i> Excursions & Gallery</Link></li>
               <li><Link to='/pricing' style={{ color: '#f59e0b', fontWeight: '600' }}><i className='fas fa-file-invoice'></i> Prospectus & School Fees</Link></li>
               <li><Link to='/team'>Faculty & Leadership</Link></li>
-              <li><Link to='/journal'>School Circulars</Link></li>
-              <li><Link to='/about'>School Philosophy</Link></li>
+              <li><Link to='/about'>Vision & Mandate</Link></li>
               <li><Link to='/contact'>Campus & Inquiries</Link></li>
             </ul>
           </div>
 
           <div className='box'>
             <h3>Recent Notices</h3>
-            {blog && blog.length > 0 ? (
-              blog.slice(0, 2).map((val) => (
+            {newsList && newsList.length > 0 ? (
+              newsList.slice(0, 2).map((val) => (
                 <div className='items flexSB' key={val.id} style={{ marginBottom: '14px' }}>
                   <div className='img' style={{ width: '65px', height: '65px', flexShrink: 0, marginRight: '12px' }}>
-                    <img src={val.cover} alt={val.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }} />
+                    <img
+                      src={val.cover || "/images/blog/b1.webp"}
+                      alt={val.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }}
+                      onError={(e) => {
+                        e.target.onerror = null
+                        e.target.src = "/images/blog/b1.webp"
+                      }}
+                    />
                   </div>
                   <div className='text'>
                     <span>
                       <i className='fa fa-calendar-alt' style={{ marginRight: '5px', color: '#10b981' }}></i>
-                      <label style={{ fontSize: '11px', color: '#94a3b8' }}>{val.date}</label>
+                      <label style={{ fontSize: '11px', color: '#94a3b8' }}>{val.date || "Recent"}</label>
                     </span>
                     <h4 style={{ fontSize: '13px', lineHeight: '1.3', marginTop: '4px' }}>
                       <Link to='/journal' style={{ color: '#e2e8f0' }}>{val.title.slice(0, 48)}...</Link>

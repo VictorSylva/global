@@ -1,0 +1,221 @@
+/* ==========================================================================
+   Home Gallery Preview Section Styling
+   ========================================================================== */
+
+.home-gallery-preview {
+  background: #ffffff;
+  padding: 85px 0 90px;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.hgp-header {
+  margin-bottom: 35px;
+  align-items: flex-end;
+  gap: 24px;
+}
+
+.hgp-header-left {
+  max-width: 750px;
+}
+
+.hgp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 168, 132, 0.1);
+  border: 1px solid rgba(0, 168, 132, 0.25);
+  color: #00a884;
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  margin-bottom: 14px;
+}
+
+.hgp-header-left h2 {
+  font-size: 34px;
+  font-weight: 800;
+  color: #071626;
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+
+.hgp-header-left p {
+  font-size: 15.5px;
+  color: #475569;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.hgp-view-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 24px;
+  border-radius: 8px;
+  background: #071626;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(7, 22, 38, 0.15);
+}
+
+.hgp-view-all-btn:hover {
+  background: #00a884;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 168, 132, 0.35);
+}
+
+.hgp-tabs {
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.hgp-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 30px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: none;
+}
+
+.hgp-tab-btn i {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.hgp-tab-btn:hover {
+  background: #f1f5f9;
+  color: #071626;
+  border-color: #cbd5e1;
+}
+
+.hgp-tab-btn.active {
+  background: #00a884;
+  color: #ffffff;
+  border-color: #00a884;
+  box-shadow: 0 4px 12px rgba(0, 168, 132, 0.3);
+}
+
+.hgp-tab-btn.active i {
+  color: #ffffff;
+}
+
+.hgp-grid {
+  margin-bottom: 40px;
+}
+
+/* Bottom Feature Banner */
+.hgp-feature-banner {
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 22px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hgp-fb-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.hgp-fb-pill i {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #00a884;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.hgp-fb-pill strong {
+  display: block;
+  font-size: 13.5px;
+  color: #071626;
+  line-height: 1.25;
+}
+
+.hgp-fb-pill small {
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+.hgp-fb-divider {
+  width: 1px;
+  height: 36px;
+  background: #cbd5e1;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+@media screen and (max-width: 1024px) {
+  .hgp-feature-banner {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .hgp-fb-divider {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .home-gallery-preview {
+    padding: 60px 0;
+  }
+
+  .hgp-header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 25px;
+  }
+
+  .hgp-header-left h2 {
+    font-size: 26px;
+  }
+
+  .hgp-header-left p {
+    font-size: 14.5px;
+  }
+
+  .hgp-view-all-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hgp-feature-banner {
+    grid-template-columns: 1fr;
+    padding: 18px;
+    gap: 16px;
+  }
+}

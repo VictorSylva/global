@@ -18,12 +18,13 @@ const leadersData = {
     highlightDesc: "Pastoral mentorship & holistic leadership",
     signName: "Rev. Fidelis Gambo",
     signTitle: "Proprietor & Board Chairman",
+    facebook: "https://web.facebook.com/fidelis.gambo.98",
   },
   proprietress: {
     tag: "FROM THE PROPRIETRESS' DESK",
     name: "Mrs. Sifon Gambo",
     role: "Proprietress & Co-Founder • BLIS",
-    image: "/images/proprietress.png",
+    image: "/images/team/sifon.jpeg",
     subtitle: ["Mrs. Sifon Gambo", "Dedicated Educator", "Pastoral Care & Mission Director"],
     title: "Nurturing Every Scholar with Compassion & Excellence",
     quote:
@@ -35,6 +36,7 @@ const leadersData = {
     highlightDesc: "Motherly touch, pastoral guidance & personalized care",
     signName: "Mrs. Sifon Gambo",
     signTitle: "Proprietress & Co-Founder",
+    facebook: "https://web.facebook.com/sifon.gambo.7",
   },
 }
 
@@ -132,9 +134,23 @@ const ProprietorMessage = () => {
                 <h4>{leader.signName}</h4>
                 <span>{leader.signTitle}</span>
               </div>
-              <div className='psr-motto-badge'>
-                <i className='fas fa-star'></i>
-                <span>"STUDY TO MAKE IMPACT"</span>
+              <div className='psr-actions'>
+                {leader.facebook && (
+                  <a
+                    href={leader.facebook}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='proprietor-fb-btn'
+                    title={`Connect with ${leader.name} on Facebook`}
+                  >
+                    <i className='fab fa-facebook-f'></i>
+                    <span>Connect on Facebook</span>
+                  </a>
+                )}
+                <div className='psr-motto-badge'>
+                  <i className='fas fa-star'></i>
+                  <span>"STUDY TO MAKE IMPACT"</span>
+                </div>
               </div>
             </div>
           </div>
