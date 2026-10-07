@@ -276,7 +276,6 @@ const CampusEvolution = () => {
                         <i className='fas fa-search-plus'></i>
                         <span>View Photo</span>
                       </div>
-                      <span className='ce-photo-tag'>{img.tag}</span>
                     </div>
                     <div className='ce-photo-details'>
                       <h4>{img.title}</h4>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react"
+import React, { useState, useMemo, useRef, useEffect, useCallback } from "react"
 import Back from "../common/back/Back"
 import { galleryCategories, galleryItems, impactStats, missionVideos } from "./galleryData"
 import GalleryCard from "./GalleryCard"
@@ -9,6 +9,12 @@ const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("all")
   const [selectedItemIndex, setSelectedItemIndex] = useState(null)
   const [videoPlaying, setVideoPlaying] = useState(false)
+  const [isSliderMode, setIsSliderMode] = useState(true)
+  const [isAutoSliding, setIsAutoSliding] = useState(true)
+  const [isHovered, setIsHovered] = useState(false)
+
+  const sliderRef = useRef(null)
+  const autoSlideTimerRef = useRef(null)
 
   // Filter items based on activeCategory
   const filteredItems = useMemo(() => {
@@ -38,6 +44,51 @@ const Gallery = () => {
   const handleClose = () => {
     setSelectedItemIndex(null)
   }
+
+  // Scroll Slider Handlers
+  const slideLeft = () => {
+    if (sliderRef.current) {
+      const cardWidth = sliderRef.current.querySelector(".gallery-card")?.offsetWidth || 340
+      sliderRef.current.scrollBy({ left: -(cardWidth + 20) * 1.5, behavior: "smooth" })
+    }
+  }
+
+  const slideRight = useCallback(() => {
+    if (sliderRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current
+      const cardWidth = sliderRef.current.querySelector(".gallery-card")?.offsetWidth || 340
+      
+      // If reached end, wrap back smoothly
+      if (scrollLeft + clientWidth >= scrollWidth - 10) {
+        sliderRef.current.scrollTo({ left: 0, behavior: "smooth" })
+      } else {
+        sliderRef.current.scrollBy({ left: (cardWidth + 20), behavior: "smooth" })
+      }
+    }
+  }, [])
+
+  // Reset scroll position on category change
+  useEffect(() => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollTo({ left: 0, behavior: "smooth" })
+    }
+  }, [activeCategory])
+
+  // Auto-Slide Interval Effect
+  useEffect(() => {
+    if (!isSliderMode || !isAutoSliding || isHovered) {
+      if (autoSlideTimerRef.current) clearInterval(autoSlideTimerRef.current)
+      return
+    }
+
+    autoSlideTimerRef.current = setInterval(() => {
+      slideRight()
+    }, 3200) // auto-slide every 3.2s
+
+    return () => {
+      if (autoSlideTimerRef.current) clearInterval(autoSlideTimerRef.current)
+    }
+  }, [isSliderMode, isAutoSliding, isHovered, slideRight])
 
   const founderDoc = missionVideos.founderInterview
 
@@ -174,31 +225,97 @@ const Gallery = () => {
             </div>
           </div>
 
-          {/* Filter Description Header */}
+          {/* Filter Description & Slider Controls Header */}
           <div className='gallery-active-summary flexSB'>
             <div>
               <h3>
                 {galleryCategories.find((c) => c.id === activeCategory)?.name || "All Highlights"}
               </h3>
-              <p>Showing {filteredItems.length} documented moments and outreach projects</p>
+              <p>
+                Showing {filteredItems.length} documented moments • {isSliderMode ? "Auto-sliding carousel (hover to pause)" : "Full grid view"}
+              </p>
             </div>
-            {activeCategory !== "all" && (
+
+            <div className='gallery-view-controls'>
+              {/* Auto-Slide Play / Pause Toggle */}
+              {isSliderMode && (
+                <button
+                  type='button'
+                  className={`g-ctrl-btn ${isAutoSliding ? "active" : ""}`}
+                  onClick={() => setIsAutoSliding(!isAutoSliding)}
+                  title={isAutoSliding ? "Pause Auto-Slide" : "Resume Auto-Slide"}
+                >
+                  <i className={isAutoSliding ? "fas fa-pause-circle" : "fas fa-play-circle"}></i>
+                  <span>{isAutoSliding ? "Auto-Slide ON" : "Auto-Slide Paused"}</span>
+                </button>
+              )}
+
+              {/* Slider / Grid View Mode Toggle */}
               <button
                 type='button'
-                className='g-reset-filter-btn'
-                onClick={() => setActiveCategory("all")}
+                className='g-ctrl-btn mode-switch'
+                onClick={() => setIsSliderMode(!isSliderMode)}
+                title={isSliderMode ? "Switch to Grid View" : "Switch to Auto-Slider Carousel"}
               >
-                <i className='fas fa-undo-alt'></i> Show All Photos
+                <i className={isSliderMode ? "fas fa-th" : "fas fa-sliders-h"}></i>
+                <span>{isSliderMode ? "Switch to Grid" : "Switch to Slider"}</span>
               </button>
-            )}
+
+              {/* Reset to All */}
+              {activeCategory !== "all" && (
+                <button
+                  type='button'
+                  className='g-reset-filter-btn'
+                  onClick={() => setActiveCategory("all")}
+                >
+                  <i className='fas fa-undo-alt'></i> Show All
+                </button>
+              )}
+            </div>
           </div>
 
-          {/* Gallery Items Grid */}
-          <div className='blis-gallery-grid'>
-            {filteredItems.map((item) => (
-              <GalleryCard key={item.id} item={item} onSelect={handleSelect} />
-            ))}
-          </div>
+          {/* Gallery Items: Auto-Sliding Carousel or Grid */}
+          {isSliderMode ? (
+            <div
+              className='gallery-slider-wrapper'
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              {/* Slider Nav Arrows */}
+              <button
+                type='button'
+                className='gallery-slider-arrow left'
+                onClick={slideLeft}
+                aria-label='Scroll Left'
+              >
+                <i className='fas fa-chevron-left'></i>
+              </button>
+
+              <button
+                type='button'
+                className='gallery-slider-arrow right'
+                onClick={slideRight}
+                aria-label='Scroll Right'
+              >
+                <i className='fas fa-chevron-right'></i>
+              </button>
+
+              {/* Horizontal Scroll Track */}
+              <div className='gallery-slider-track' ref={sliderRef}>
+                {filteredItems.map((item) => (
+                  <div className='gallery-slide-card-wrap' key={item.id}>
+                    <GalleryCard item={item} onSelect={handleSelect} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className='blis-gallery-grid'>
+              {filteredItems.map((item) => (
+                <GalleryCard key={item.id} item={item} onSelect={handleSelect} />
+              ))}
+            </div>
+          )}
 
           {/* Bottom Ministry Support & Sponsorship Callout */}
           <div className='gallery-partner-cta'>

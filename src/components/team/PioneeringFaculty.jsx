@@ -34,9 +34,6 @@ const PioneeringFaculty = () => {
                 <i className='fas fa-search-plus'></i>
                 <span>Enlarge Photo</span>
               </div>
-              <span className='pf-badge'>
-                <i className='fas fa-award'></i> NYSC SERVICE LEGACY
-              </span>
             </div>
 
             <div className='pf-content-col'>

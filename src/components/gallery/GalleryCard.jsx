@@ -24,18 +24,14 @@ const GalleryCard = ({ item, onSelect }) => {
           </div>
         </div>
 
-        {/* Type or Category Badge */}
-        <div className='gc-badge'>
-          {isVideo ? (
+        {/* Video Badge (only for video media) */}
+        {isVideo && (
+          <div className='gc-badge'>
             <span className='video-badge'>
               <i className='fas fa-video'></i> VIDEO
             </span>
-          ) : (
-            <span className='cat-badge'>
-              <i className='fas fa-camera'></i> {item.categoryLabel}
-            </span>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       <div className='gc-info'>

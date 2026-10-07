@@ -192,7 +192,6 @@ const ScholarshipBenefactors = () => {
                   <i className='fas fa-search-plus'></i>
                   <span>View Record</span>
                 </div>
-                <span className='sb-card-badge'>{record.badge}</span>
               </div>
               <div className='sb-card-details'>
                 <h4>{record.title}</h4>

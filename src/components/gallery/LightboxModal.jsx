@@ -1,11 +1,18 @@
-import React, { useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 
 const LightboxModal = ({ item, onClose, onNext, onPrev, hasNext, hasPrev }) => {
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false)
+  const autoPlayRef = useRef(null)
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") onClose()
       if (e.key === "ArrowRight" && hasNext) onNext()
       if (e.key === "ArrowLeft" && hasPrev) onPrev()
+      if (e.key === " ") {
+        e.preventDefault()
+        setIsAutoPlaying((prev) => !prev)
+      }
     }
     window.addEventListener("keydown", handleKeyDown)
     document.body.style.overflow = "hidden"
@@ -16,15 +23,47 @@ const LightboxModal = ({ item, onClose, onNext, onPrev, hasNext, hasPrev }) => {
     }
   }, [onClose, onNext, onPrev, hasNext, hasPrev])
 
+  // Auto-slide effect inside modal
+  useEffect(() => {
+    if (isAutoPlaying) {
+      autoPlayRef.current = setInterval(() => {
+        if (hasNext) {
+          onNext()
+        } else {
+          // loop back or stop
+          setIsAutoPlaying(false)
+        }
+      }, 3500)
+    } else {
+      if (autoPlayRef.current) clearInterval(autoPlayRef.current)
+    }
+
+    return () => {
+      if (autoPlayRef.current) clearInterval(autoPlayRef.current)
+    }
+  }, [isAutoPlaying, hasNext, onNext])
+
   if (!item) return null
 
   return (
     <div className='gallery-lightbox-overlay' onClick={onClose}>
       <div className='gallery-lightbox-content' onClick={(e) => e.stopPropagation()}>
-        {/* Close Button */}
-        <button className='glb-close-btn' onClick={onClose} aria-label='Close preview'>
-          <i className='fas fa-times'></i>
-        </button>
+        {/* Top Controls Bar */}
+        <div className='glb-top-bar'>
+          <button
+            type='button'
+            className={`glb-slideshow-btn ${isAutoPlaying ? "active" : ""}`}
+            onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+            title={isAutoPlaying ? "Pause Auto-Slide" : "Start Auto-Slide"}
+          >
+            <i className={isAutoPlaying ? "fas fa-pause" : "fas fa-play"}></i>
+            <span>{isAutoPlaying ? "Auto-Slide Playing (3.5s)" : "Auto-Slide"}</span>
+          </button>
+
+          <button className='glb-close-btn' onClick={onClose} aria-label='Close preview'>
+            <i className='fas fa-times'></i>
+          </button>
+        </div>
 
         {/* Previous Button */}
         {hasPrev && (
@@ -61,9 +100,11 @@ const LightboxModal = ({ item, onClose, onNext, onPrev, hasNext, hasPrev }) => {
         {/* Caption & Metadata Bar */}
         <div className='glb-details'>
           <div className='glb-meta-row'>
-            <span className='glb-category-badge'>
-              <i className='fas fa-tag'></i> {item.categoryLabel}
-            </span>
+            {item.categoryLabel && (
+              <span className='glb-category-badge'>
+                <i className='fas fa-tag'></i> {item.categoryLabel}
+              </span>
+            )}
             {item.location && (
               <span className='glb-location'>
                 <i className='fas fa-map-marker-alt'></i> {item.location}

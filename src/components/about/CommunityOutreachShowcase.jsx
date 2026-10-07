@@ -167,9 +167,6 @@ const CommunityOutreachShowcase = () => {
                   <i className='fas fa-search-plus'></i>
                   <span>View Story</span>
                 </div>
-                <span className='cos-tag'>
-                  <i className='fas fa-gift'></i> Free School Bags
-                </span>
               </div>
               <div className='cos-details'>
                 <span className='cos-loc'>

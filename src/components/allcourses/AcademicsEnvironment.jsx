@@ -168,9 +168,6 @@ const AcademicsEnvironment = () => {
                   <i className='fas fa-search-plus'></i>
                   <span>View Details</span>
                 </div>
-                <span className={`ae-tag ${item.category === "sports" ? "sports-tag" : "acad-tag"}`}>
-                  <i className={item.category === "sports" ? "fas fa-trophy" : "fas fa-book-open"}></i> {item.badge}
-                </span>
               </div>
               <div className='ae-details'>
                 <h4>{item.title}</h4>
