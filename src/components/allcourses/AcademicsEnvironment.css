@@ -1,0 +1,216 @@
+/* Academics Environment Section Styles */
+.academics-env-section {
+  padding: 80px 0;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}
+
+.ae-header {
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto 35px auto;
+}
+
+.ae-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(14, 116, 144, 0.1);
+  color: #0e7490;
+  border: 1px solid rgba(14, 116, 144, 0.25);
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.ae-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  color: #071626;
+  margin-bottom: 16px;
+  line-height: 1.25;
+}
+
+.ae-title span {
+  color: #00a884;
+}
+
+.ae-desc {
+  font-size: 16px;
+  color: #475569;
+  line-height: 1.7;
+}
+
+/* Tabs */
+.ae-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.ae-tab-btn {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.ae-tab-btn:hover {
+  border-color: #00a884;
+  color: #00a884;
+  transform: translateY(-2px);
+}
+
+.ae-tab-btn.active {
+  background: #00a884;
+  border-color: #00a884;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(0, 168, 132, 0.3);
+}
+
+/* Grid */
+.ae-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.ae-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.ae-card:hover {
+  transform: translateY(-5px);
+  border-color: #00a884;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+}
+
+.ae-img-wrap {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #0f172a;
+}
+
+.ae-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.ae-card:hover .ae-img-wrap img {
+  transform: scale(1.08);
+}
+
+.ae-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 22, 38, 0.65);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  gap: 6px;
+}
+
+.ae-card:hover .ae-overlay {
+  opacity: 1;
+}
+
+.ae-overlay i {
+  font-size: 24px;
+  color: #34d399;
+}
+
+.ae-overlay span {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ae-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ae-tag.acad-tag {
+  background: rgba(7, 22, 38, 0.88);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.ae-tag.sports-tag {
+  background: rgba(245, 158, 11, 0.9);
+  color: #ffffff;
+}
+
+.ae-details {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ae-details h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #071626;
+  margin-bottom: 8px;
+  line-height: 1.35;
+}
+
+.ae-details p {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.55;
+  margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .academics-env-section {
+    padding: 50px 0;
+  }
+  .ae-title {
+    font-size: 26px;
+  }
+  .ae-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

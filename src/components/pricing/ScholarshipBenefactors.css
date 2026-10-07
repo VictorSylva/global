@@ -1,0 +1,344 @@
+/* Scholarship Benefactors Section Styles */
+.scholarship-benefactors-section {
+  padding: 80px 0;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.sb-header {
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto 40px auto;
+}
+
+.sb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(14, 116, 144, 0.1);
+  color: #0e7490;
+  border: 1px solid rgba(14, 116, 144, 0.25);
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.sb-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  color: #071626;
+  margin-bottom: 16px;
+  line-height: 1.25;
+}
+
+.sb-title span {
+  color: #00a884;
+}
+
+.sb-desc {
+  font-size: 16px;
+  color: #475569;
+  line-height: 1.7;
+}
+
+/* Feature Card */
+.sb-feature-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  margin-bottom: 50px;
+}
+
+.sb-feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+}
+
+.sb-feature-img-col {
+  position: relative;
+  background: #071626;
+  min-height: 380px;
+}
+
+.sb-main-sponsor-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sb-sponsor-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(7, 22, 38, 0.95) 100%);
+  padding: 24px;
+  color: #ffffff;
+}
+
+.sb-sponsor-caption h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.sb-sponsor-caption span {
+  font-size: 13px;
+  color: #34d399;
+  font-weight: 600;
+}
+
+.sb-feature-info-col {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sb-info-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #059669;
+  background: rgba(0, 168, 132, 0.1);
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  width: fit-content;
+}
+
+.sb-feature-info-col h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #071626;
+  margin-bottom: 12px;
+}
+
+.sb-feature-info-col p {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+.sb-benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.sb-b-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.sb-b-item i {
+  color: #00a884;
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.sb-b-item strong {
+  display: block;
+  font-size: 14px;
+  color: #071626;
+}
+
+.sb-b-item span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.sb-apply-hint {
+  background: #f1f5f9;
+  border-left: 4px solid #00a884;
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+  color: #475569;
+}
+
+.sb-apply-hint i {
+  color: #00a884;
+  margin-top: 2px;
+}
+
+/* Gallery Header */
+.sb-gallery-heading {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sb-gallery-heading h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #071626;
+  margin-bottom: 6px;
+}
+
+.sb-gallery-heading p {
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* Photos Grid */
+.sb-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.sb-photo-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.sb-photo-card:hover {
+  transform: translateY(-5px);
+  border-color: #00a884;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+}
+
+.sb-card-img-wrap {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #0f172a;
+}
+
+.sb-card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.sb-photo-card:hover .sb-card-img-wrap img {
+  transform: scale(1.08);
+}
+
+.sb-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 22, 38, 0.65);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  gap: 6px;
+}
+
+.sb-photo-card:hover .sb-card-overlay {
+  opacity: 1;
+}
+
+.sb-card-overlay i {
+  font-size: 24px;
+  color: #34d399;
+}
+
+.sb-card-overlay span {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sb-card-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(7, 22, 38, 0.85);
+  backdrop-filter: blur(4px);
+  color: #34d399;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.sb-card-details {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sb-card-details h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #071626;
+  margin-bottom: 4px;
+  line-height: 1.35;
+}
+
+.sb-card-sub {
+  font-size: 12px;
+  font-weight: 600;
+  color: #00a884;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.sb-card-details p {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.55;
+  margin: 0;
+}
+
+@media screen and (max-width: 992px) {
+  .sb-feature-grid {
+    grid-template-columns: 1fr;
+  }
+  .sb-feature-img-col {
+    min-height: 280px;
+  }
+  .sb-feature-info-col {
+    padding: 28px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .scholarship-benefactors-section {
+    padding: 50px 0;
+  }
+  .sb-title {
+    font-size: 26px;
+  }
+  .sb-photos-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

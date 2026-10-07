@@ -5,6 +5,7 @@ import PriceCard from "./PriceCard"
 import "./price.css"
 import Faq from "./Faq"
 import ProspectusRequest from "../home/ProspectusRequest"
+import ScholarshipBenefactors from "./ScholarshipBenefactors"
 import { schoolAccountDetails } from "../../dummydata"
 import { sendWebsiteForm } from "../../services/emailService"
 
@@ -428,6 +429,7 @@ const Pricing = () => {
         </div>
       )}
 
+      <ScholarshipBenefactors />
       <Faq />
     </>
   )

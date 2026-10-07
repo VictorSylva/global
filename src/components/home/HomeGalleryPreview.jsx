@@ -7,10 +7,10 @@ import "./HomeGalleryPreview.css"
 
 const previewFilterTabs = [
   { id: "all", label: "Featured Highlights", icon: "fas fa-star" },
-  { id: "excursions", label: "Excursions (Zoo, Airport, Museum)", icon: "fas fa-bus" },
-  { id: "supporter", label: "USA Supporter Visit", icon: "fas fa-globe-americas" },
-  { id: "scholarship", label: "Scholarship Grants", icon: "fas fa-graduation-cap" },
-  { id: "mission", label: "Global Mission Outreaches", icon: "fas fa-hands-helping" },
+  { id: "evolution", label: "Campus Evolution", icon: "fas fa-building" },
+  { id: "excursions", label: "Excursions & Safaris", icon: "fas fa-bus" },
+  { id: "partners", label: "Sponsors & Benefactors", icon: "fas fa-hand-holding-heart" },
+  { id: "mission", label: "School Bags & Relief", icon: "fas fa-hands-helping" },
 ]
 
 const HomeGalleryPreview = () => {
@@ -20,14 +20,19 @@ const HomeGalleryPreview = () => {
   // Filter items for home preview
   const displayItems = React.useMemo(() => {
     if (selectedTab === "all") {
-      // Return curated mix of featured items from each category
       return galleryItems.filter((item) => item.featured).slice(0, 6)
+    }
+    if (selectedTab === "evolution") {
+      return galleryItems.filter((item) => item.category === "evolution").slice(0, 6)
     }
     if (selectedTab === "excursions") {
       return galleryItems.filter((item) => item.group === "excursions").slice(0, 6)
     }
+    if (selectedTab === "partners") {
+      return galleryItems.filter((item) => item.category === "partners" || item.category === "supporter").slice(0, 6)
+    }
     if (selectedTab === "mission") {
-      return galleryItems.filter((item) => item.group === "mission").slice(0, 6)
+      return galleryItems.filter((item) => item.category === "bags" || item.group === "mission").slice(0, 6)
     }
     return galleryItems.filter((item) => item.category === selectedTab).slice(0, 6)
   }, [selectedTab])

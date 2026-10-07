@@ -1,6 +1,7 @@
 import React from "react"
 import Back from "../common/back/Back"
 import TeamCard from "./TeamCard"
+import PioneeringFaculty from "./PioneeringFaculty"
 import Heading from "../common/heading/Heading"
 import "./team.css"
 import Awrapper from "../about/Awrapper"
@@ -23,9 +24,11 @@ const Team = () => {
           </div>
         </div>
       </section>
+      <PioneeringFaculty />
       <Awrapper />
     </>
   )
 }
 
 export default Team
+
