@@ -75,7 +75,7 @@ const HomeGalleryPreview = () => {
           </div>
           <div className='hgp-header-right'>
             <Link to='/gallery' className='hgp-view-all-btn'>
-              <span>EXPLORE FULL GALLERY (38+ PHOTOS)</span>
+              <span>EXPLORE FULL GALLERY (90+ PHOTOS)</span>
               <i className='fas fa-arrow-right'></i>
             </Link>
           </div>

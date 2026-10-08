@@ -5,108 +5,132 @@ import LightboxModal from "../gallery/LightboxModal"
 const evolutionMilestones = [
   {
     id: "stage-1",
-    phase: "Phase 1: Genesis & First Foundations",
-    badge: "HUMBLE BEGINNINGS",
-    title: "Laying the First Blocks on Raw Soil",
-    year: "Early Formation",
-    desc: "Starting with prayer, faith, and empty ground at Gura-Suga, Rev. Fidelis Gambo and pioneering partners molded the first blocks with no substantial capital—driven purely by the mandate to give vulnerable children a future.",
+    phase: "Phase 1: Land & Foundation Digging",
+    badge: "FOUNDATION PHASE",
+    title: "Raw Land, Site Survey & Digging Foundation Trenches",
+    year: "Foundation Phase",
+    desc: "Starting at Gura-Suga with the raw land and old surrounding buildings, surveying the terrain, digging deep foundation holes, and laying the initial foundation blocks.",
     images: [
       {
+        src: "/images/more/how the land was.jpeg",
+        title: "How the Land Was: Original Site & Landscape",
+        caption: "Raw ground and old community buildings before development began.",
+        tag: "Original Site",
+      },
+      {
+        src: "/images/more/how the land was2.jpeg",
+        title: "How the Land Was: Land Survey & Terrain",
+        caption: "Initial overview of the land and terrain before foundation excavation.",
+        tag: "Site Survey",
+      },
+      {
+        src: "/images/more/how the land was3.jpeg",
+        title: "How the Land Was: Open Land View",
+        caption: "Bare ground and open space showing the early layout of the land.",
+        tag: "Genesis Grounds",
+      },
+      {
+        src: "/images/more/how the land was4.jpeg",
+        title: "How the Land Was: Site with Old Buildings",
+        caption: "View of the land showing surrounding old community buildings.",
+        tag: "Old Buildings",
+      },
+      {
         src: "/images/more/school buiding.jpeg",
-        title: "The First Classroom Structure Under Construction",
-        caption: "Foundational wall-raising for the initial single-block classroom facility.",
-        tag: "Early Foundation",
+        title: "Digging Foundation Trenches",
+        caption: "Excavating the initial foundation trenches in the soil.",
+        tag: "Foundation Digging",
       },
       {
         src: "/images/more/school building2.jpeg",
-        title: "Block Moulding & Early Site Development",
-        caption: "Raw building blocks and early partition works on the Gura-Suga school grounds.",
-        tag: "Block Laying",
+        title: "Foundation Holes & Groundwork",
+        caption: "Foundation holes and trenches dug into the earth.",
+        tag: "Foundation Holes",
       },
       {
         src: "/images/more/school building3.jpeg",
-        title: "Classroom Perimeter & Framing",
-        caption: "Constructing the primary block windows and perimeter lintels under open skies.",
-        tag: "Structural Framing",
+        title: "Inspecting Foundation Holes",
+        caption: "Inspecting excavated foundation depth for the classroom structure.",
+        tag: "Foundation Depth",
       },
       {
         src: "/images/more/school building4.jpeg",
-        title: "Pioneering School Yard & Compound Clearing",
-        caption: "The early landscape before perimeter gating and grounds paved for students.",
-        tag: "Initial Site",
+        title: "Foundation with Blocks",
+        caption: "Laying the first courses of foundation blocks inside the trenches.",
+        tag: "Foundation Blocks",
       },
     ],
   },
   {
     id: "stage-2",
-    phase: "Phase 2: Roofing, Expansion & Multi-Classrooms",
-    badge: "EXPANSION PHASE",
-    title: "Adding Roofs, Doors & Multi-Grade Classrooms",
-    year: "Structural Growth",
-    desc: "As student enrollment grew rapidly from local communities, the school expanded to roof multiple classroom wings, install security fixtures, and create dedicated sections for Crèche, Nursery, and Primary sections.",
+    phase: "Phase 2: Wall Raising, Lintel & Roofing Structure",
+    badge: "STRUCTURAL WORK",
+    title: "From 3–4 Block Courses to Lintel Level & Timber Roof Trusses",
+    year: "Structural Work",
+    desc: "Raising block walls 3 to 4 courses above foundation up to lintel level, mounting wooden roof trusses, and completing zinc roofing over unplastered blocks.",
     images: [
       {
         src: "/images/more/school building5.jpeg",
-        title: "Roofing the Main Academic Block",
-        caption: "Zinc roofing installed on the main wing to provide weather-tight classrooms.",
-        tag: "Roofing Milestone",
+        title: "Raising Walls (3–4 Block Courses)",
+        caption: "Raising classroom walls 3 to 4 courses of blocks above foundation.",
+        tag: "Wall Raising",
       },
       {
         src: "/images/more/school buiding6.jpeg",
-        title: "Classroom Wing Structure",
-        caption: "Expanding classroom rows to accommodate emerging junior secondary classes.",
-        tag: "Classroom Wings",
+        title: "Wall Construction to Lintel Level",
+        caption: "Block work progressing up to the lintel level across classroom rows.",
+        tag: "Lintel Level",
       },
       {
         src: "/images/more/schoolbuilding7.jpeg",
-        title: "Multi-Block Structural Progress",
-        caption: "Interconnected block layouts designed for safe scholar movement and ventilation.",
-        tag: "Compound Layout",
+        title: "Roofing Structure & Timber Trusses",
+        caption: "Installation of wooden roof trusses and roofing framework.",
+        tag: "Roof Structure",
       },
       {
         src: "/images/more/school building8.jpeg",
-        title: "Exterior Wall Finishing & Plastering",
-        caption: "Transitioning from bare blocks to reinforced, plastered educational facilities.",
-        tag: "Plastering & Fortification",
+        title: "Roofed Building (Unplastered & Unpainted)",
+        caption: "Classroom block with zinc roofing installed, unplastered and unpainted.",
+        tag: "Roofed Structure",
       },
     ],
   },
   {
     id: "stage-3",
-    phase: "Phase 3: Modern Smart Campus & Conducive Facilities",
-    badge: "TODAY'S CAMPUS",
-    title: "Vibrant Classrooms, Secured Grounds & Conducive Learning",
-    year: "Present Day",
-    desc: "Today, Brighter Land International School stands as a flourishing educational hub with secured perimeter fencing, furnished bright classrooms, science & ICT resources, and a safe, joyful environment for 300+ scholars.",
+    phase: "Phase 3: Roofed Classrooms & Flooring",
+    badge: "CLASSROOM BLOCKS",
+    title: "One-Side Classroom Block, Floored Rooms & Learning",
+    year: "Building Progress",
+    desc: "One side of the new classroom block roofed alongside existing old buildings, progressing to floored classrooms and active daily teaching.",
     images: [
       {
         src: "/images/more/school building9.jpeg",
-        title: "Completed Academic Complex & Courtyard",
-        caption: "Fully completed and painted academic block active with daily lessons and assemblies.",
-        tag: "Modern Campus",
+        title: "One-Side Classroom Block (Roofed & Unpainted)",
+        caption: "One side of the classroom block built and roofed on raw ground alongside the old building, unpainted.",
+        tag: "Roofed Block",
       },
       {
         src: "/images/more/school building10.jpeg",
-        title: "Spacious Front Courtyard & Facilities",
-        caption: "Vibrant school grounds equipped with security gates, clean water, and playing space.",
-        tag: "Campus Grounds",
+        title: "Floored Classroom Wing & Site Grounds",
+        caption: "Classroom block with internal flooring completed alongside the old buildings.",
+        tag: "Floored Wing",
       },
       {
         src: "/images/more/school building11.jpeg",
-        title: "Secondary & Primary Divisions Building",
-        caption: "Welcoming entrance to our dedicated basic and secondary learning wings.",
-        tag: "Active School Block",
+        title: "Floored Classrooms & Compound View",
+        caption: "Front view of floored classrooms with old buildings still situated on site.",
+        tag: "Floored Classrooms",
       },
       {
         src: "/images/more/condusive learning environment.jpeg",
-        title: "Conducive Classroom Learning Environment",
-        caption: "Attentive scholars learning in bright, well-ventilated, and fully equipped classrooms.",
+        title: "Conducive Classroom Learning",
+        caption: "Scholars engaged in learning inside bright, equipped classroom spaces.",
         tag: "Conducive Learning",
       },
       {
         src: "/images/more/condusive learning environment2.jpeg",
-        title: "Active Learning with Dedicated Instructors",
-        caption: "Personalized teacher attention fostering academic excellence and moral character.",
+        title: "Active Classroom Instruction",
+        caption: "Dedicated teacher engaging with scholars during daily lessons.",
         tag: "Active Instruction",
       },
     ],
@@ -187,10 +211,10 @@ const CampusEvolution = () => {
               <i className='fas fa-seedling'></i> WHERE WE STARTED
             </div>
             <div className='ce-tb-img-wrap'>
-              <img src='/images/more/school buiding.jpeg' alt='Early school building' />
+              <img src='/images/more/how the land was.jpeg' alt='How the land was at the beginning' />
               <div className='ce-tb-caption'>
-                <strong>The Early Foundation</strong>
-                <span>Single bare block structure on open ground</span>
+                <strong>How The Land Was</strong>
+                <span>Untouched raw soil before construction began</span>
               </div>
             </div>
           </div>

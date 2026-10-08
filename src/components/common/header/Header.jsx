@@ -47,30 +47,54 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation Links */}
-          <ul className='desktop-nav flex'>
+          <ul className='desktop-nav'>
             <li>
-              <Link to='/' className={isActive("/")}>Home</Link>
+              <Link to='/' className={`nav-btn ${isActive("/")}`}>
+                <i className='fas fa-home'></i>
+                <span>Home</span>
+              </Link>
             </li>
             <li>
-              <Link to='/courses' className={isActive("/courses") || isActive("/academics")}>Academics</Link>
+              <Link to='/courses' className={`nav-btn ${isActive("/courses") || isActive("/academics") ? "active" : ""}`}>
+                <i className='fas fa-graduation-cap'></i>
+                <span>Academics</span>
+              </Link>
             </li>
             <li>
-              <Link to='/about' className={isActive("/about")}>About BLIS</Link>
+              <Link to='/about' className={`nav-btn ${isActive("/about")}`}>
+                <i className='fas fa-university'></i>
+                <span>About BLIS</span>
+              </Link>
             </li>
             <li>
-              <Link to='/gallery' className={isActive("/gallery") || isActive("/impact") || isActive("/excursions")}>Gallery & Impact</Link>
+              <Link to='/gallery' className={`nav-btn ${isActive("/gallery") || isActive("/impact") || isActive("/excursions") ? "active" : ""}`}>
+                <i className='fas fa-images'></i>
+                <span>Gallery & Impact</span>
+              </Link>
             </li>
             <li>
-              <Link to='/team' className={isActive("/team") || isActive("/faculty")}>Faculty & Deans</Link>
+              <Link to='/team' className={`nav-btn ${isActive("/team") || isActive("/faculty") ? "active" : ""}`}>
+                <i className='fas fa-chalkboard-teacher'></i>
+                <span>Faculty & Deans</span>
+              </Link>
             </li>
             <li>
-              <Link to='/pricing' className={isActive("/pricing") || isActive("/admissions")}>Admissions & Prospectus</Link>
+              <Link to='/pricing' className={`nav-btn ${isActive("/pricing") || isActive("/admissions") ? "active" : ""}`}>
+                <i className='fas fa-file-invoice-dollar'></i>
+                <span>Admissions</span>
+              </Link>
             </li>
             <li>
-              <Link to='/journal' className={isActive("/journal") || isActive("/notices")}>Circulars & News</Link>
+              <Link to='/journal' className={`nav-btn ${isActive("/journal") || isActive("/notices") ? "active" : ""}`}>
+                <i className='fas fa-bullhorn'></i>
+                <span>Circulars & News</span>
+              </Link>
             </li>
             <li>
-              <Link to='/contact' className={isActive("/contact")}>Contact</Link>
+              <Link to='/contact' className={`nav-btn ${isActive("/contact")}`}>
+                <i className='fas fa-envelope'></i>
+                <span>Contact</span>
+              </Link>
             </li>
           </ul>
 
@@ -78,7 +102,7 @@ const Header = () => {
           <div className='desktop-erp-cta'>
             <Link to='/portal' className='button erp-launch-btn'>
               <i className='fas fa-laptop-code'></i>
-              <span>BLIS OPERATIONS ERP</span>
+              <span>BLIS ERP</span>
               <span className='btn-badge'>LIVE</span>
             </Link>
           </div>
